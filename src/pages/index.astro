@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <span class="eyebrow">明亚保险经纪人 · 独立咨询</span>
+      <h1>站在你这边，<br />把风险这件事一次想清楚</h1>
+      <p class="lead">
+        复旦哲学硕士 · 法考持证 · 前华为荣耀销售管理。我不属于任何一家保险公司，
+        只从全市场 100+ 保司里，挑最适合你的那一款——<strong>买对，不买贵</strong>。
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-light" href="/contact">加微信咨询</a>
+        <a class="btn btn-outline" href="/writing">读读我的文章</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="num">100<span>+</span></div><div class="label">合作保险公司 · 全市场独立选品</div></div>
+        <div class="stat"><div class="num">400<span>+</span></div><div class="label">团队累计理赔件数 · 经验兜底</div></div>
+        <div class="stat"><div class="num">30–50<span>%</span></div><div class="label">同等保障可优化的保费空间</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">我能帮你做什么</span>
+      <h2 class="section-title">三件事，覆盖家庭保障全周期</h2>
+      <p class="section-sub">售前诊断 → 方案定制 → 投保协助 → 保单托管 → 理赔陪跑，全程在你这边。</p>
+      <div class="grid-3">
+        <ServiceCard
+          icon="🛡"
+          title="家庭保障规划"
+          desc="重疾 / 医疗 / 意外 / 寿险，全市场横向对比。"
+          points={["先问「你怕什么」，再定方案", "同样保障帮你省 30%–50% 保费", "买对不买贵"]}
+        />
+        <ServiceCard
+          icon="🌱"
+          title="储蓄与传承规划"
+          desc="增额寿 / 年金 / 教育金 / 养老金，锁定长期利率。"
+          points={["让钱确定地长大", "资产隔离、指定受益", "平稳交棒下一代"]}
+        />
+        <ServiceCard
+          icon="🤝"
+          title="保单托管与理赔"
+          desc="已有保单集中梳理、查漏补缺；出险全程协助。"
+          points={["定期检视保障缺口", "团队累计 400+ 件理赔经验", "法律 + 保险交叉咨询"]}
+        />
+      </div>
+      <div style="margin-top:28px;">
+        <a class="btn btn-ghost" href="/services">查看服务详情 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED WRITING -->
+  <section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="wrap">
+      <span class="eyebrow">最近在想的事</span>
+      <h2 class="section-title">精选文章</h2>
+      <p class="section-sub">不急着聊产品，先看几天文章，有了基础信任再说。</p>
+      <div class="posts">
+        {posts.map((p) => (
+          <a class="post" href={`/writing/${p.slug}`}>
+            <div>
+              <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
+              <h3>{p.data.title}</h3>
+              <p>{p.data.excerpt}</p>
+            </div>
+            <div class="arrow">→</div>
+          </a>
+        ))}
+      </div>
+      <div style="margin-top:24px;">
+        <a class="btn btn-ghost" href="/writing">全部文章 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT TEASER -->
+  <section class="section">
+    <div class="wrap">
+      <div class="about-teaser">
+        <img class="teaser-avatar" src="/images/avatar.jpg" alt="程成 cc" width="160" height="160" />
+        <div class="prose">
+        <span class="eyebrow">关于我</span>
+        <h2 class="section-title">程成（cc），把复杂的事拆清楚</h2>
+        <p>
+          1995 年生于武汉。复旦哲学硕士、法考持证，做过华为荣耀四年销售管理、电商省总。
+          2025 年裸辞回家陪产，把"给自家配保险"做成了终身职业。
+        </p>
+        <p>
+          我信奉：保险、法律、身份规划，都只是工具箱里的不同工具——用哪个，取决于你真正需要什么。
+          所以我的方式很简单：先定义问题，再找方案；不话术、不骚扰，只忠于客户。
+        </p>
+        <a class="btn btn-primary" href="/about">更多关于我 →</a>
+      </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout title="文章观点 | cc · 程成" description="cc 的保险笔记：关于保险、职业选择、长期主义与独立咨询的思考。">
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">文章观点</span>
+      <h1 class="section-title">最近在想的事</h1>
+      <p class="section-sub">不急着聊产品。先看几天文章，有了基础信任，我们再聊。</p>
+      <div class="posts">
+        {posts.map((p) => (
+          <a class="post" href={`/writing/${p.slug}`}>
+            <div>
+              <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
+              <h3>{p.data.title}</h3>
+              <p>{p.data.excerpt}</p>
+            </div>
+            <div class="arrow">→</div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

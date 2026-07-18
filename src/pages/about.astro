@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const edu = [
+  '2013 新洲一中理科火箭班，湖北省理科高考前 130 名',
+  '2014 理转文，转入复旦国学班',
+  '2017 复旦哲学学院学士，本院读研',
+  '2020 复旦哲学学院硕士',
+];
+const career = [
+  '2020 华为消费者业务管培生',
+  '2021–2024 荣耀 渠道经理 / 地市经理 / 产品经理 / 零售经理',
+  '2024–2025 能良电商 湖南省总经理（底薪 36k/月）',
+  '2025.10 裸辞，回家陪孕 & 陪产',
+  '2025.11 加入明亚，成为保险经纪人',
+  '2026.06 喜得小犬（程乐鱼）',
+];
+---
+
+<BaseLayout title="关于我 | cc · 程成" description="程成（cc），复旦哲学硕士、法考持证、前华为荣耀销售管理、前电商省总。明亚保险经纪人。">
+  <section class="section">
+    <div class="wrap prose">
+      <div class="about-head">
+        <div class="about-intro">
+          <span class="eyebrow">关于我</span>
+          <h1 class="section-title">程成（cc）</h1>
+          <p style="font-size:18px;color:var(--ink);">
+            复旦哲学硕士 · 法考持证 · 前华为荣耀销售管理 · 前电商省总。<br />
+            明亚保险经纪人，独立、只忠于客户。
+          </p>
+
+          <div class="tag-row">
+            <span class="tag">复旦哲学硕士</span>
+            <span class="tag">法律职业资格</span>
+            <span class="tag">前华为荣耀</span>
+            <span class="tag">前电商省总</span>
+            <span class="tag">明亚经纪人</span>
+          </div>
+        </div>
+        <img class="about-avatar" src="/images/avatar.jpg" alt="程成 cc 头像" width="220" height="220" />
+      </div>
+
+      <h2>我是谁</h2>
+      <p>
+        1995 年生于湖北武汉新洲。从理科火箭班到复旦国学班，再到中国哲学，一路"理转文"。
+        做过华为·荣耀四年销售管理，当过电商公司省总。2025 年为陪产回归家庭，也把"给自家配保险"做成了终身职业。
+      </p>
+      <p>
+        我信奉把复杂的事拆清楚，再帮你做对的决定。保险、法律、身份规划，对我只是工具箱里的不同工具——
+        用哪个，取决于你真正需要什么。
+      </p>
+
+      <h2>履历</h2>
+      <h3 style="font-size:16px;color:var(--muted);margin:18px 0 8px;">教育</h3>
+      <ul>{edu.map((e) => <li>{e}</li>)}</ul>
+      <h3 style="font-size:16px;color:var(--muted);margin:22px 0 8px;">职业</h3>
+      <ul>{career.map((c) => <li>{c}</li>)}</ul>
+
+      <h2>一些瞬间</h2>
+      <div class="gallery">
+        <img src="/images/scene-1.jpg" alt="一家三口 · 喜得小犬（程乐鱼）" />
+        <img src="/images/scene-2.jpg" alt="陪产时光 · 期待新生命" />
+        <img src="/images/scene-3.jpg" alt="我爸爸 / 我妈妈" />
+        <img src="/images/scene-4.jpg" alt="一起等宝宝来" />
+      </div>
+
+      <h2>为什么做保险</h2>
+      <p>
+        不是想找副业，也不是走投无路。真实原因是：打算给自己和家庭配置保险，接触一圈发现，
+        外面卖保险的代理人大多不太专业——要么只会背话术，要么只推自家一家公司的产品。
+        我在华为荣耀做过四年销售管理，知道什么叫"以客户为中心"；加上哲学训练出的底层逻辑和法考的法律基础，
+        我觉得这件事我可以做得比大多数人好。与其让别人给我配，不如我自己来。
+      </p>
+
+      <h2>约法三章</h2>
+      <div class="rules" style="margin-top:14px;">
+        <div class="rule">
+          <div class="n">一</div>
+          <h4>不卖我不认可的产品</h4>
+          <p>无论耳熟能详的大公司，还是没听过的小保司。</p>
+        </div>
+        <div class="rule">
+          <div class="n">二</div>
+          <h4>不用我不认可的方式</h4>
+          <p>无套路、不话术、不骚扰。人不找我，我不找人。</p>
+        </div>
+        <div class="rule">
+          <div class="n">三</div>
+          <h4>不卖给不互信的人</h4>
+          <p>保障是终身的托付，先彼此信任，再谈方案。</p>
+        </div>
+      </div>
+
+      <div style="margin-top:34px;">
+        <a class="btn btn-primary" href="/contact">加微信聊聊 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

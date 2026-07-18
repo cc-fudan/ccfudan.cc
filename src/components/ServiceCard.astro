@@ -1,0 +1,20 @@
+---
+interface Props {
+  icon?: string;
+  title: string;
+  desc: string;
+  points?: string[];
+}
+const { icon = '🛡', title, desc, points } = Astro.props;
+---
+
+<div class="card">
+  <div class="ico">{icon}</div>
+  <h3>{title}</h3>
+  <p>{desc}</p>
+  {points && points.length > 0 && (
+    <ul>
+      {points.map((p) => <li>{p}</li>)}
+    </ul>
+  )}
+</div>

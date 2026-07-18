@@ -1,0 +1,19 @@
+# 依赖
+node_modules
+
+# 构建产物（由 CI 重新生成）
+dist
+dist_*
+dist-pub*
+dist_pub*
+
+# Astro 缓存
+.astro
+
+# 临时校验文件
+_*.html
+*.log
+
+# 系统
+.DS_Store
+Thumbs.db

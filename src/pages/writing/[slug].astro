@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writing');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} | cc · 程成`} description={post.data.excerpt}>
+  <section class="section">
+    <div class="wrap prose">
+      <a href="/writing" style="color:var(--muted);font-size:14px;">← 返回文章列表</a>
+      <div class="meta" style="color:var(--muted);font-size:13px;margin:14px 0 6px;">
+        {post.data.date.toISOString().slice(0, 10)} · {post.data.tags.join(' / ')}
+      </div>
+      <h1 class="section-title">{post.data.title}</h1>
+      <p style="font-size:17px;color:var(--ink-soft);">{post.data.excerpt}</p>
+      <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
+      <Content />
+      <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
+        <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），
+        先看几天文章，有了基础信任，我们再细说。
+      </div>
+    </div>
+  </section>
+</BaseLayout>
