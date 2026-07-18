@@ -17,3 +17,6 @@ _*.html
 # 系统
 .DS_Store
 Thumbs.db
+
+# HSK 客户端本地配置
+.hsk/
