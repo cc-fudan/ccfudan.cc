@@ -2,8 +2,8 @@
 const links = [
   { href: '/', label: '首页' },
   { href: '/about', label: '关于我' },
-  { href: '/services', label: '服务咨询' },
-  { href: '/writing', label: '文章观点' },
+  { href: '/services', label: '顾问服务' },
+  { href: '/works', label: '作品集' },
   { href: '/contact', label: '联系预约' },
 ];
 const path = Astro.url.pathname;
@@ -11,7 +11,7 @@ const path = Astro.url.pathname;
 
 <header class="header">
   <div class="wrap">
-    <a class="logo" href="/">cc · 程成<small>明亚保险经纪人</small></a>
+    <a class="logo" href="/">cc · 程成<small>独立咨询顾问</small></a>
     <nav class="nav">
       {links.map((l) => (
         <a href={l.href} class={path === l.href ? 'active' : ''}>{l.label}</a>

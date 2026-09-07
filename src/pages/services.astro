@@ -9,55 +9,62 @@ const flow = [
   ['售后 · 保单托管', '已有保单集中管理，定期检视，缺口随人生阶段动态调整。'],
   ['理赔 · 全程协助', '出险第一时间指导报案、备料、跟进，团队累计 400+ 件实战经验为你兜底。'],
 ];
+
+const boundaries = [
+  ['保险经纪', '明亚签约、持牌执业，全市场 100+ 家保司可选；产品与佣金规则对客户透明。'],
+  ['法律服务', '持有法律职业资格（A 证），目前非执业律师——我提供的是法律思维、信息梳理与独立第二意见；重大事项请以执业律师的正式意见为准。'],
+  ['港险与身份', '保诚港险代理人，香港高才通申请亲历者；跨境政策变动快，一切以最新法规与保司条款为准。'],
+  ['AI 咨询', '交付可运行的工作流与决策框架（本网站本身就是 AI 协作的产物），不承诺具体收益。'],
+];
 ---
 
-<BaseLayout title="服务咨询 | cc · 程成" description="家庭保障规划、储蓄理财规划、保单检视与托管、理赔协助、法律+保险交叉咨询。明亚保险经纪人 cc 的全流程服务。">
+<BaseLayout title="顾问服务 | cc · 程成" description="一个顾问，四张地图：家庭风险与保障、法律与契约思维、香港身份与跨境保障、职业决策与 AI 元能力。先定义问题，再找方案。">
   <section class="section">
     <div class="wrap">
-      <span class="eyebrow">服务咨询</span>
-      <h1 class="section-title">我能提供什么</h1>
-      <p class="section-sub">明亚签约 100+ 家保险公司、上千款产品。我不属于任何一家保司，只从全市场挑最适合你的那一款。</p>
+      <span class="eyebrow">顾问服务</span>
+      <h1 class="section-title">一个顾问，四张地图</h1>
+      <p class="section-sub">保险、法律、身份、职业与 AI——问题域不同，方法一致：先定义问题，再找方案；全程站在你这边。</p>
 
-      <div class="grid-3">
+      <div class="grid-2">
         <ServiceCard
           icon="🛡"
-          title="家庭保障规划"
+          title="家庭风险与保障"
           desc="重疾 / 医疗 / 意外 / 寿险，全市场对比，先问需求再定方案。"
-          points={["保障缺口诊断", "方案横向对比", "买对不买贵"]}
+          points={["保障缺口诊断", "方案横向对比，省 30%–50%", "买对不买贵"]}
         />
         <ServiceCard
           icon="🌱"
-          title="储蓄理财规划"
+          title="储蓄与传承规划"
           desc="增额终身寿 / 年金 / 教育金 / 养老金，锁定长期利率。"
           points={["现金流规划", "资产隔离与传承", "平稳交棒下一代"]}
         />
         <ServiceCard
-          icon="📑"
-          title="保单检视与托管"
-          desc="已有保单系统梳理，查漏补缺，客观中立说实话。"
-          points={["保障缺口复盘", "绝不无脑劝退旧单", "定期动态检视"]}
-        />
-        <ServiceCard
-          icon="🚑"
-          title="理赔协助"
-          desc="出险全程陪跑，团队累计 400+ 件理赔经验兜底。"
-          points={["报案指导", "材料准备跟进", "争议协助沟通"]}
-        />
-        <ServiceCard
           icon="⚖️"
-          title="法律 + 保险交叉咨询"
-          desc="法律职业资格加持，把保险放进家庭资产与传承的全盘里看。"
-          points={["法律风险视角", "架构与受益设计", "独立第三方意见"]}
+          title="法律与契约思维"
+          desc="婚姻财产约定、契约安排、取证边界的法律视角梳理。"
+          points={["法律职业资格（A 证）", "独立第二意见，不和稀泥", "把保障放进家庭资产全盘看"]}
+        />
+        <ServiceCard
+          icon="🌏"
+          title="香港身份与跨境保障"
+          desc="高才通申请实操经验 + 保诚港险代理。"
+          points={["高才通全流程亲历", "港险与内地配置互补", "跨境家庭一站式思路"]}
+        />
+        <ServiceCard
+          icon="🤖"
+          title="职业决策与 AI 元能力"
+          desc="职业路径对比分析、AI 工作流搭建、人机协同五科目训练。"
+          points={["多方案对比式决策", "AI 协作实战工作流", "训练「定义问题」的元能力"]}
         />
         <ServiceCard
           icon="🤝"
-          title="同业 / 应聘咨询"
-          desc="欢迎全国优秀伙伴全职或兼职加入保险经纪团队。"
-          points={["职业路径答疑", "团队资源对接", "付费深度咨询"]}
+          title="保单托管 / 理赔 / 同业"
+          desc="已有保单系统梳理；出险全程陪跑；欢迎同业与应聘交流。"
+          points={["400+ 件理赔经验兜底", "绝不无脑劝退旧单", "同业付费深度咨询"]}
         />
       </div>
 
-      <h2 class="section-title" style="margin-top:56px;">合作流程</h2>
+      <h2 class="section-title" style="margin-top:56px;">以保险为例：全流程长这样</h2>
       <p class="section-sub">售前 → 售中 → 投保 → 售后 → 理赔，全程在你这边。</p>
       <div class="grid-3">
         {flow.map(([t, d]) => (
@@ -65,6 +72,14 @@ const flow = [
             <h3>{t}</h3>
             <p>{d}</p>
           </div>
+        ))}
+      </div>
+
+      <h2 class="section-title" style="margin-top:56px;">正经的边界</h2>
+      <p class="section-sub">顾问的信任来自诚实。哪些我能做、哪些我不越线，先说清楚。</p>
+      <div class="card" style="margin-bottom:16px;">
+        {boundaries.map(([k, v]) => (
+          <p style="margin:0 0 12px;"><strong>{k}</strong>　{v}</p>
         ))}
       </div>
 

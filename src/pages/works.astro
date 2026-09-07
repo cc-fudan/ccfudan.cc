@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const all = (await getCollection('works')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const writings = (await getCollection('writing')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// 作品集全部优先跳公众号原文；无 url 的回退站内全文
+const linkOf = (w: { data: { url?: string; internal?: string } }) =>
+  w.data.url ? w.data.url : `/writing/${w.data.internal}`;
+
+const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
+
+const pricing = all.find((w) => w.slug === 'bxbj-pricing-2000');
+const accounts = ['cc的保险笔记', 'cc的奶爸日记'];
+const byAccount = (name: string) => all.filter((w) => w.data.account === name);
+---
+
+<BaseLayout title="作品集 | cc · 程成" description="cc 的作品集：站内文章观点 + 两个公众号（cc的保险笔记 / cc的奶爸日记）全部推文，点击直接跳转公众号阅读。自我介绍与收费标准置顶。">
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">作品集 · 文章观点 · 公众号同步</span>
+      <h1 class="section-title">作品集与文章观点</h1>
+      <p class="section-sub">
+        两个公众号「cc的保险笔记」「cc的奶爸日记」的推文定时同步到这里，点击任意一篇直接跳转公众号阅读；
+        另附三篇站内全文。最重要的两件事置顶：我是谁，以及怎么收费。
+      </p>
+
+      <!-- 置顶：自我介绍 + 收费标准 -->
+      <div class="grid-2" style="margin-top:28px;">
+        <div class="card">
+          <span class="pin">📌 置顶 · 自我介绍</span>
+          <h3>我是谁</h3>
+          <p>
+            复旦中哲の本硕，华为荣耀管培生；<br />
+            能良电商前省总，裸辞转行的奶爸；<br />
+            独立保险中介人，保险行业小人物；<br />
+            韭菜保护爱好者，家庭资产保险丝；<br />
+            热爱佛学红楼梦，沉迷 AI &amp; 自媒体。
+          </p>
+          <p style="margin-top:12px;"><a class="work-link" href="/about">看完整版关于我 →</a></p>
+        </div>
+        <div class="card">
+          <span class="pin">📌 置顶 · 收费标准</span>
+          <h3>咨询怎么收费</h3>
+          <ul>
+            <li>咨询费 <strong>2000 元/小时</strong>，按实际时长结算（不足 15 分钟按 15 分钟计）</li>
+            <li>每人赠 <strong>30 分钟预沟通</strong>：不计时不计费，先聊清楚问题再决定</li>
+            <li>7 天内在我这里购入<strong>任意保单</strong>，1 小时内咨询费<strong>全额返还</strong></li>
+            <li>首次咨询 <strong>7 天内无理由退款</strong>，秒退</li>
+            <li>范围：保险规划 / 职业决策 / 法律建议（劳动、婚姻家事）/ 哲学佛学 / 考试经验</li>
+          </ul>
+          <p style="margin-top:12px;">
+            {pricing && <a class="work-link" href={linkOf(pricing)} target={isExternal(pricing) ? '_blank' : undefined} rel={isExternal(pricing) ? 'noopener' : undefined}>官宣原文《我把保险咨询费定成了【两千每小时】》 →</a>}
+          </p>
+        </div>
+      </div>
+
+      <!-- 站内文章观点 -->
+      <div style="margin-top:44px;">
+        <span class="eyebrow">站内全文 · 文章观点</span>
+        <h2 style="font-size:22px;margin:8px 0 6px;">文章观点</h2>
+        <p style="color:var(--muted);font-size:14px;margin:0 0 14px;">
+          三篇长文站内可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
+        </p>
+        <div class="posts">
+          {writings.map((p) => (
+            <a class="post" href={`/writing/${p.slug}`}>
+              <div>
+                <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')} · 站内全文</div>
+                <h3>{p.data.title}</h3>
+                <p>{p.data.excerpt}</p>
+              </div>
+              <div class="arrow">→</div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- 两个公众号 -->
+      {accounts.map((name) => (
+        <div style="margin-top:44px;">
+          <span class="eyebrow">公众号 · {name}</span>
+          <h2 style="font-size:22px;margin:8px 0 6px;">{name}</h2>
+          <p style="color:var(--muted);font-size:14px;margin:0 0 14px;">
+            {name === 'cc的保险笔记' ? '保险、家庭资产配置与独立咨询——保险线。' : '带娃、职业、佛学与 AI 日常——生活线。'}
+            点击任意一篇，直接跳转公众号阅读。最新在上。
+          </p>
+          <div class="posts">
+            {byAccount(name).map((w) => (
+              <a class="post" href={linkOf(w)} target={isExternal(w) ? '_blank' : undefined} rel={isExternal(w) ? 'noopener' : undefined}>
+                <div>
+                  <div class="meta">{w.data.date.toISOString().slice(0, 10)} · {w.data.account}{isExternal(w) ? ' · 公众号原文 ↗' : ' · 站内全文'}</div>
+                  <h3>{w.data.title}</h3>
+                  <p>{w.data.excerpt}</p>
+                </div>
+                <div class="arrow">→</div>
+              </a>
+            ))}
+            {byAccount(name).length === 0 && (
+              <p style="color:var(--muted);font-size:14px;">同步中，稍后再来看看。</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
