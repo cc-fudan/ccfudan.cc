@@ -7,6 +7,7 @@ const site = 'https://ccfudan.cc';
 export default defineConfig({
   site,
   base: '/',
-  server: { host: true, port: 4321 },
+  server: { host: true, port: 4321, allowedHosts: true },
+  vite: { server: { allowedHosts: true } },
   trailingSlash: 'ignore',
 });

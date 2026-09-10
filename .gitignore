@@ -20,3 +20,11 @@ Thumbs.db
 
 # HSK 客户端本地配置
 .hsk/
+
+# 部署用临时凭据（仅本地，不入库）
+.deploy-pat
+
+# 沙盒预览/推送辅助文件（不入仓库）
+push-and-serve.sh
+push-result.txt
+public/ccfudan-source.ccfudan
