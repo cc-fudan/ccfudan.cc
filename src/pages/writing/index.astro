@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('writing')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+---
+
+<BaseLayout
+  title="文章观点 | cc · 程成"
+  description="站内全文文章观点：保险、职业、身份与佛学——先看几天文章，有了基础信任，我们再聊。"
+>
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">站内全文 · 文章观点</span>
+      <h1 class="section-title">文章观点</h1>
+      <p class="section-sub">
+        三篇长文站内可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
+      </p>
+      <div class="posts">
+        {posts.map((p) => (
+          <a class="post" href={`/writing/${p.slug}`}>
+            <div>
+              <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')} · 站内全文</div>
+              <h3>{p.data.title}</h3>
+              <p>{p.data.excerpt}</p>
+            </div>
+            <div class="arrow">→</div>
+          </a>
+        ))}
+      </div>
+      <div style="margin-top:28px;">
+        <a class="btn btn-ghost" href="/works">更多作品与公众号推文 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
