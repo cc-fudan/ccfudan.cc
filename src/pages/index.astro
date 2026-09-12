@@ -14,11 +14,17 @@ const posts = (await getCollection('writing'))
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">独立咨询顾问 · AI 元能力 × 身份规划 × 法律思维 × 保险经纪</span>
+          <div class="eyebrow-stack">
+            <span>独立咨询顾问</span>
+            <span>AI 元能力</span>
+            <span>身份规划</span>
+            <span>法律思维</span>
+            <span>保险经纪</span>
+          </div>
           <h1>先定义问题，<br />再找方案</h1>
           <p class="lead">
             我不是销售。哲学教我拆问题，法律教我划边界，五年一线操盘（4 年消费电子 + 1 年电商省总）教我看业务，AI 实战教我提效率——
-            <strong>保险、法律、身份、职业，只是工具箱里的四件工具</strong>，用哪件，取决于你真正的问题。
+            <strong class="lead-tools">保险、法律、身份、职业</strong>，只是工具箱里的四件工具，用哪件，取决于你真正的问题。
           </p>
           <div class="cta-row">
             <a class="btn btn-light" href="/contact">加微信聊聊你的问题</a>
@@ -27,11 +33,23 @@ const posts = (await getCollection('writing'))
         </div>
         <img class="hero-avatar" src="/images/avatar.jpg" alt="程成（cc）头像" width="280" height="280" />
       </div>
-      <div class="stats cols-4">
-        <div class="stat"><div class="num">100<span>+</span></div><div class="label">合作保险公司 · 全市场独立选品</div></div>
-        <div class="stat"><div class="num">400<span>+</span></div><div class="label">团队累计理赔件数 · 经验兜底</div></div>
-        <div class="stat"><div class="num">A<span>证</span></div><div class="label">法律职业资格 · 复旦中哲硕士</div></div>
-        <div class="stat"><div class="num">8<span>亿</span></div><div class="label">年采购操盘经验 · 业务判断力</div></div>
+      <div class="creds cols-4">
+        <a class="cred" href="/about#education">
+          <div class="cred-main">A证 · 复旦中哲硕士</div>
+          <div class="cred-sub">本硕四证 + 法考证书 · 学习能力</div>
+        </a>
+        <a class="cred" href="/about#career">
+          <div class="cred-main">5 年一线操盘</div>
+          <div class="cred-sub">华为管培 / 荣耀 / 能良 / 律所 · 产品 · 大客户 · 区域管理</div>
+        </a>
+        <a class="cred" href="/family">
+          <div class="cred-main">🍼 陪产带娃</div>
+          <div class="cred-sub">2026 喜得小犬 · 家庭照片墙 →</div>
+        </a>
+        <a class="cred" href="/services">
+          <div class="cred-main">懂法律的保险经纪</div>
+          <div class="cred-sub">100+ 合作保司 · 500+ 理赔案例 · 独立选品</div>
+        </a>
       </div>
     </div>
   </section>
