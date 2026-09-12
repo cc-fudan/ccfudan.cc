@@ -8,6 +8,7 @@
     "build": "node scripts/build.mjs",
     "build:com": "node scripts/build.mjs com",
     "build:cc": "node scripts/build.mjs cc",
+    "publish:com": "node scripts/publish-com.mjs --push",
     "preview": "astro preview",
     "new": "node scripts/new-post.mjs"
   },
