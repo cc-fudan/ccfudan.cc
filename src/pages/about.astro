@@ -1,5 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { IS_COM, SHOW_FAMILY_ON_COM } from '../config/site';
+
+// 双站隔离：对外站默认不出现家庭照片（除非 cc 看图确认无儿童正脸后再开放）
+const showFamily = IS_COM ? SHOW_FAMILY_ON_COM : true;
+const familyHref = IS_COM ? '/about#family' : '/family';
+
 const edu = [
   '2013 新洲一中理科火箭班，湖北省理科高考前 130 名',
   '2014 理转文，转入复旦国学班',
@@ -13,7 +19,7 @@ const career = [
   '2025.10 裸辞，回家陪孕 & 陪产',
   '2025.10–2026 探索年：陪产带娃为主线，保险 / 法律 / 自媒体 / AI 多线并行',
   '2025.11 加入明亚，成为保险经纪人',
-  '2026 香港高才通获批，拓展跨境身份与港险规划',
+  '2026 香港高才通获批，探索跨境身份规划',
   '2026 律所实习探索中，深化法律实务',
   '2026.06 喜得小犬（程乐鱼）',
 ];
@@ -33,7 +39,7 @@ const method = [
           <span class="eyebrow">关于我</span>
           <h1 class="section-title">程成（cc）</h1>
           <p style="font-size:18px;color:var(--ink);">
-            独立咨询顾问 · 明亚保险经纪人 · 保诚港险代理人。<br />
+            独立咨询顾问 · 明亚保险经纪人。<br />
             哲学拆问题，法律划边界，保险兜风险，AI 提效率。
           </p>
 
@@ -101,7 +107,7 @@ const method = [
         2025 年 10 月裸辞，不是"换一份工作"，而是把最近一年当作一次多元探索——
         <strong>主线是陪产带娃</strong>，副业探索和兴趣自媒体同时铺开。把想试的事都实地试了一遍，
         价值只有一个：<strong>顾问的判断力不是读出来的，是试出来的</strong>。
-        <a class="work-link" href="/family">看看这一年的家庭瞬间 →</a>
+        {showFamily && <a class="work-link" href={familyHref}>看看这一年的家庭瞬间 →</a>}
       </p>
       <div class="grid-2" style="margin-top:14px;">
         <div class="card">
@@ -109,8 +115,8 @@ const method = [
           <p>2026.06 喜得小犬。这是探索年的主线，也是所有选择的前提。</p>
         </div>
         <div class="card">
-          <h3>🛡 港险 · 明亚</h3>
-          <p>保诚港险代理人 + 明亚保险经纪人，内地与香港两套保障体系都亲历实操。</p>
+          <h3>🛡 保险经纪 · 明亚</h3>
+          <p>明亚保险经纪人；内地与跨境两套保障体系的差异、合规边界，都亲自走过一遍。</p>
         </div>
         <div class="card">
           <h3>⚖️ 律所实习 · 5 个案例</h3>
@@ -138,17 +144,23 @@ const method = [
         </div>
       </div>
 
-      <h2>一些瞬间</h2>
-      <p>2025 年裸辞后，最重要的事是陪产、陪娃。这里只放几张缩影，更多照片放在 <a class="work-link" href="/family">家庭生活</a> 页面。</p>
-      <div class="gallery">
-        <img src="/images/scene-1.jpg" alt="一家三口 · 喜得小犬（程乐鱼）" />
-        <img src="/images/scene-2.jpg" alt="陪产时光 · 期待新生命" />
-        <img src="/images/scene-3.jpg" alt="我爸爸 / 我妈妈" />
-        <img src="/images/scene-4.jpg" alt="一起等宝宝来" />
-      </div>
-      <div style="margin-top: 18px;">
-        <a class="btn btn-ghost" href="/family">查看全部家庭照片 →</a>
-      </div>
+      <h2 id="family">一些瞬间</h2>
+      {showFamily ? (
+        <>
+          <p>2025 年裸辞后，最重要的事是陪产、陪娃。这里只放几张缩影，更多照片放在 <a class="work-link" href="/family">家庭生活</a> 页面。</p>
+          <div class="gallery">
+            <img src="/images/scene-1.jpg" alt="一家三口 · 喜得小犬（程乐鱼）" />
+            <img src="/images/scene-2.jpg" alt="陪产时光 · 期待新生命" />
+            <img src="/images/scene-3.jpg" alt="我爸爸 / 我妈妈" />
+            <img src="/images/scene-4.jpg" alt="一起等宝宝来" />
+          </div>
+          <div style="margin-top: 18px;">
+            <a class="btn btn-ghost" href="/family">查看全部家庭照片 →</a>
+          </div>
+        </>
+      ) : (
+        <p>2025 年裸辞后，最重要的事是陪产、陪娃。这一段我留给自己和家里，不放在这张对外名片上——但它是上面所有判断的前提。</p>
+      )}
 
       <h2>为什么入行保险</h2>
       <p>

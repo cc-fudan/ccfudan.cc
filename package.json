@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/build.mjs",
+    "build:com": "node scripts/build.mjs com",
+    "build:cc": "node scripts/build.mjs cc",
     "preview": "astro preview",
     "new": "node scripts/new-post.mjs"
   },

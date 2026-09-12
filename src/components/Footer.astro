@@ -1,4 +1,5 @@
 ---
+import { CROSS_LINK, SITE_NAME } from '../config/site';
 const year = new Date().getFullYear();
 ---
 
@@ -6,7 +7,7 @@ const year = new Date().getFullYear();
   <div class="wrap">
     <div class="cols">
       <div>
-        <div class="logo" style="color:#fff;font-weight:800;font-size:18px;">cc · 程成</div>
+        <div class="logo" style="color:#fff;font-weight:800;font-size:18px;">{SITE_NAME}</div>
         <p class="creed" style="margin-top:10px;">
           不属于任何一家保险公司，只忠于我的客户。<br />
           买对，不买贵；路还长着呢。
@@ -28,7 +29,8 @@ const year = new Date().getFullYear();
       </div>
     </div>
     <div class="bottom">
-      © {year} cc · 程成 · 独立咨询顾问　|　保险经纪 × 法律思维 × 身份规划 × AI 元能力
+      © {year} {SITE_NAME}　|　保险经纪 × 法律思维 × 身份规划 × AI 元能力
+      　·　<a href={CROSS_LINK.href} style="color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px;">{CROSS_LINK.label}</a>
     </div>
   </div>
 </footer>
