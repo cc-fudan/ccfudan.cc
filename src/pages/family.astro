@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import photos from '../data/family.json';
+---
+
+<BaseLayout
+  title="家庭生活 | cc · 程成"
+  description="程成与珊珊、小乐鱼（九儿）的家庭生活照。工作之外，陪产带娃才是这一年的主线。"
+>
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">生活 · 家庭</span>
+      <h1 class="section-title">一些瞬间</h1>
+      <p class="section-sub">
+        2025 年裸辞回家，最重要的决定是陪产、陪娃。<br />
+        这些照片不是「人设」，只是提醒我们：工作之外，家里有人等着。
+      </p>
+
+      <div class="family-gallery" id="gallery">
+        {photos.map((p, idx) => (
+          <button
+            class="family-thumb"
+            type="button"
+            data-index={idx}
+            data-src={p.src}
+            data-title={p.title}
+            aria-label={`查看大图：${p.title}`}
+          >
+            <img src={p.src} alt={p.title} loading="lazy" />
+            <span class="thumb-caption">
+              <strong>{p.title}</strong>
+              <time>{p.date}</time>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div style="margin-top: 34px;">
+        <a class="btn btn-ghost" href="/about">← 回到关于我</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="关闭">&times;</button>
+    <button class="lightbox-prev" type="button" aria-label="上一张">‹</button>
+    <button class="lightbox-next" type="button" aria-label="下一张">›</button>
+    <div class="lightbox-stage">
+      <img id="lightbox-img" src="" alt="" />
+      <div class="lightbox-meta" id="lightbox-meta"></div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      const gallery = document.getElementById('gallery');
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      const meta = document.getElementById('lightbox-meta');
+      const thumbs = Array.from(gallery.querySelectorAll('.family-thumb'));
+      let current = 0;
+
+      function open(index) {
+        current = index;
+        const t = thumbs[current];
+        img.src = t.dataset.src;
+        img.alt = t.dataset.title;
+        meta.textContent = t.dataset.title;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function next() {
+        open((current + 1) % thumbs.length);
+      }
+
+      function prev() {
+        open((current - 1 + thumbs.length) % thumbs.length);
+      }
+
+      thumbs.forEach((t, i) => t.addEventListener('click', () => open(i)));
+      document.querySelector('.lightbox-close').addEventListener('click', close);
+      document.querySelector('.lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); next(); });
+      document.querySelector('.lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+      lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft') prev();
+      });
+    })();
+  </script>
+</BaseLayout>
