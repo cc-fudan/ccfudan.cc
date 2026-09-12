@@ -3,42 +3,49 @@
     "src": "/images/family/family-01.jpg",
     "title": "一家三口的第一张正式合影",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "小乐鱼满月前后，在家里的走廊记录下这一刻。"
   },
   {
     "src": "/images/family/family-02.jpg",
     "title": "靠在一起",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "珊珊靠过来，小乐鱼还在适应被抱在怀里。"
   },
   {
     "src": "/images/family/family-03.jpg",
     "title": "爸爸的凝视",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "他看她的眼神，比任何话术都真实。"
   },
   {
     "src": "/images/family/family-04.jpg",
     "title": "妈妈亲亲小脚丫",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "新生儿的小脚，是家里最柔软的开关。"
   },
   {
     "src": "/images/family/family-05.jpg",
     "title": "肩膀上的依靠",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "趴在他肩上，世界就小了很多。"
   },
   {
     "src": "/images/family/family-06.jpg",
     "title": "被注视的幸福",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "两个人的目光都落在同一个人身上。"
   },
   {
     "src": "/images/family/family-07.jpg",
     "title": "妈妈的怀抱",
     "date": "2026-07-21",
+    "stage": "出生后",
     "desc": "这是小乐鱼最熟悉的位置。"
   }
 ]

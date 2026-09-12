@@ -1,6 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import photos from '../data/family.json';
+
+// 按拍摄阶段分组（预设顺序：孕期 → 出生后 → 成长）
+const stageOrder = ['孕期', '出生后', '成长'];
+const groupMap = new Map();
+for (const p of photos) {
+  const st = p.stage || '照片';
+  if (!groupMap.has(st)) groupMap.set(st, { stage: st, items: [] });
+  groupMap.get(st).items.push(p);
+}
+const groups = Array.from(groupMap.values()).sort((a, b) => {
+  const ia = stageOrder.indexOf(a.stage);
+  const ib = stageOrder.indexOf(b.stage);
+  return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+});
+const showStageTitles = groups.length > 1;
+
+// 扁平列表，供 Lightbox 使用全局索引
+const flat = groups.flatMap((g) => g.items);
 ---
 
 <BaseLayout
@@ -16,24 +34,28 @@ import photos from '../data/family.json';
         这些照片不是「人设」，只是提醒我们：工作之外，家里有人等着。
       </p>
 
-      <div class="family-gallery" id="gallery">
-        {photos.map((p, idx) => (
-          <button
-            class="family-thumb"
-            type="button"
-            data-index={idx}
-            data-src={p.src}
-            data-title={p.title}
-            aria-label={`查看大图：${p.title}`}
-          >
-            <img src={p.src} alt={p.title} loading="lazy" />
-            <span class="thumb-caption">
-              <strong>{p.title}</strong>
-              <time>{p.date}</time>
-            </span>
-          </button>
-        ))}
-      </div>
+      {groups.map((g) => (
+        <div class="family-stage">
+          {showStageTitles && <h2 class="stage-title">{g.stage}</h2>}
+          <div class="family-gallery">
+            {g.items.map((p) => (
+              <button
+                class="family-thumb"
+                type="button"
+                data-src={p.src}
+                data-title={p.title}
+                aria-label={`查看大图：${p.title}`}
+              >
+                <img src={p.src} alt={p.title} loading="lazy" />
+                <span class="thumb-caption">
+                  <strong>{p.title}</strong>
+                  <time>{p.date}</time>
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
 
       <div style="margin-top: 34px;">
         <a class="btn btn-ghost" href="/about">← 回到关于我</a>
@@ -54,16 +76,16 @@ import photos from '../data/family.json';
 
   <script is:inline>
     (function () {
-      const gallery = document.getElementById('gallery');
       const lightbox = document.getElementById('lightbox');
       const img = document.getElementById('lightbox-img');
       const meta = document.getElementById('lightbox-meta');
-      const thumbs = Array.from(gallery.querySelectorAll('.family-thumb'));
+      const thumbs = Array.from(document.querySelectorAll('.family-thumb'));
       let current = 0;
 
       function open(index) {
         current = index;
         const t = thumbs[current];
+        if (!t) return;
         img.src = t.dataset.src;
         img.alt = t.dataset.title;
         meta.textContent = t.dataset.title;
