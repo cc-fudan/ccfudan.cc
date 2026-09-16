@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkBuddy · 个人内容中台</title>
+<style>
+  :root{
+    --bg:#0b0f19;
+    --surface:#111827;
+    --surface-2:#1f2937;
+    --surface-3:#374151;
+    --text:#f9fafb;
+    --text-2:#d1d5db;
+    --text-3:#9ca3af;
+    --accent:#10b981;
+    --accent-2:#059669;
+    --accent-soft:rgba(16,185,129,.12);
+    --danger:#ef4444;
+    --warn:#f59e0b;
+    --border:#374151;
+    --radius:12px;
+    --radius-sm:8px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;overflow:hidden}
+  button,textarea{font-family:inherit}
+  button{cursor:pointer;border:none;outline:none;background:transparent}
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:3px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  .topbar{height:48px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;padding:0 16px;flex-shrink:0}
+  .topbar-label{color:var(--text-3);font-size:11px;font-weight:600;letter-spacing:.8px;margin-right:4px}
+  .topbar-scroll{flex:1;overflow-x:auto;display:flex;align-items:center;gap:8px;padding-right:8px}
+  .topbar-scroll::-webkit-scrollbar{height:0}
+  .task-chip{display:flex;align-items:center;gap:8px;background:var(--surface-2);border:1px solid var(--border);border-radius:20px;padding:6px 12px;white-space:nowrap;cursor:pointer;transition:.15s}
+  .task-chip:hover{border-color:var(--accent)}
+  .task-chip.active{background:var(--accent-soft);border-color:var(--accent)}
+  .task-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .task-chip .title{max-width:160px;overflow:hidden;text-overflow:ellipsis;color:var(--text-2);font-size:12px}
+  .task-chip .close{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:12px;margin-left:4px}
+  .task-chip .close:hover{color:var(--text);background:var(--surface-3)}
+  .topbar-right{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--text-3)}
+
+  .app{height:calc(100% - 48px);display:grid;grid-template-columns:300px 1fr 220px}
+  .left{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+  .center{background:var(--bg);display:flex;flex-direction:column;overflow:hidden;position:relative}
+  .right{background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+
+  .brand{height:56px;display:flex;align-items:center;gap:10px;padding:0 16px;border-bottom:1px solid var(--border)}
+  .brand-icon{width:32px;height:32px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:16px}
+  .brand-text{flex:1}
+  .brand-title{font-size:15px;font-weight:700;letter-spacing:.3px}
+  .brand-tag{font-size:11px;color:var(--text-3);margin-top:-2px}
+  .brand-badge{font-size:11px;background:var(--surface-2);border:1px solid var(--border);padding:2px 8px;border-radius:12px;color:var(--accent)}
+  .left-scroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:16px}
+
+  .card{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+  .card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+  .card-label{font-size:10px;font-weight:700;letter-spacing:1.2px;color:var(--text-3)}
+  .card-badge{font-size:10px;font-weight:700;background:var(--accent);color:#fff;padding:2px 7px;border-radius:10px}
+  .card-title{font-size:16px;font-weight:700;margin-bottom:12px}
+  .card-sub{color:var(--text-3);font-size:12px;margin-bottom:12px}
+
+  .input-area{width:100%;min-height:80px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;color:var(--text);font-size:13px;line-height:1.6;resize:vertical}
+  .input-area:focus{border-color:var(--accent);outline:none}
+  .input-actions{display:flex;gap:8px;margin-top:10px}
+  .btn{flex:1;padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;border:none;cursor:pointer}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-2)}
+  .btn-secondary{background:var(--surface);border:1px solid var(--border);color:var(--text-2)}
+  .btn-secondary:hover{border-color:var(--accent)}
+  .btn-ghost{background:transparent;color:var(--text-3);padding:6px 10px;border-radius:var(--radius-sm);font-size:12px;border:1px solid var(--border)}
+  .btn-ghost:hover{color:var(--text);background:var(--surface-2)}
+
+  .radar-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  .radar-count{font-size:12px;color:var(--text-2)}
+  .radar-count span{color:var(--accent);font-weight:700}
+  .radar-progress{height:4px;background:var(--surface);border-radius:2px;overflow:hidden;margin-bottom:10px}
+  .radar-progress>div{height:100%;background:var(--accent);border-radius:2px;transition:.3s}
+  .radar-status{font-size:12px;color:var(--text-3);margin-bottom:12px}
+  .radar-tabs{display:flex;background:var(--surface);border-radius:var(--radius-sm);padding:3px;margin-bottom:10px}
+  .radar-tab{flex:1;text-align:center;padding:6px 0;font-size:12px;color:var(--text-3);border-radius:6px;cursor:pointer}
+  .radar-tab.active{background:var(--surface-3);color:var(--text)}
+
+  .task-list{display:flex;flex-direction:column;gap:8px}
+  .task-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;cursor:pointer;transition:.15s;position:relative}
+  .task-item:hover{border-color:var(--accent)}
+  .task-item.active{border-color:var(--accent);background:var(--accent-soft)}
+  .task-item-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:4px}
+  .task-item-title{font-size:13px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .task-item-tag{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--surface-3);color:var(--text-3);white-space:nowrap}
+  .task-item-meta{font-size:11px;color:var(--text-3);display:flex;gap:8px;align-items:center}
+  .task-item-mark{color:var(--warn)}
+
+  .center-header{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--bg)}
+  .center-title{display:flex;align-items:center;gap:10px}
+  .center-title .label{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--text-3)}
+  .center-title .title{font-size:16px;font-weight:700;max-width:500px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .title-input{font-size:16px;font-weight:700;color:var(--text);background:transparent;border:1px solid transparent;border-radius:8px;padding:4px 8px;max-width:520px;min-width:240px;outline:none;transition:border-color .15s,background .15s}
+  .title-input::placeholder{font-weight:500;color:var(--text-3)}
+  .title-input:hover{border-color:var(--border)}
+  .title-input:focus{border-color:var(--accent);background:var(--surface)}
+  .center-status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-3)}
+  .center-status .pill{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);padding:4px 10px;border-radius:20px}
+  .center-status .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+  .center-tabs{height:44px;display:flex;align-items:center;gap:8px;padding:0 24px;border-bottom:1px solid var(--border)}
+  .center-tab{padding:8px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;color:var(--text-3);cursor:pointer;display:flex;align-items:center;gap:6px}
+  .center-tab:hover{color:var(--text)}
+  .center-tab.active{background:var(--accent);color:#fff}
+  .center-tab .tag{font-size:10px;background:rgba(255,255,255,.2);padding:1px 5px;border-radius:8px}
+
+  .center-body{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:24px}
+  .editor-wrap{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;overflow-y:auto;position:relative}
+  .editor{min-height:100%;color:var(--text);font-size:15px;line-height:1.85;outline:none;white-space:pre-wrap}
+  .editor h1,.editor h2,.editor h3{font-weight:700;margin:1.2em 0 .6em;color:var(--text)}
+  .editor h1{font-size:22px}
+  .editor h2{font-size:18px}
+  .editor h3{font-size:16px}
+  .editor p{margin-bottom:1em}
+  .editor blockquote{border-left:3px solid var(--accent);padding-left:14px;color:var(--text-2);margin:1em 0}
+  .editor a{color:var(--accent)}
+
+  .center-footer{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .legend{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+  .legend-title{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px}
+  .legend-body{font-size:12px;color:var(--text-3);line-height:1.5}
+
+  .right-header{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;font-size:13px;font-weight:700;color:var(--text-2)}
+  .right-scroll{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .action-btn{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);font-size:13px;font-weight:600;transition:.15s}
+  .action-btn:hover{border-color:var(--accent);color:var(--text)}
+  .action-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .action-btn.generate{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .action-btn.generate:hover{background:var(--accent-2);color:#fff}
+  .action-btn.warn{color:var(--warn)}
+  .action-btn.warn:hover{border-color:var(--warn);color:var(--warn)}
+  .action-btn svg{width:18px;height:18px;flex-shrink:0}
+  .gzh-hint{display:none;align-items:center;gap:10px;margin:10px 0 0;padding:10px 14px;border-radius:var(--radius-sm);background:linear-gradient(90deg,rgba(0,114,206,.14),rgba(0,177,255,.10));border:1px solid rgba(0,177,255,.4);color:var(--text);font-size:12.5px}
+  .gzh-hint.show{display:flex}
+  .gzh-hint .g-ico{font-size:16px}
+  .gzh-hint .g-txt{flex:1;line-height:1.5}
+  .gzh-hint .g-txt b{color:var(--accent)}
+  .gzh-hint .g-btn{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+  .gzh-hint .g-btn:hover{background:var(--accent-2)}
+  .action-sep{height:1px;background:var(--border);margin:6px 0}
+  .action-label{font-size:11px;color:var(--text-3);padding:4px 8px}
+
+  .focus-overlay{position:fixed;inset:0;background:var(--bg);z-index:50;display:none;flex-direction:column}
+  .focus-overlay.on{display:flex}
+  .focus-head{height:56px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+  .focus-body{flex:1;padding:40px 24px;overflow-y:auto}
+  .focus-editor{max-width:800px;margin:0 auto;min-height:60vh;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;color:var(--text);font-size:16px;line-height:1.9;outline:none;white-space:pre-wrap}
+  .focus-close{background:var(--surface-2);border:1px solid var(--border);color:var(--text-2);padding:8px 16px;border-radius:var(--radius-sm);cursor:pointer}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface-2);border:1px solid var(--border);color:var(--text);padding:10px 20px;border-radius:var(--radius-sm);font-size:13px;z-index:100;opacity:0;transition:.25s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;display:none;align-items:center;justify-content:center}
+  .modal.on{display:flex}
+  .modal-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:600px;max-width:90%;max-height:80%;display:flex;flex-direction:column;overflow:hidden}
+  .modal-head{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:700}
+  .modal-body{flex:1;overflow-y:auto;padding:16px 20px;font-size:13px;color:var(--text-2)}
+  .modal-foot{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+  .prompt-box{white-space:pre-wrap;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px;line-height:1.7;color:var(--text-2);max-height:340px;overflow-y:auto}
+  .paste-area{width:100%;min-height:240px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-size:13px;line-height:1.7;resize:vertical;font-family:inherit}
+  .paste-area:focus{border-color:var(--accent);outline:none}
+  .modal-hint{font-size:12px;color:var(--text-3);margin:10px 0;line-height:1.6}
+
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-3);text-align:center;gap:12px}
+  .empty-icon{font-size:40px;opacity:.5}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-label">内容任务</div>
+  <div class="topbar-scroll" id="topbarScroll"></div>
+  <div class="topbar-right"><span id="pendingCount">0 个待审核</span></div>
+</div>
+
+<div class="app">
+  <aside class="left">
+    <div class="brand">
+      <div class="brand-icon">W</div>
+      <div class="brand-text">
+        <div class="brand-title">WorkBuddy</div>
+        <div class="brand-tag">个人内容中台</div>
+      </div>
+      <div class="brand-badge">在线</div>
+    </div>
+    <div class="left-scroll">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-label">VOICE TO CONTENT</span>
+          <span class="card-badge">13</span>
+        </div>
+        <div class="card-title">说一次，生产三次</div>
+        <textarea class="input-area" id="voiceInput" placeholder="在这里输入或粘贴一段完整想法……"></textarea>
+        <div class="input-actions">
+          <button class="btn btn-primary" id="btnMakeTask">整理为内容任务</button>
+          <button class="btn btn-secondary" id="btnSaveRaw">直接保存原文</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="card-label">MONDAY TOPIC RADAR</span></div>
+        <div class="radar-meta">
+          <span style="font-size:12px;font-weight:700;color:var(--text)">每周爆款选题</span>
+          <span class="radar-count"><span id="radarNum">0</span>/10</span>
+        </div>
+        <div class="radar-progress"><div id="radarBar" style="width:0%"></div></div>
+        <div class="radar-status">WorkBuddy 正在按本周行业信号筛选选题……</div>
+        <button class="btn btn-secondary" id="btnGenTopic" style="width:100%;margin-bottom:10px">让 AI 推荐本周选题</button>
+        <div class="radar-tabs">
+          <div class="radar-tab active" data-tab="pending">待生产</div>
+          <div class="radar-tab" data-tab="done">已完成</div>
+        </div>
+        <div class="task-list" id="leftTaskList"></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="center">
+    <header class="center-header">
+      <div class="center-title">
+        <span class="label">CONTENT ASSETS</span>
+        <input class="title-input" id="centerTitle" placeholder="选择一个内容任务开始" />
+      </div>
+      <div class="center-status">
+        <div class="pill"><span class="dot"></span><span id="centerStatus">WorkBuddy 已生成</span></div>
+      </div>
+      <div class="gzh-hint" id="gzhHint">
+        <span class="g-ico">🎨</span>
+        <span class="g-txt">本任务已生成 <b>荣耀蓝排版</b>。点「一键复制」即可复制带样式的 HTML，直接粘进公众号编辑器；或点「预览」先看效果。</span>
+        <button class="g-btn" id="gzhPreview">预览排版</button>
+      </div>
+    </header>
+    <div class="center-tabs" id="centerTabs">
+      <div class="center-tab active" data-tab="article">公众号长文 <span class="tag">已生成</span></div>
+      <div class="center-tab" data-tab="moments">朋友圈文案 <span class="tag">已生成</span></div>
+      <div class="center-tab" data-tab="video">视频号脚本 <span class="tag">已生成</span></div>
+    </div>
+    <div class="center-body">
+      <div class="editor-wrap" id="editorWrap">
+        <div class="editor" id="editor" contenteditable="true" spellcheck="false"></div>
+        <div class="empty" id="emptyState">
+          <div class="empty-icon">🎙️</div>
+          <div>左侧输入一个想法，或点击一个任务卡片<br>开始生成公众号 / 朋友圈 / 视频号三端内容</div>
+        </div>
+      </div>
+      <div class="center-footer">
+        <div class="legend"><div class="legend-title">一次口述进入内容任务</div><div class="legend-body">左侧输入你的想法或语音转文字，AI 自动整理为可生产的内容任务。</div></div>
+        <div class="legend"><div class="legend-title">三端集中生成与修改</div><div class="legend-body">中间切换公众号、朋友圈、视频号，右侧按钮支持 AI 修改、保存、复制、导出。</div></div>
+        <div class="legend"><div class="legend-title">人只保留最终判断和发布权</div><div class="legend-body">所有内容可手动增删，你审阅后决定发布或回炉重造。</div></div>
+      </div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="right-header">操作</div>
+    <div class="right-scroll">
+      <div class="action-label">编辑</div>
+      <button class="action-btn" id="btnFocus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h6v2H6v4H4V4zm14 0v6h-2V6h-4V4h6zM4 20v-6h2v4h4v2H4zm16 0h-6v-2h4v-4h2v6z"/></svg>专注修改</button>
+      <button class="action-btn" id="btnMark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>标记内容</button>
+      <div class="action-sep"></div>
+      <div class="action-label">AI 动作</div>
+      <button class="action-btn generate" id="btnGenDraft"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.2L21 11l-6.6 2.8L12 20l-2.4-6.2L3 11l6.6-2.8z"/></svg>AI 生成初稿（三端）</button>
+      <button class="action-btn generate" id="btnGzhDesign"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>荣耀蓝一键排版</button>
+      <button class="action-btn" id="btnPasteBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>回填三端</button>
+      <button class="action-btn" id="btnAiModify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><path d="M12 6v6l4 2"/></svg>AI 修改</button>
+      <button class="action-btn" id="btnSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/></svg>保存修改</button>
+      <div class="action-sep"></div>
+      <div class="action-label">输出</div>
+      <button class="action-btn" id="btnCopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>一键复制</button>
+      <button class="action-btn" id="btnHistory"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>历史版本</button>
+      <button class="action-btn" id="btnExport"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>导出 Word</button>
+      <div class="action-sep"></div>
+      <div class="action-label">备份</div>
+      <button class="action-btn" id="btnExportJson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>导出 JSON</button>
+      <button class="action-btn" id="btnImportJson"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/></svg>导入 JSON</button>
+      <button class="action-btn primary" id="btnExportHtml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>导出备份HTML</button>
+      <input type="file" id="fileImport" style="display:none" accept=".json">
+    </div>
+  </aside>
+</div>
+
+<div class="focus-overlay" id="focusOverlay">
+  <div class="focus-head"><div style="font-weight:700">专注修改 · <span id="focusTitle"></span></div><button class="focus-close" id="focusClose">退出专注</button></div>
+  <div class="focus-body"><div class="focus-editor" id="focusEditor" contenteditable="true" spellcheck="false"></div></div>
+</div>
+
+<div class="modal" id="historyModal">
+  <div class="modal-box"><div class="modal-head">历史版本</div><div class="modal-body" id="historyBody"></div><div class="modal-foot"><button class="btn btn-secondary" id="historyClose">关闭</button></div></div>
+</div>
+
+<div class="modal" id="genModal">
+  <div class="modal-box">
+    <div class="modal-head" id="genModalTitle">AI 编排指令</div>
+    <div class="modal-body">
+      <div class="modal-hint" id="genModalHint">这段指令已自动复制到剪贴板。请在左侧 WorkBuddy 对话里直接发送（或 Ctrl/Cmd+V 粘贴），AI 会调用 voice-to-content 编排器 + personal-writing-cc 声线，为你生成公众号 / 朋友圈 / 视频号三端初稿。</div>
+      <div class="prompt-box" id="genPrompt"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" id="genCopy">复制指令</button>
+      <button class="btn btn-primary" id="genClose">知道了</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="pasteModal">
+  <div class="modal-box">
+    <div class="modal-head">回填三端内容</div>
+    <div class="modal-body">
+      <div class="modal-hint">把 WorkBuddy 生成的完整结果粘贴到这里（支持含「【公众号长文】/【朋友圈文案】/【视频号脚本】」或「## 公众号 / ## 朋友圈 / ## 视频号」分隔标记的格式，会自动切分；无标记则整体填入公众号长文）。确认后写回当前任务的三个端，并立即显示在中央区域。</div>
+      <textarea class="paste-area" id="pasteInput" placeholder="粘贴 AI 生成的三端内容……"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" id="pasteClose">取消</button>
+      <button class="btn btn-primary" id="pasteConfirm">解析并回填</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const LS_KEY='workbuddy_content_tasks_v1';
+  let tasks=[], currentId=null, currentTab='article', radarTab='pending';
+
+  const seedTasks=[
+    {id:'t1',title:'爸爸常说男人失业一年离婚率高达80%；58岁这年他失业了，去超市切水果，第一天就没去成',status:'已发布',source:'用户口述',marked:false,createdAt:'2026-08-23T22:30:00',updatedAt:'2026-08-24T10:00:00',
+      article:'【公众号长文】\n\n内容见：20260823_爸爸常说男人失业一年离婚率高达80%58岁这年他失业了去超市切水果第一天就没去成_排版_荣耀蓝.html\n\n（可在本工作区打开查看完整长文与排版稿）',
+      moments:'58岁的爸爸，失业了。他常挂嘴边一句话：男人唯一的价值，就是搞钱。妈妈给他找了份超市切水果打称的活，他干了一天就没去。他怕的不是吃苦，是怕自己没有用了。长文见主页。',
+      video:'【视频号口播稿】\n\n开场钩子：一个开了22年大车、拉过18吨棉纱的人，最怕什么？不是失业，是失业之后一台超市的秤。\n正文：58岁的爸爸失业了……\n结尾：搞钱，是一个五十八岁老父亲唯一会的爱的语言。',
+      versions:[]},
+    {id:'t2',title:'你家装了保险丝，却嫌保险坑：它们防的是同一场灾',status:'待你批阅',source:'新闻推荐',marked:true,createdAt:'2026-08-24T17:34:00',updatedAt:'2026-08-25T00:10:00',
+      article:'【公众号长文】\n\n内容见：20260824_你家装了保险丝却嫌保险坑它们防的是同一场灾_排版_荣耀蓝.html\n\n（可在本工作区打开查看完整定稿与排版稿）',
+      moments:'【朋友圈文案 3条】\n\n其一：你家配电箱里有根几毛钱的保险丝，没人记得它，可真短路起火，替整栋房子挡灾的是它。保险干的活，跟它一模一样。\n\n其二：做了保险经纪人之后，我反而不急着劝人买了。劝不动的，多半是还没被生活教育过。\n\n其三：保险的"保"，和保险丝的"保"，是同一个保。',
+      video:'【视频号口播稿约2分30秒】\n\n开头：你家装了保险丝吗？就是配电箱里那根几毛钱的小东西。\n类比：安全带、头盔、安全套、灭火器、消防栓。\n转折：保险声名狼藉，真不是老百姓冤枉它。\n功能：用小成本转移大损失。\n结尾：别在灾来了之后，才想起没装那根"丝"。',
+      versions:[]},
+    {id:'t3',title:'30岁的人买养老险，是不是太早了？',status:'灵感池',source:'新闻推荐',marked:false,createdAt:'2026-08-25T09:00:00',updatedAt:'2026-08-25T09:00:00',article:'',moments:'',video:'',versions:[]},
+    {id:'t4',title:'内地和香港重疾险，到底差在哪？',status:'资料收集中',source:'用户自选',marked:false,createdAt:'2026-08-25T09:00:00',updatedAt:'2026-08-25T09:00:00',article:'',moments:'',video:'',versions:[]},
+    {id:'t5',title:'分享我是怎么给爸妈买保险的',status:'文案撰写中',source:'用户自选',marked:false,createdAt:'2026-08-25T09:00:00',updatedAt:'2026-08-25T09:00:00',article:'',moments:'',video:'',versions:[]}
+  ];
+
+  // 路线A：通过本地写服务(http://localhost)打开时，数据以工作区 content-hub-data.json 为准，并自动轮询刷新
+  const HUB_API=null; // 纯本地0依赖版：强制不走写服务，file://双击或https部署均为本地localStorage模式
+  let serverSig=null;
+
+  async function loadFromApi(){
+    if(!HUB_API) return null;
+    try{ const r=await fetch(HUB_API+'?t='+Date.now()); if(!r.ok) return null; const j=await r.json(); if(j&&Array.isArray(j.tasks)) return j; }catch(e){}
+    return null;
+  }
+  function loadTasks(){
+    try{const raw=localStorage.getItem(LS_KEY); if(raw){tasks=JSON.parse(raw); return;}}catch(e){}
+    tasks=JSON.parse(JSON.stringify(seedTasks));
+    saveTasks();
+  }
+  async function saveTasks(){
+    localStorage.setItem(LS_KEY,JSON.stringify(tasks));
+    if(HUB_API){ try{ const body=JSON.stringify({tasks:tasks,savedAt:Date.now()}); const r=await fetch(HUB_API,{method:'POST',headers:{'Content-Type':'application/json'},body:body}); if(r.ok) serverSig=body; }catch(e){} }
+  }
+  async function pollServer(){
+    if(!HUB_API) return;
+    const j=await loadFromApi(); if(!j) return;
+    const sig=JSON.stringify(j.tasks);
+    if(sig!==serverSig){ tasks=j.tasks; serverSig=sig; if(currentId) renderCenter(); renderTopbar(); renderLeftTasks(); }
+  }
+  function uuid(){return 't_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);}
+      function fmtDate(s){if(!s)return '-'; return new Date(s).toLocaleDateString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+  function toast(msg){const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200);}
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function getCurrentTask(){return tasks.find(t=>t.id===currentId)||null;}
+
+  function renderTopbar(){
+    const box=document.getElementById('topbarScroll');
+    box.innerHTML=tasks.map(t=>{
+      const active=t.id===currentId;
+      return `<div class="task-chip ${active?'active':''}" data-id="${t.id}"><span class="dot"></span><span class="title">${escapeHtml(t.title)}</span><span class="close" data-close="${t.id}">×</span></div>`;
+    }).join('');
+    Array.from(box.querySelectorAll('.task-chip')).forEach(el=>{
+      el.addEventListener('click',e=>{if(e.target.classList.contains('close'))return; selectTask(el.dataset.id);});
+    });
+    Array.from(box.querySelectorAll('.close')).forEach(el=>{
+      el.addEventListener('click',e=>{e.stopPropagation(); removeTask(el.dataset.close);});
+    });
+    const pending=tasks.filter(t=>t.status==='待你批阅'||t.status==='AI评审完').length;
+    document.getElementById('pendingCount').textContent=pending+' 个待审核';
+  }
+
+  const STATUS_LIST=['灵感池','资料收集中','文案撰写中','AI评审完','待你批阅','已定稿','已排版','已发布'];
+  const STATUS_COLORS={'灵感池':'#9ca3af','资料收集中':'#60a5fa','文案撰写中':'#f59e0b','AI评审完':'#a78bfa','待你批阅':'#ef4444','已定稿':'#10b981','已排版':'#10b981','已发布':'#059669'};
+
+  function renderLeftTasks(){
+    const list=document.getElementById('leftTaskList');
+    const filtered=tasks.filter(t=>radarTab==='pending'?t.status!=='已发布':t.status==='已发布');
+    document.getElementById('radarNum').textContent=tasks.filter(t=>t.status!=='已发布').length;
+    document.getElementById('radarBar').style.width=(Math.min(tasks.filter(t=>t.status!=='已发布').length,10)/10*100)+'%';
+    if(!filtered.length){list.innerHTML='<div style="color:var(--text-3);font-size:12px;text-align:center;padding:12px 0">暂无任务</div>'; return;}
+    list.innerHTML=filtered.map(t=>{
+      const active=t.id===currentId;
+      const color=STATUS_COLORS[t.status]||'#9ca3af';
+      return `<div class="task-item ${active?'active':''}" data-id="${t.id}">
+        <div class="task-item-head"><span class="task-item-title">${escapeHtml(t.title)}</span><span class="task-item-mark">${t.marked?'★':''}</span></div>
+        <div class="task-item-meta"><span class="task-item-tag" style="color:${color};background:${color}22">${t.status}</span><span>${fmtDate(t.updatedAt)}</span></div>
+      </div>`;
+    }).join('');
+    Array.from(list.querySelectorAll('.task-item')).forEach(el=>{
+      el.addEventListener('click',()=>selectTask(el.dataset.id));
+    });
+  }
+
+  function renderCenter(){
+    const t=getCurrentTask();
+    document.getElementById('emptyState').style.display=t?'none':'flex';
+    document.getElementById('editor').style.display=t?'block':'none';
+    if(!t){
+      document.getElementById('centerTitle').value='';
+      document.getElementById('centerTitle').disabled=true;
+      document.getElementById('centerStatus').textContent='WorkBuddy 已生成';
+      document.getElementById('editor').innerHTML='';
+      document.getElementById('btnMark').classList.remove('active');
+      document.getElementById('gzhHint').classList.remove('show');
+      return;
+    }
+    document.getElementById('centerTitle').value=t.title;
+    document.getElementById('centerTitle').disabled=!t;
+    document.getElementById('centerStatus').textContent='WorkBuddy 已生成';
+    const content=t[currentTab]||'（此端内容为空。点击右侧「AI 生成初稿」让 AI 调用你的写作 skill 产出三端初稿，或用「回填三端」把对话结果写回此处。）';
+    document.getElementById('editor').textContent=content;
+    document.getElementById('btnMark').classList.toggle('active',!!t.marked);
+    Array.from(document.getElementById('centerTabs').children).forEach(tab=>{
+      tab.classList.toggle('active',tab.dataset.tab===currentTab);
+    });
+    // 荣耀蓝排版提示条：仅公众号长文 Tab 且有排版 HTML 时显示
+    const gzhHintEl=document.getElementById('gzhHint');
+    if(currentTab==='article' && t.article_html){ gzhHintEl.classList.add('show'); }
+    else { gzhHintEl.classList.remove('show'); }
+  }
+
+  function selectTask(id){
+    currentId=id;
+    const t=getCurrentTask();
+    if(t && !t[currentTab]){currentTab='article';}
+    renderTopbar(); renderLeftTasks(); renderCenter();
+  }
+
+  function removeTask(id){
+    tasks=tasks.filter(t=>t.id!==id);
+    if(currentId===id){currentId=tasks.length?tasks[0].id:null; currentTab='article';}
+    saveTasks(); renderTopbar(); renderLeftTasks(); renderCenter();
+  }
+
+  function addTask(title, rawText){
+    const id=uuid();
+    const now=new Date().toISOString();
+    tasks.unshift({id,title:title.slice(0,60)||'未命名选题',status:'灵感池',source:'用户口述',marked:false,createdAt:now,updatedAt:now,article:'',moments:'',video:'',raw:rawText||'',versions:[]});
+    currentId=id; currentTab='article';
+    saveTasks(); renderTopbar(); renderLeftTasks(); renderCenter(); toast('已创建新任务');
+  }
+
+  function updateCurrentContent(){
+    const t=getCurrentTask(); if(!t)return;
+    t[currentTab]=document.getElementById('editor').textContent;
+    t.updatedAt=new Date().toISOString();
+    saveTasks(); renderLeftTasks();
+  }
+
+  function pushVersion(t){
+    if(!t.versions)t.versions=[];
+    t.versions.unshift({tab:currentTab,time:new Date().toISOString(),content:t[currentTab]});
+    if(t.versions.length>20)t.versions.pop();
+  }
+
+  // ---- AI 编排桥接：把选题/口述整理成可驱动 skill 的标准指令 ----
+  function buildDraftPrompt(t){
+    const raw=(t.raw||'').trim();
+    return [
+      '【开口即生产 · Mode 02 三端初稿生成】',
+      '',
+      '请调用 voice-to-content 编排器（Mode 02 工作流），并用 personal-writing-cc 声线，基于以下选题生成三端内容：',
+      '',
+      '■ 选题标题：'+t.title,
+      '■ 来源：'+(t.source||'用户口述'),
+      raw?('■ 口述/原文：\n'+raw):'■ 口述/原文：（用户暂未提供，请基于选题自行展开）',
+      '',
+      '要求：',
+      '1. 同时产出三段——公众号长文、朋友圈文案、视频号口播稿；',
+      '2. 声线严格贴合 personal-writing-cc（cc 本人语气：自然、生动、不堆砌术语、自嘲防杠、结尾双收）；',
+      '3. 结尾用清晰分隔标记包裹，便于我回填中台：',
+      '   【公众号长文】……',
+      '   【朋友圈文案】……',
+      '   【视频号脚本】……',
+      '4. 生成后请提示我：复制整段结果，回到「个人内容中台」点「回填三端」即可写回。'
+    ].join('\n');
+  }
+  function buildModifyPrompt(t){
+    const cur=t[currentTab]||'';
+    const name={article:'公众号长文',moments:'朋友圈文案',video:'视频号脚本'}[currentTab];
+    return [
+      '【开口即生产 · 单端 AI 修改】',
+      '',
+      '当前端：'+name+'（选题：'+t.title+'）',
+      '',
+      '现有内容：',
+      cur||'（空）',
+      '',
+      '请用 personal-writing-cc 声线修改/扩写这一段，保持风格一致。完成后用【'+name+'】……标记包裹，我复制后到中台「回填三端」写回。'
+    ].join('\n');
+  }
+  function buildTopicPrompt(){
+    return [
+      '【开口即生产 · 每周爆款选题推荐】',
+      '',
+      '我是 30 岁保险经纪人（内地+港险），运营公众号「cc保险思」。请结合近期新闻与行业信号，推荐 3 个本周可生产的选题，',
+      '要求：贴近「保险正名 / 家庭保障 / 内地vs港险对比 / 真实理赔故事」方向，每个选题给一句话标题 + 一句切入角度。',
+      '产出后，我会把看中的选题粘贴进中台左侧输入框点「整理为内容任务」，再点「AI 生成初稿」。'
+    ].join('\n');
+  }
+  function buildGzhPrompt(t){
+    return [
+      '【开口即生产 · 荣耀蓝一键排版】',
+      '',
+      '选题：'+t.title,
+      '',
+      '请用 gzh-design 排版引擎，主题选「荣耀蓝（honor-blue）」，把下面这篇公众号长文排成可直接粘贴进公众号编辑器的 HTML（带 inline style、span leaf 包裹、校验 0 ERROR 0 WARNING）。',
+      '',
+      '=== 长文原文 ===',
+      t.article||'',
+      '',
+      '完成后请把排版后的 HTML 告诉我，我复制到公众号编辑器即可。'
+    ].join('\n');
+  }
+  function openGenModal(title, hint, prompt){
+    document.getElementById('genModalTitle').textContent=title;
+    document.getElementById('genModalHint').textContent=hint;
+    document.getElementById('genPrompt').textContent=prompt;
+    document.getElementById('genModal').classList.add('on');
+    if(navigator.clipboard){navigator.clipboard.writeText(prompt).catch(()=>{});}
+  }
+  function parseBack(text){
+    const markers=[
+      {key:'article', re:/【?\s*公众号长文\s*】?|##\s*公众号长文|##\s*公众号|公众号长文[:：]/i},
+      {key:'moments', re:/【?\s*朋友圈文案\s*】?|【?\s*朋友圈\s*】?|##\s*朋友圈文案|##\s*朋友圈|朋友圈文案[:：]/i},
+      {key:'video',   re:/【?\s*视频号脚本\s*】?|【?\s*视频号\s*】?|##\s*视频号脚本|##\s*视频号|视频号脚本[:：]/i}
+    ];
+    const idx=markers.map(m=>({key:m.key, i:text.search(m.re)})).filter(x=>x.i>=0).sort((a,b)=>a.i-b.i);
+    if(idx.length<2){return {article:text.trim(), moments:'', video:''};}
+    const res={article:'',moments:'',video:''};
+    for(let k=0;k<idx.length;k++){
+      const start=idx[k].i;
+      const end=k+1<idx.length?idx[k+1].i:text.length;
+      res[idx[k].key]=text.slice(start,end).replace(markers.find(m=>m.key===idx[k].key).re,'').trim();
+    }
+    return res;
+  }
+
+  // Event bindings
+  document.getElementById('btnMakeTask').addEventListener('click',()=>{
+    const v=document.getElementById('voiceInput').value.trim();
+    if(!v){toast('先输入一个想法'); return;}
+    const title=v.split(/\n/)[0].slice(0,60);
+    addTask(title,v);
+    document.getElementById('voiceInput').value='';
+  });
+  document.getElementById('btnSaveRaw').addEventListener('click',()=>{
+    const v=document.getElementById('voiceInput').value.trim();
+    if(!v){toast('先输入原文'); return;}
+    addTask('原文：'+v.slice(0,40),v);
+    document.getElementById('voiceInput').value='';
+  });
+
+  Array.from(document.getElementById('centerTabs').children).forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      updateCurrentContent();           // 先把编辑器当前内容存回「旧」Tab，避免串到新 Tab
+      currentTab=tab.dataset.tab;       // 再切换到新 Tab
+      renderCenter();                   // 最后渲染新 Tab 内容
+    });
+  });
+
+  document.getElementById('editor').addEventListener('input',updateCurrentContent);
+
+  document.getElementById('centerTitle').addEventListener('input',()=>{
+    const t=getCurrentTask(); if(!t)return;
+    t.title=document.getElementById('centerTitle').value;
+    t.updatedAt=new Date().toISOString();
+    saveTasks(); renderTopbar(); renderLeftTasks();
+  });
+
+  Array.from(document.querySelectorAll('.radar-tab')).forEach(tab=>{
+    tab.addEventListener('click',()=>{radarTab=tab.dataset.tab; Array.from(document.querySelectorAll('.radar-tab')).forEach(x=>x.classList.remove('active')); tab.classList.add('active'); renderLeftTasks();});
+  });
+
+  document.getElementById('btnSave').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    pushVersion(t);
+    updateCurrentContent();
+    saveTasks();
+    toast('已保存当前修改');
+  });
+
+  document.getElementById('btnCopy').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    if(currentTab==='article' && t.article_html){
+      navigator.clipboard.writeText(t.article_html).then(()=>toast('已复制荣耀蓝排版HTML → 去公众号 Ctrl+V'),()=>toast('复制失败，请手动选中'));
+      return;
+    }
+    navigator.clipboard.writeText(t[currentTab]||'').then(()=>toast('已复制当前端内容'),()=>toast('复制失败'));
+  });
+
+  document.getElementById('btnMark').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    t.marked=!t.marked;
+    saveTasks(); renderLeftTasks(); renderCenter(); toast(t.marked?'已标记':'已取消标记');
+  });
+
+  document.getElementById('btnFocus').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    document.getElementById('focusTitle').textContent=t.title;
+    document.getElementById('focusEditor').textContent=t[currentTab]||'';
+    document.getElementById('focusOverlay').classList.add('on');
+  });
+  document.getElementById('focusClose').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(t){t[currentTab]=document.getElementById('focusEditor').textContent; saveTasks(); renderCenter();}
+    document.getElementById('focusOverlay').classList.remove('on');
+  });
+
+  document.getElementById('btnGenDraft').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    pushVersion(t);
+    if(HUB_API){
+      t.status='待AI生成'; if(!t.source) t.source='选题灵感'; saveTasks(); renderCenter(); renderLeftTasks();
+      toast('已提交生成请求 → 去 WorkBuddy 说：生成内容中台任务');
+    } else {
+      openGenModal('AI 生成三端初稿','这段指令已自动复制到剪贴板。请在左侧 WorkBuddy 对话里直接发送（或 Ctrl/Cmd+V 粘贴），AI 会调用 voice-to-content 编排器 + personal-writing-cc 声线，为你生成公众号 / 朋友圈 / 视频号三端初稿；生成后到中台点「回填三端」写回。',buildDraftPrompt(t));
+    }
+  });
+  document.getElementById('btnGzhDesign').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    if(!t.article){toast('先有公众号长文才能排版'); return;}
+    if(HUB_API){
+      t.status='待排版'; saveTasks(); renderCenter(); renderLeftTasks();
+      toast('已提交荣耀蓝排版请求 → 去 WorkBuddy 说：排版内容中台任务');
+    } else {
+      openGenModal('荣耀蓝一键排版','这段指令已自动复制到剪贴板。请在 WorkBuddy 对话里发送，AI 会用 gzh-design 把当前长文排成荣耀蓝主题 HTML；生成后复制排版 HTML 回中台或导出备份。',buildGzhPrompt(t));
+    }
+  });
+  document.getElementById('gzhPreview').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t||!t.article_html){toast('还没有排版结果'); return;}
+    const w=window.open('','_blank');
+    if(!w){toast('浏览器拦截了弹窗，请允许弹窗后重试'); return;}
+    w.document.open(); w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{margin:0;background:#f5f7fa}</style></head><body>'+t.article_html+'</body></html>'); w.document.close();
+  });
+  document.getElementById('btnGenTopic').addEventListener('click',()=>{
+    if(HUB_API){ toast('已就绪 → 去 WorkBuddy 说：推荐内容中台选题'); return; }
+    openGenModal('AI 推荐本周选题','这段指令已自动复制到剪贴板。请在 WorkBuddy 对话里发送，AI 会结合新闻产出 3 个选题；把看中的选题粘进左侧输入框点「整理为内容任务」即可进入生产。',buildTopicPrompt());
+  });
+  document.getElementById('btnAiModify').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    openGenModal('AI 修改 · '+({article:'公众号长文',moments:'朋友圈文案',video:'视频号脚本'}[currentTab]),'这段指令已自动复制到剪贴板。请在 WorkBuddy 对话里发送，AI 会用 personal-writing-cc 声线修改当前端；复制结果后到中台「回填三端」写回。',buildModifyPrompt(t));
+  });
+  document.getElementById('btnPasteBack').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    document.getElementById('pasteInput').value='';
+    document.getElementById('pasteModal').classList.add('on');
+  });
+  document.getElementById('pasteConfirm').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){document.getElementById('pasteModal').classList.remove('on'); return;}
+    const text=document.getElementById('pasteInput').value.trim();
+    if(!text){toast('先粘贴内容'); return;}
+    const res=parseBack(text);
+    let filled=0;
+    if(res.article){t.article=res.article; filled++;}
+    if(res.moments){t.moments=res.moments; filled++;}
+    if(res.video){t.video=res.video; filled++;}
+    if(!filled){t.article=text; filled=1;}
+    if(['灵感池','资料收集中','文案撰写中'].includes(t.status)){t.status='AI评审完';}
+    t.updatedAt=new Date().toISOString();
+    saveTasks(); renderLeftTasks(); renderCenter();
+    document.getElementById('pasteModal').classList.remove('on');
+    toast('已回填 '+filled+' 个端（已存浏览器，点「导出备份HTML」可落盘）');
+  });
+  document.getElementById('pasteClose').addEventListener('click',()=>document.getElementById('pasteModal').classList.remove('on'));
+  document.getElementById('genClose').addEventListener('click',()=>document.getElementById('genModal').classList.remove('on'));
+  document.getElementById('genCopy').addEventListener('click',()=>{
+    const txt=document.getElementById('genPrompt').textContent;
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>toast('已复制指令'),()=>toast('复制失败'));}
+    else{toast('请手动复制');}
+  });
+
+  document.getElementById('btnHistory').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    const body=document.getElementById('historyBody');
+    const list=(t.versions||[]).filter(v=>v.tab===currentTab);
+    if(!list.length){body.innerHTML='<p>当前端暂无历史版本</p>';}
+    else{body.innerHTML=list.map((v,i)=>`<div style="margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:10px"><div style="color:var(--text-3);font-size:11px;margin-bottom:6px">#${i+1} · ${fmtDate(v.time)} · ${v.tab}</div><pre style="white-space:pre-wrap;background:var(--surface-2);padding:10px;border-radius:6px">${escapeHtml(v.content)}</pre></div>`).join('');}
+    document.getElementById('historyModal').classList.add('on');
+  });
+  document.getElementById('historyClose').addEventListener('click',()=>document.getElementById('historyModal').classList.remove('on'));
+
+  document.getElementById('btnExport').addEventListener('click',()=>{
+    const t=getCurrentTask(); if(!t){toast('先选一个任务'); return;}
+    const html=`<html><head><meta charset="utf-8"><title>${escapeHtml(t.title)}</title></head><body style="font-family:serif;line-height:1.8;max-width:720px;margin:40px auto;padding:0 20px"><h1>${escapeHtml(t.title)}</h1><hr><h2>${{article:'公众号长文',moments:'朋友圈文案',video:'视频号脚本'}[currentTab]}</h2><pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(t[currentTab]||'')}</pre></body></html>`;
+    const blob=new Blob(['\ufeff'+html],{type:'application/msword'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`${t.title.slice(0,30)}_${currentTab}.doc`; a.click();
+  });
+
+  document.getElementById('btnExportJson').addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify(tasks,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='workbuddy_tasks_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+    toast('已导出 JSON');
+  });
+  document.getElementById('btnImportJson').addEventListener('click',()=>document.getElementById('fileImport').click());
+  document.getElementById('fileImport').addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{try{const data=JSON.parse(ev.target.result); if(Array.isArray(data) && data.length){tasks=data; saveTasks(); currentId=tasks[0].id||null; currentTab='article'; renderTopbar(); renderLeftTasks(); renderCenter(); toast('已导入 '+data.length+' 条任务');}else{toast('JSON 格式不对');}}catch(err){toast('解析失败');}};
+    r.readAsText(f);
+  });
+
+  document.getElementById('btnExportHtml').addEventListener('click',()=>{
+    try{
+      const json=JSON.stringify(tasks)
+        .replace(/<\/script/gi,'<\\/script')
+      const html=document.documentElement.outerHTML;
+      const re=/const seedTasks\s*=\s*\[[\s\S]*?\n  \];/;
+      if(!re.test(html)){toast('导出失败：未找到种子数据'); return;}
+      const newHtml=html.replace(re,'const seedTasks = '+json+';');
+      const blob=new Blob([newHtml],{type:'text/html'});
+      const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download='workbuddy_内容中台_'+new Date().toISOString().slice(0,10)+'.html';
+      a.click();
+      toast('已导出含数据的备份HTML（可脱离浏览器直接打开）');
+    }catch(e){toast('导出失败：'+e.message);}
+  });
+
+  // Init（路线A：优先从本地写服务拉取共享 JSON，否则用 localStorage/种子）
+  (async()=>{
+    if(HUB_API){ const j=await loadFromApi(); if(j && j.tasks.length){ tasks=j.tasks; serverSig=JSON.stringify(j.tasks); } else { loadTasks(); } }
+    else { loadTasks(); }
+    if(tasks.length && !currentId){currentId=tasks[0].id;}
+    renderTopbar(); renderLeftTasks(); renderCenter();
+    if(HUB_API) setInterval(pollServer, 3000);
+  })();
+})();
+</script>
+</body>
+</html>
