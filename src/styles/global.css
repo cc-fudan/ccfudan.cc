@@ -524,3 +524,120 @@ img { max-width: 100%; display: block; }
   .lightbox-next { right: 8px; }
   .lightbox-prev, .lightbox-next { width: 40px; height: 40px; font-size: 26px; }
 }
+
+/* ==========================================================================
+   双站主题层（P3 视觉系统 · 唯一实现处）
+   --------------------------------------------------------------------------
+   .com = 蓝金（对外站）：上方 :root 即其 token，无需覆盖
+   .cc  = 文房四宝 · 笔墨纸砚（对内站）：以下 .site-cc 作用域整体覆盖
+          宣纸 #f4efe4 ／ 墨 #2b2620 ／ 朱砂 #b3432f ／ 端砚 #1f2329
+   铁律：朱砂在 .com 是稀缺色（仅出现在「印」一处）；.cc 属文房语境，
+        朱砂可作为正文强调色使用。字体：.cc 走系统楷体栈，不引 webfont。
+   ========================================================================== */
+
+.site-cc {
+  --bg: #f4efe4;            /* 宣纸 */
+  --surface: #fbf8f0;       /* 宣纸提亮（卡片） */
+  --border: #ded3bf;        /* 纸边 */
+  --ink: #2b2620;           /* 墨 */
+  --ink-soft: #4b4335;
+  --muted: #857a68;
+  --primary: #2b2620;       /* 墨：结构色（标题 / 主按钮 / 出链） */
+  --primary-dark: #1f2329;  /* 端砚：最深色（页脚 / hover） */
+  --accent: #b3432f;        /* 朱砂：强调色 */
+  --accent-soft: #f0e4d4;
+  --shadow: 0 10px 30px rgba(43, 38, 32, 0.10);
+  --shadow-sm: 0 4px 14px rgba(43, 38, 32, 0.07);
+}
+
+.site-cc body {
+  font-family: "Kaiti SC", "STKaiti", "KaiTi", "楷体", "Songti SC", "SimSun",
+    "Noto Serif CJK SC", "Source Han Serif SC", serif;
+  line-height: 1.85;
+  background-color: var(--bg);
+  /* 宣纸纸浆细纹：双层错位网点，极淡 */
+  background-image:
+    radial-gradient(rgba(43, 38, 32, 0.030) 1px, transparent 1px),
+    radial-gradient(rgba(43, 38, 32, 0.018) 1px, transparent 1px);
+  background-size: 17px 17px, 29px 29px;
+  background-position: 0 0, 9px 13px;
+}
+.site-cc ::selection { background: rgba(179, 67, 47, 0.18); }
+
+/* ---------- Hero：宣纸底 + 信笺竖格 ---------- */
+.site-cc .hero {
+  background:
+    radial-gradient(1100px 460px at 82% -12%, rgba(179, 67, 47, 0.10), transparent 62%),
+    radial-gradient(760px 400px at 6% 112%, rgba(31, 35, 41, 0.07), transparent 60%),
+    linear-gradient(168deg, #f8f4e9 0%, #f4efe4 52%, #ece4d3 100%);
+  color: var(--ink);
+}
+.site-cc .hero::after {
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(43, 38, 32, 0.05) 0 1px,
+    transparent 1px 78px
+  );
+  opacity: 1;
+}
+.site-cc .hero h1 {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+.site-cc .hero p.lead { color: var(--ink-soft); }
+.site-cc .hero .eyebrow-row span {
+  color: #8e3423;
+  background: rgba(179, 67, 47, 0.07);
+  border-color: rgba(179, 67, 47, 0.26);
+  letter-spacing: 0.12em;
+}
+.site-cc .hero .btn-light {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(179, 67, 47, 0.26);
+}
+.site-cc .hero .btn-light:hover { background: #9c3a28; }
+.site-cc .hero .btn-outline { color: var(--ink); border-color: rgba(43, 38, 32, 0.42); }
+.site-cc .hero .btn-outline:hover { background: rgba(43, 38, 32, 0.07); }
+.site-cc .hero .lead-tools { color: var(--accent); border-bottom-color: rgba(179, 67, 47, 0.45); }
+
+/* ---------- Header / 导航 ---------- */
+.site-cc .header { background: rgba(244, 239, 228, 0.86); }
+.site-cc .logo { color: var(--ink); letter-spacing: 0.05em; }
+.site-cc .nav a:hover { color: var(--accent); }
+.site-cc .nav a.active { color: var(--accent); }
+
+/* ---------- Footer：端砚底 ---------- */
+.site-cc .footer { background: var(--primary-dark); }
+.site-cc .footer a { color: #f4efe4; }
+
+/* ---------- 通用构件 ---------- */
+.site-cc .section-title { font-weight: 700; letter-spacing: 0.04em; }
+.site-cc .eyebrow { color: var(--accent); letter-spacing: 0.18em; }
+.site-cc .card h3 { letter-spacing: 0.03em; }
+.site-cc .card .ico { background: var(--accent-soft); }
+.site-cc .tag { background: var(--accent-soft); color: var(--primary); }
+.site-cc .post .arrow { color: var(--accent); }
+.site-cc .post h3 { letter-spacing: 0.03em; }
+.site-cc .rule .n { color: var(--accent); }
+.site-cc .verse { border-left-color: var(--accent); }
+.site-cc .verse p:first-child { color: var(--accent); }
+.site-cc .pin {
+  color: var(--accent);
+  background: rgba(179, 67, 47, 0.07);
+  border-color: rgba(179, 67, 47, 0.24);
+}
+.site-cc .work-link { color: var(--accent); }
+.site-cc .stage-title { border-left-color: var(--accent); }
+.site-cc .about-avatar,
+.site-cc .teaser-avatar {
+  border-color: #fffdf7;
+  box-shadow: 0 0 0 1px rgba(179, 67, 47, 0.30), var(--shadow);
+}
+.site-cc .family-thumb .thumb-caption {
+  background: linear-gradient(to top, rgba(43, 38, 32, 0.74), transparent);
+}
+
+/* 导航当前页高亮（两站共用，此前缺失） */
+.nav a.active { color: var(--primary); font-weight: 700; }

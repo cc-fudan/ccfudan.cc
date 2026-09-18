@@ -9,23 +9,28 @@ import {
   CC_TAGLINE,
   CC_HERO_SUB,
   CC_ROOMS,
+  CC_LIB_HINT,
+  SITE_TARGET,
 } from '../config/site';
 import { getCollection } from 'astro:content';
+// 全家福上的朱砂印（白文：朱底白字），内联零请求
+import sealBaiwen from '../assets/brand/seal-jiuer-fumu-baiwen.svg?raw';
 
-// .cc 人生随笔 / 音书影路 的标签归类（用于 /notes、/library 与首页导流）
-const NOTES_TAGS = ['随笔', '生活', '家庭', '佛学', '修心', '亲子', '日常'];
-const LIB_TAGS = ['书', '影', '音', '阅读', '观影', '音乐'];
+// ── .com：精选 3 篇站内全文（职业 / 保险 / 身份） ──────────────────────────
+const comPosts = (await getCollection('writing'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
 
-const writing = (await getCollection('writing')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+// ── .cc：导流自有文章（与 /notes、/library 同口径，互斥分流） ──────────────
+const linkOf = (w: { data: { url?: string; internal?: string } }) =>
+  w.data.url ? w.data.url : `/writing/${w.data.internal}`;
+const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
 
-// .com：精选 3 篇专业文章（职业/保险/身份）
-const comPosts = writing.slice(0, 3);
-// .cc：人生随笔导流（命中 NOTES_TAGS 才显示，否则待补）
-const notesPosts = writing.filter((p) =>
-  p.data.tags.some((t: string) => NOTES_TAGS.includes(t))
-);
+const ccWorks = (await getCollection('works'))
+  .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const ccNotes = ccWorks.filter((w) => !CC_LIB_HINT.test(w.data.title)).slice(0, 3);
+const ccLibCount = ccWorks.filter((w) => CC_LIB_HINT.test(w.data.title)).length;
 ---
 
 {
@@ -124,7 +129,7 @@ const notesPosts = writing.filter((p) =>
             ))}
           </div>
           <div style="margin-top:24px;">
-            <a class="btn btn-ghost" href="/works">全部文章（{comPosts.length ? '站内全文 + 公众号同步' : ''}） →</a>
+            <a class="btn btn-ghost" href="/works">全部文章（站内全文 + 公众号同步） →</a>
           </div>
         </div>
       </section>
@@ -155,17 +160,31 @@ const notesPosts = writing.filter((p) =>
       title="3C得九 | 程成 · 格物致知 · 修身齐家"
       description="cc 的对内站：书房、茶室、工作室、运动与客厅——一个人格物致知、修身齐家的私人角落。"
     >
-      <!-- HERO -->
+      <!-- HERO：宣纸底 + 右全家福 -->
       <section class="hero hero-cc">
         <div class="wrap">
-          <div class="eyebrow-row">
-            <span>{CC_TAGLINE}</span>
-          </div>
-          <h1>3C得九</h1>
-          <p class="lead">{CC_HERO_SUB}</p>
-          <div class="cta-row">
-            <a class="btn btn-light" href="/notes">翻翻人生随笔 →</a>
-            <a class="btn btn-outline" href="/about">关于我</a>
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="eyebrow-row">
+                <span>{CC_TAGLINE}</span>
+              </div>
+              <h1>3C得九</h1>
+              <p class="lead">{CC_HERO_SUB}</p>
+              <div class="cta-row">
+                <a class="btn btn-light" href="/notes">翻翻人生随笔 →</a>
+                <a class="btn btn-outline" href="/family">吉光片羽</a>
+              </div>
+            </div>
+            <figure class="hero-photo">
+              <img
+                src="/images/family/family-01.jpg"
+                alt="程成、珊珊与九儿的第一张正式合影"
+                width="539"
+                height="720"
+              />
+              <figcaption>一家三口的第一张正式合影</figcaption>
+              <span class="stamp" set:html={sealBaiwen} aria-hidden="true"></span>
+            </figure>
           </div>
         </div>
       </section>
@@ -188,29 +207,42 @@ const notesPosts = writing.filter((p) =>
         </div>
       </section>
 
-      <!-- 最近在写（人生随笔导流） -->
+      <!-- 最近在写（书房的已有文章导流） -->
       <section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
         <div class="wrap">
           <span class="eyebrow">书房 · 人生随笔</span>
           <h2 class="section-title">最近在写</h2>
-          {notesPosts.length > 0 ? (
-            <div class="posts">
-              {notesPosts.slice(0, 3).map((p) => (
-                <a class="post" href={`/writing/${p.slug}`}>
-                  <div>
-                    <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
-                    <h3>{p.data.title}</h3>
-                    <p>{p.data.excerpt}</p>
-                  </div>
-                  <div class="arrow">→</div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p class="section-sub">随笔正在起笔，待补。先去 <a href="/notes">人生随笔</a> 看看。</p>
-          )}
-          <div style="margin-top:24px;">
+          <p class="section-sub">生活、育儿、与自己较劲的那些时刻——多数首发于公众号「cc的奶爸日记」。</p>
+          {
+            ccNotes.length > 0 ? (
+              <div class="posts">
+                {ccNotes.map((w) => (
+                  <a
+                    class="post"
+                    href={linkOf(w)}
+                    target={isExternal(w) ? '_blank' : undefined}
+                    rel={isExternal(w) ? 'noopener' : undefined}
+                  >
+                    <div>
+                      <div class="meta">
+                        {w.data.date.toISOString().slice(0, 10)} · {w.data.account}
+                      </div>
+                      <h3>{w.data.title}</h3>
+                      <p>{w.data.excerpt}</p>
+                    </div>
+                    <div class="arrow">→</div>
+                  </a>
+                ))}
+              </div>
+            ) : (
+              <p class="section-sub" style="margin-top:18px;">
+                随笔正在整理，待补。先去 <a href="/family">吉光片羽</a> 看看。
+              </p>
+            )
+          }
+          <div style="margin-top:24px;display:flex;gap:14px;flex-wrap:wrap;">
             <a class="btn btn-ghost" href="/notes">全部人生随笔 →</a>
+            {ccLibCount > 0 && <a class="btn btn-ghost" href="/library">音书影路（{ccLibCount}）→</a>}
           </div>
         </div>
       </section>
@@ -218,7 +250,7 @@ const notesPosts = writing.filter((p) =>
       <!-- ABOUT TEASER (cc) -->
       <section class="section">
         <div class="wrap">
-          <div class="about-teaser">
+          <div class="about-teaser ta-cc">
             <div class="prose">
               <span class="eyebrow">关于我</span>
               <h2 class="section-title">顾家，是真正的主业</h2>
@@ -236,7 +268,45 @@ const notesPosts = writing.filter((p) =>
 }
 
 <style>
-  /* .cc 专属：五个房间「户型图」 */
+  /* ── .cc：全家福（宣纸相框 + 朱砂落款印） ── */
+  .hero-photo {
+    position: relative;
+    margin: 0;
+    width: 300px;
+    padding: 12px 12px 0;
+    background: #fffdf7;
+    border: 1px solid rgba(43, 38, 32, 0.16);
+    box-shadow: 0 18px 44px rgba(43, 38, 32, 0.18);
+  }
+  .hero-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: saturate(0.95) contrast(1.02);
+  }
+  .hero-photo figcaption {
+    padding: 10px 0 12px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .hero-photo .stamp {
+    position: absolute;
+    right: -16px;
+    bottom: -16px;
+    width: 46px;
+    height: 46px;
+    opacity: 0.94;
+    filter: drop-shadow(0 3px 8px rgba(43, 38, 32, 0.28));
+  }
+  .stamp :global(svg) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* ── .cc：五个房间「户型图」 ── */
   .rooms {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -252,34 +322,42 @@ const notesPosts = writing.filter((p) =>
     background: var(--surface);
     border: 1px solid var(--border);
     text-decoration: none;
-    color: var(--text);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    color: var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     position: relative;
   }
   .room:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 24px rgba(43, 38, 32, 0.08);
+    border-color: rgba(179, 67, 47, 0.34);
   }
   .room-name {
     font-size: 1.4rem;
     font-weight: 800;
-    color: var(--primary);
+    color: var(--ink);
+    letter-spacing: 0.06em;
   }
   .room-desc {
     font-size: 0.92rem;
-    color: var(--text-muted, #6b6b6b);
-    line-height: 1.6;
+    color: var(--muted);
+    line-height: 1.7;
   }
   .room-arrow {
     position: absolute;
     right: 18px;
     top: 18px;
-    color: var(--primary);
+    color: var(--accent, #b3432f);
     font-size: 1.1rem;
   }
   .hero-cc .lead {
     font-size: 1.05rem;
-    color: var(--text-muted, #6b6b6b);
     margin-top: 10px;
+  }
+  /* .cc 的「关于我」无头像，需单栏铺开（否则被 160px 首列压窄） */
+  .about-teaser.ta-cc { grid-template-columns: 1fr; }
+
+  @media (max-width: 820px) {
+    .hero-photo { width: min(300px, 78vw); margin: 10px auto 0; }
+    .hero-photo .stamp { right: -10px; bottom: -10px; width: 40px; height: 40px; }
   }
 </style>
