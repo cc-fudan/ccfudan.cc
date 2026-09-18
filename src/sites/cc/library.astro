@@ -1,18 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { SITE_TARGET } from '../../config/site';
+import { SITE_TARGET, CC_LIB_HINT } from '../../config/site';
 
-// 音书影路：从 .cc 已有文章中挑出与「书 / 影 / 音 / 文」相关者
-const LIB_HINT = /书|影|音|儿歌|歌|小说|读|红楼|诗/;
-
+// 音书影路：.cc 已有文章中与「书 / 影 / 音 / 文」相关者。
+// 与 /notes 互斥（notes 取补集），规则定义在 site.ts 的 CC_LIB_HINT。
 const linkOf = (w: { data: { url?: string; internal?: string } }) =>
   w.data.url ? w.data.url : `/writing/${w.data.internal}`;
 const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
 
 const posts = (await getCollection('works'))
   .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
-  .filter((w) => LIB_HINT.test(w.data.title))
+  .filter((w) => CC_LIB_HINT.test(w.data.title))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 

@@ -1,15 +1,17 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import { SITE_TARGET } from '../../config/site';
+import { SITE_TARGET, CC_LIB_HINT } from '../../config/site';
 
-// 人生随笔：.cc 归属的已有文章（生活 / 育儿 / 情感 / 自传），多首发于公众号「cc的奶爸日记」
+// 人生随笔：.cc 归属的已有文章（生活 / 育儿 / 情感 / 自传）。
+// 与 /library 互斥——命中 CC_LIB_HINT 的归「音书影路」，此处取补集。
 const linkOf = (w: { data: { url?: string; internal?: string } }) =>
   w.data.url ? w.data.url : `/writing/${w.data.internal}`;
 const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
 
 const posts = (await getCollection('works'))
   .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
+  .filter((w) => !CC_LIB_HINT.test(w.data.title))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
