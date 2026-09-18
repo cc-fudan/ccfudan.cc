@@ -1,0 +1,57 @@
+---
+// 落款组件：朱砂印 + 程成.cc 署名
+// .com → 白文印(朱底白字) 44px + 金线(#b8893f)，朱砂为稀缺色仅此一处
+// .cc → 朱文印(白底朱字) 96px + 墨线(#2b2620)，落在文房四宝宣纸语境
+import baiwen from '../assets/brand/seal-jiuer-fumu-baiwen.svg?raw';
+import zhuwen from '../assets/brand/seal-jiuer-fumu-zhuwen.svg?raw';
+
+interface Props {
+  site?: 'com' | 'cc';
+  date?: string;
+  /** 是否在印下显示时间小字（默认 true） */
+  showDate?: boolean;
+}
+const { site = 'cc', date = '', showDate = true } = Astro.props;
+const isCom = site === 'com';
+const sealSvg = isCom ? baiwen : zhuwen;
+const line = isCom ? '#b8893f' : '#2b2620';
+const size = isCom ? 44 : 96;
+const sigil = '程成.cc';
+---
+
+<div class="signoff" style={`--seal-size:${size}px;--line:${line}`}>
+  <div class="seal" set:html={sealSvg} />
+  <div class="meta">
+    <span class="sigil">{sigil}</span>
+    {showDate && date && <span class="date">{date}</span>}
+  </div>
+</div>
+
+<style>
+  .signoff {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .seal :global(svg) {
+    width: var(--seal-size);
+    height: var(--seal-size);
+    display: block;
+  }
+  .meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+  }
+  .sigil {
+    font-weight: 600;
+    color: var(--line);
+    letter-spacing: 0.06em;
+    font-size: 0.95rem;
+  }
+  .date {
+    font-size: 0.75rem;
+    color: #9a9a9a;
+    margin-top: 2px;
+  }
+</style>

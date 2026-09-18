@@ -1,36 +1,47 @@
 ---
-import { CROSS_LINK, SITE_NAME } from '../config/site';
+import { CROSS_LINK, SITE_NAME, IS_COM, CC_TAGLINE } from '../config/site';
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="wrap">
-    <div class="cols">
-      <div>
-        <div class="logo" style="color:#fff;font-weight:800;font-size:18px;">{SITE_NAME}</div>
-        <p class="creed" style="margin-top:10px;">
-          不属于任何一家保险公司，只忠于我的客户。<br />
-          买对，不买贵；路还长着呢。
-        </p>
+    {IS_COM ? (
+      <div class="cols">
+        <div>
+          <div class="logo" style="color:#fff;font-weight:800;font-size:18px;">{SITE_NAME}</div>
+          <p class="creed" style="margin-top:10px;">
+            不属于任何一家保险公司，只忠于我的客户。<br />
+            买对，不买贵；路还长着呢。
+          </p>
+        </div>
+        <div>
+          <div class="muted">微信</div>
+          <div style="margin:4px 0 14px;font-size:16px;font-weight:600;">cc_fudan <span class="muted" style="font-weight:400;">（备注「保险咨询」）</span></div>
+          <div class="muted">公众号</div>
+          <div style="margin-top:4px;font-size:16px;font-weight:600;">cc的保险笔记</div>
+        </div>
+        <div>
+          <div class="muted">约法三章</div>
+          <p class="creed" style="margin-top:8px;">
+            一、不卖我不认可的产品；<br />
+            二、不用我不认可的方式；<br />
+            三、不卖给和我不互相认可的人。
+          </p>
+        </div>
       </div>
-      <div>
-        <div class="muted">微信</div>
-        <div style="margin:4px 0 14px;font-size:16px;font-weight:600;">cc_fudan <span class="muted" style="font-weight:400;">（备注「保险咨询」）</span></div>
-        <div class="muted">公众号</div>
-        <div style="margin-top:4px;font-size:16px;font-weight:600;">cc的保险笔记</div>
+    ) : (
+      <div class="cols cols-cc">
+        <div>
+          <div class="logo" style="color:#fff;font-weight:800;font-size:18px;">{SITE_NAME}</div>
+          <p class="creed" style="margin-top:10px;">
+            {CC_TAGLINE}。<br />
+            这里只记录生活，不谈获客。
+          </p>
+        </div>
       </div>
-      <div>
-        <div class="muted">约法三章</div>
-        <p class="creed" style="margin-top:8px;">
-          一、不卖我不认可的产品；<br />
-          二、不用我不认可的方式；<br />
-          三、不卖给和我不互相认可的人。
-        </p>
-      </div>
-    </div>
+    )}
     <div class="bottom">
-      © {year} {SITE_NAME}　|　保险经纪 × 法律思维 × 身份规划 × AI 元能力
-      　·　<a href={CROSS_LINK.href} style="color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px;">{CROSS_LINK.label}</a>
+      © {year} {SITE_NAME}　·　<a href={CROSS_LINK.href} style="color:inherit;opacity:.7;text-decoration:underline;text-underline-offset:3px;">{CROSS_LINK.label}</a>
     </div>
   </div>
 </footer>

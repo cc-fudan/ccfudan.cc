@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { IS_COM } from '../../config/site';
 
 const posts = (await getCollection('writing')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
@@ -30,9 +31,16 @@ const posts = (await getCollection('writing')).sort(
           </a>
         ))}
       </div>
-      <div style="margin-top:28px;">
-        <a class="btn btn-ghost" href="/works">更多作品与公众号推文 →</a>
-      </div>
+      {/* 双站隔离：/works 为 .com 专属（含收费标准），.cc 不出链 */}
+      {IS_COM ? (
+        <div style="margin-top:28px;">
+          <a class="btn btn-ghost" href="/works">更多作品与公众号推文 →</a>
+        </div>
+      ) : (
+        <div style="margin-top:28px;">
+          <a class="btn btn-ghost" href="/notes">去书房看随笔 →</a>
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

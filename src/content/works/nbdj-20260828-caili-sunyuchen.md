@@ -3,6 +3,7 @@ title: "原来知名女星也会要彩礼，原来百亿富豪孙宇晨也得付
 date: 2026-08-28
 excerpt: 网传孙宇晨3000万彩礼利索转、5000万美元死活不给：从法律和博弈拆彩礼名分、临时加价与返还概率。
 account: cc的奶爸日记
+target: com
 url: https://mp.weixin.qq.com/s/JHydN1ip0qQF2g1uLsNcFg
 ---
 本文首发于公众号「cc的奶爸日记」。

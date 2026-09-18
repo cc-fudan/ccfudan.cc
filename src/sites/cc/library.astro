@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE_TARGET } from '../../config/site';
+
+// 音书影路：从 .cc 已有文章中挑出与「书 / 影 / 音 / 文」相关者
+const LIB_HINT = /书|影|音|儿歌|歌|小说|读|红楼|诗/;
+
+const linkOf = (w: { data: { url?: string; internal?: string } }) =>
+  w.data.url ? w.data.url : `/writing/${w.data.internal}`;
+const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
+
+const posts = (await getCollection('works'))
+  .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
+  .filter((w) => LIB_HINT.test(w.data.title))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title="音书影路 | 3C得九"
+  description="程成（cc）读过的书、听过的音、写下的字——一条私人品味的小路。"
+>
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">茶室 · 音书影路</span>
+      <h1 class="section-title">音书影路</h1>
+      <p class="section-sub">
+        读书、听音、写字的私人脚印。不成体系，只是给自己留个记号。
+      </p>
+
+      {
+        posts.length > 0 ? (
+          <div class="posts">
+            {posts.map((w) => (
+              <a
+                class="post"
+                href={linkOf(w)}
+                target={isExternal(w) ? '_blank' : undefined}
+                rel={isExternal(w) ? 'noopener' : undefined}
+              >
+                <div>
+                  <div class="meta">
+                    {w.data.date.toISOString().slice(0, 10)} · {w.data.account}
+                    {isExternal(w) ? ' · 公众号原文 ↗' : ' · 站内全文'}
+                  </div>
+                  <h3>{w.data.title}</h3>
+                  <p>{w.data.excerpt}</p>
+                </div>
+                <div class="arrow">→</div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="section-sub" style="margin-top:18px;">
+            书影笔记还在攒，待补。先去 <a href="/notes">人生随笔</a> 看看。
+          </p>
+        )
+      }
+
+      <div style="margin-top:28px;">
+        <a class="btn btn-ghost" href="/notes">去人生随笔 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

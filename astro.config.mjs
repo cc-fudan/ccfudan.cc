@@ -24,9 +24,15 @@ function siteTarget() {
     hooks: {
       'astro:config:setup'({ injectRoute }) {
         if (isCom) {
+          // 对外站专属：商业获客页一律不入 .cc 产物（双站隔离铁律）
+          injectRoute({ pattern: '/services', entrypoint: 'src/sites/com/services.astro' });
+          injectRoute({ pattern: '/contact', entrypoint: 'src/sites/com/contact.astro' });
+          injectRoute({ pattern: '/works', entrypoint: 'src/sites/com/works.astro' });
           injectRoute({ pattern: '/credentials', entrypoint: 'src/sites/com/credentials.astro' });
         } else {
           injectRoute({ pattern: '/family', entrypoint: 'src/sites/cc/family.astro' });
+          injectRoute({ pattern: '/notes', entrypoint: 'src/sites/cc/notes.astro' });
+          injectRoute({ pattern: '/library', entrypoint: 'src/sites/cc/library.astro' });
         }
       },
       'astro:build:done'({ dir }) {

@@ -1,10 +1,14 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { SITE_TARGET } from '../../config/site';
 
-const all = (await getCollection('works')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+// .com 专属：作品集/文章中枢（含收费标准与两个公众号同步）。
+// 已从 src/pages/ 迁出，改为按站点注入，避免 .cc 出现商业获客内容。
+// target 过滤保留：只展示归属对外站的文章（生活线随笔归 .cc，见 /notes）。
+const all = (await getCollection('works'))
+  .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const writings = (await getCollection('writing')).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()

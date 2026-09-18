@@ -3,6 +3,7 @@ title: "一套刚需房，一百万学费：持有九年成本160w 市价 60w，
 date: 2026-09-01
 excerpt: 沌口刚需房持有九年总投入160万、现值60万：出租净回报1.65%还扛不住年3-5万贬值——留不留只看用不用。
 account: cc的奶爸日记
+target: com
 url: https://mp.weixin.qq.com/s/alNeUeavl9HfY9dSNoxesg
 ---
 本文首发于公众号「cc的奶爸日记」。

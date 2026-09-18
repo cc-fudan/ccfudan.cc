@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Signoff from '../components/Signoff.astro';
 import { IS_COM, SHOW_FAMILY_ON_COM } from '../config/site';
 
 // 双站隔离：对外站默认不出现家庭照片（除非 cc 看图确认无儿童正脸后再开放）
 const showFamily = IS_COM ? SHOW_FAMILY_ON_COM : true;
 const familyHref = IS_COM ? '/about#family' : '/family';
+const site = IS_COM ? 'com' : 'cc';
 
 const edu = [
   '2013 新洲一中理科火箭班，湖北省理科高考前 130 名',
@@ -21,7 +23,7 @@ const career = [
   '2025.11 加入明亚，成为保险经纪人',
   '2026 香港高才通获批，探索跨境身份规划',
   '2026 律所实习探索中，深化法律实务',
-  '2026.06 喜得小犬（程乐鱼）',
+  '2026.06 喜得小犬（小名九儿）',
 ];
 const method = [
   ['① 先定义问题', '哲学训练：把模糊的焦虑拆成可以回答的具体问题。'],
@@ -31,7 +33,12 @@ const method = [
 ];
 ---
 
-<BaseLayout title="关于我 | cc · 程成" description="程成（cc），独立咨询顾问。复旦哲学硕士、法律职业资格、前华为荣耀销售管理、前电商省总；明亚保险经纪人，香港高才通。">
+<BaseLayout
+  title={IS_COM ? '关于我 | cc · 程成' : '关于我 | 3C得九'}
+  description={IS_COM
+    ? '程成（cc），独立咨询顾问。复旦哲学硕士、法律职业资格、前华为荣耀销售管理、前电商省总；明亚保险经纪人，香港高才通。'
+    : '程成（cc）的对内站：格物致知，修身齐家。一个父亲、丈夫与仍在修行的人，怎么把日子过明白。'}
+>
   <section class="section">
     <div class="wrap prose">
       <div class="about-head">
@@ -102,54 +109,59 @@ const method = [
       <h3 style="font-size:16px;color:var(--muted);margin:22px 0 8px;">职业</h3>
       <ul>{career.map((c) => <li>{c}</li>)}</ul>
 
-      <h2>裸辞这一年：我的探索年</h2>
-      <p>
-        2025 年 10 月裸辞，不是"换一份工作"，而是把最近一年当作一次多元探索——
-        <strong>主线是陪产带娃</strong>，副业探索和兴趣自媒体同时铺开。把想试的事都实地试了一遍，
-        价值只有一个：<strong>顾问的判断力不是读出来的，是试出来的</strong>。
-        {showFamily && <a class="work-link" href={familyHref}>看看这一年的家庭瞬间 →</a>}
-      </p>
-      <div class="grid-2" style="margin-top:14px;">
-        <div class="card">
-          <h3>🍼 陪产带娃（主线）</h3>
-          <p>2026.06 喜得小犬。这是探索年的主线，也是所有选择的前提。</p>
-        </div>
-        <div class="card">
-          <h3>🛡 保险经纪 · 明亚</h3>
-          <p>明亚保险经纪人；内地与跨境两套保障体系的差异、合规边界，都亲自走过一遍。</p>
-        </div>
-        <div class="card">
-          <h3>⚖️ 律所实习 · 5 个案例</h3>
-          <p>法律实务从纸面走到现场，法考 A 证开始兑现。</p>
-        </div>
-        <div class="card">
-          <h3>🏢 海南公司 · 武汉豪宅销售</h3>
-          <p>公司架构与高净值客户需求逻辑的一线观察。</p>
-        </div>
-        <div class="card">
-          <h3>💼 能良咨询 · 2000 元/小时</h3>
-          <p>把五年操盘经验第一次定价——验证专业服务的市场价值。</p>
-        </div>
-        <div class="card">
-          <h3>✍️ 公众号 ×4 · 视频号 · 直播 4 场</h3>
-          <p>内容即信任的前置过滤，自媒体是顾问的第二张名片。</p>
-        </div>
-        <div class="card">
-          <h3>🤖 AI 工具 · 知识库</h3>
-          <p>AI 协作实战——你现在看的这个网站，就是人机协作的产物。</p>
-        </div>
-        <div class="card">
-          <h3>🧭 这一年证明了什么</h3>
-          <p>不是样样都做成，而是每一条路的深浅、坑在哪，都亲手摸过了——这就是顾问判断力的来源。</p>
-        </div>
-      </div>
+      {/* 双站隔离：探索年（陪产带娃等生活线）仅对内站 .cc 展示，.com 不出现 */}
+      {!IS_COM && (
+        <>
+          <h2>裸辞这一年：我的探索年</h2>
+          <p>
+            2025 年 10 月裸辞，不是"换一份工作"，而是把最近一年当作一次多元探索——
+            <strong>主线是陪产带娃</strong>，副业探索和兴趣自媒体同时铺开。把想试的事都实地试了一遍，
+            价值只有一个：<strong>顾问的判断力不是读出来的，是试出来的</strong>。
+            {showFamily && <a class="work-link" href={familyHref}>看看这一年的家庭瞬间 →</a>}
+          </p>
+          <div class="grid-2" style="margin-top:14px;">
+            <div class="card">
+              <h3>🍼 陪产带娃（主线）</h3>
+              <p>2026.06 喜得小犬。这是探索年的主线，也是所有选择的前提。</p>
+            </div>
+            <div class="card">
+              <h3>🛡 保险经纪 · 明亚</h3>
+              <p>明亚保险经纪人；内地与跨境两套保障体系的差异、合规边界，都亲自走过一遍。</p>
+            </div>
+            <div class="card">
+              <h3>⚖️ 律所实习 · 5 个案例</h3>
+              <p>法律实务从纸面走到现场，法考 A 证开始兑现。</p>
+            </div>
+            <div class="card">
+              <h3>🏢 海南公司 · 武汉豪宅销售</h3>
+              <p>公司架构与高净值客户需求逻辑的一线观察。</p>
+            </div>
+            <div class="card">
+              <h3>💼 能良咨询 · 2000 元/小时</h3>
+              <p>把五年操盘经验第一次定价——验证专业服务的市场价值。</p>
+            </div>
+            <div class="card">
+              <h3>✍️ 公众号 ×2 · 视频号 · 直播 4 场</h3>
+              <p>内容即信任的前置过滤，自媒体是顾问的第二张名片。</p>
+            </div>
+            <div class="card">
+              <h3>🤖 AI 工具 · 知识库</h3>
+              <p>AI 协作实战——你现在看的这个网站，就是人机协作的产物。</p>
+            </div>
+            <div class="card">
+              <h3>🧭 这一年证明了什么</h3>
+              <p>不是样样都做成，而是每一条路的深浅、坑在哪，都亲手摸过了——这就是顾问判断力的来源。</p>
+            </div>
+          </div>
+        </>
+      )}
 
       <h2 id="family">一些瞬间</h2>
       {showFamily ? (
         <>
           <p>2025 年裸辞后，最重要的事是陪产、陪娃。这里只放几张缩影，更多照片放在 <a class="work-link" href="/family">家庭生活</a> 页面。</p>
           <div class="gallery">
-            <img src="/images/scene-1.jpg" alt="一家三口 · 喜得小犬（程乐鱼）" />
+            <img src="/images/scene-1.jpg" alt="一家三口 · 喜得小犬（九儿）" />
             <img src="/images/scene-2.jpg" alt="陪产时光 · 期待新生命" />
             <img src="/images/scene-3.jpg" alt="我爸爸 / 我妈妈" />
             <img src="/images/scene-4.jpg" alt="一起等宝宝来" />
@@ -174,28 +186,52 @@ const method = [
         AI 到底怎么用——于是我把自己升级成了<strong>顾问</strong>，保险只是四张地图里的第一张。
       </p>
 
-      <h2>约法三章</h2>
-      <div class="rules" style="margin-top:14px;">
-        <div class="rule">
-          <div class="n">一</div>
-          <h4>不卖我不认可的产品</h4>
-          <p>无论耳熟能详的大公司，还是没听过的小保司。</p>
-        </div>
-        <div class="rule">
-          <div class="n">二</div>
-          <h4>不用我不认可的方式</h4>
-          <p>无套路、不话术、不骚扰。人不找我，我不找人。</p>
-        </div>
-        <div class="rule">
-          <div class="n">三</div>
-          <h4>不卖给不互信的人</h4>
-          <p>托付是长期的，先彼此信任，再谈方案。</p>
-        </div>
+      {/* 双站隔离：约法三章＝服务条款/获客内容，仅对外站 .com 展示 */}
+      {IS_COM && (
+        <>
+          <h2>约法三章</h2>
+          <div class="rules" style="margin-top:14px;">
+            <div class="rule">
+              <div class="n">一</div>
+              <h4>不卖我不认可的产品</h4>
+              <p>无论耳熟能详的大公司，还是没听过的小保司。</p>
+            </div>
+            <div class="rule">
+              <div class="n">二</div>
+              <h4>不用我不认可的方式</h4>
+              <p>无套路、不话术、不骚扰。人不找我，我不找人。</p>
+            </div>
+            <div class="rule">
+              <div class="n">三</div>
+              <h4>不卖给不互信的人</h4>
+              <p>托付是长期的，先彼此信任，再谈方案。</p>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* 印的由来：双站都展示，按站点显示对应印面 */}
+      <h2>印的由来</h2>
+      <p>
+        这枚印不是 logo，是身份声明。
+      </p>
+      <p>
+        顾家是真正的主业。九儿父母，是我的第一身份——其次，都是其次。但是，想把自己日夜研究过的法律知识和保险经验，用于帮助身边信任我的人。所以这枚印，盖的是我的第一身份。
+      </p>
+      <div style="margin-top:18px;">
+        <Signoff site={site} showDate={false} />
       </div>
 
-      <div style="margin-top:34px;">
-        <a class="btn btn-primary" href="/contact">加微信聊聊 →</a>
-      </div>
+      {/* 双站隔离：获客 CTA 仅对外站；对内站改为回书房的轻链接 */}
+      {IS_COM ? (
+        <div style="margin-top:34px;">
+          <a class="btn btn-primary" href="/contact">加微信聊聊 →</a>
+        </div>
+      ) : (
+        <div style="margin-top:34px;">
+          <a class="btn btn-ghost" href="/notes">去书房坐坐 →</a>
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

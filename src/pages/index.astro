@@ -1,157 +1,285 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ServiceCard from '../components/ServiceCard.astro';
-import { IS_COM } from '../config/site';
+import {
+  IS_COM,
+  H1_COM,
+  SUB_COM,
+  HOME_CARDS_COM,
+  CC_TAGLINE,
+  CC_HERO_SUB,
+  CC_ROOMS,
+} from '../config/site';
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('writing'))
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+// .cc 人生随笔 / 音书影路 的标签归类（用于 /notes、/library 与首页导流）
+const NOTES_TAGS = ['随笔', '生活', '家庭', '佛学', '修心', '亲子', '日常'];
+const LIB_TAGS = ['书', '影', '音', '阅读', '观影', '音乐'];
+
+const writing = (await getCollection('writing')).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// .com：精选 3 篇专业文章（职业/保险/身份）
+const comPosts = writing.slice(0, 3);
+// .cc：人生随笔导流（命中 NOTES_TAGS 才显示，否则待补）
+const notesPosts = writing.filter((p) =>
+  p.data.tags.some((t: string) => NOTES_TAGS.includes(t))
+);
 ---
 
-<BaseLayout>
-  <!-- HERO -->
-  <section class="hero">
-    <div class="wrap">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <div class="eyebrow-row">
-            <span>独立咨询顾问</span>
-            <span>AI 元能力</span>
-            <span>身份规划</span>
-            <span>法律思维</span>
-            <span>保险经纪</span>
+{
+  IS_COM ? (
+    <BaseLayout
+      title="cc · 程成 | 独立咨询顾问"
+      description="复旦哲学硕士 · 法律职业资格 · 前华为荣耀销售管理。转型期家庭的一次性想清楚：保障 · 契约 · 身份。"
+    >
+      <!-- HERO -->
+      <section class="hero">
+        <div class="wrap">
+          <div class="hero-grid">
+            <div class="hero-copy">
+              <div class="eyebrow-row">
+                <span>独立咨询顾问</span>
+                <span>法律思维</span>
+                <span>身份规划</span>
+                <span>保险经纪</span>
+              </div>
+              <h1>{H1_COM}</h1>
+              <p class="lead">{SUB_COM}</p>
+              <div class="cta-row">
+                <a class="btn btn-light" href="/contact">加微信聊聊你的问题</a>
+                <a class="btn btn-outline" href="/credentials">看看案例与口碑</a>
+              </div>
+            </div>
+            <img class="hero-avatar" src="/images/avatar.jpg" alt="程成（cc）头像" width="280" height="280" />
           </div>
-          <h1>先定义问题，<br />再找方案</h1>
-          <p class="lead">
-            我不是销售。<br />
-            哲学教我拆问题，法律教我划边界；<br />
-            五年一线操盘（4 年消费电子 + 1 年电商省总）教我看业务，AI 实战教我提效率——<br />
-            <strong class="lead-tools">保险、法律、身份、职业</strong>，只是工具箱里的四件工具，<br />
-            用哪件，取决于你真正的问题。
-          </p>
-          <div class="cta-row">
-            <a class="btn btn-light" href="/contact">加微信聊聊你的问题</a>
-            <a class="btn btn-outline" href="/works">看看这个顾问怎么想</a>
+          <div class="creds cols-4">
+            <a class="cred" href="/about#education">
+              <div class="cred-main">A证 · 复旦中哲硕士</div>
+              <div class="cred-sub">本硕四证 + 法考证书<br />学习能力</div>
+            </a>
+            <a class="cred" href="/about#career">
+              <div class="cred-main">5 年一线操盘</div>
+              <div class="cred-sub">华为管培 / 荣耀 / 能良 / 律所<br />产品 · 大客户 · 区域管理</div>
+            </a>
+            <a class="cred" href="/services">
+              <div class="cred-main">懂法律的保险经纪</div>
+              <div class="cred-sub">100+ 合作保司 · 团队累计理赔 500+ 件<br />独立选品</div>
+            </a>
+            <a class="cred" href="/services">
+              <div class="cred-main">香港高才通亲历</div>
+              <div class="cred-sub">身份与跨境规划<br />合规边界提示</div>
+            </a>
           </div>
         </div>
-        <img class="hero-avatar" src="/images/avatar.jpg" alt="程成（cc）头像" width="280" height="280" />
-      </div>
-      <div class="creds cols-4">
-        <a class="cred" href="/about#education">
-          <div class="cred-main">A证 · 复旦中哲硕士</div>
-          <div class="cred-sub">本硕四证 + 法考证书<br />学习能力</div>
-        </a>
-        <a class="cred" href="/about#career">
-          <div class="cred-main">5 年一线操盘</div>
-          <div class="cred-sub">华为管培 / 荣耀 / 能良 / 律所<br />产品 · 大客户 · 区域管理</div>
-        </a>
-        <a class="cred" href={IS_COM ? '/about#family' : '/family'}>
-          <div class="cred-main">🍼 陪产带娃</div>
-          <div class="cred-sub">2026 喜得小犬 · 陪产一年<br />关于我 →</div>
-        </a>
-        <a class="cred" href="/services">
-          <div class="cred-main">懂法律的保险经纪</div>
-          <div class="cred-sub">100+ 合作保司 · 500+ 理赔案例<br />独立选品</div>
-        </a>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- CONSULTING DOMAINS -->
-  <section class="section">
-    <div class="wrap">
-      <span class="eyebrow">我能帮你做什么</span>
-      <h2 class="section-title">一个顾问，四张地图</h2>
-      <p class="section-sub">问题域不同，方法一致：先定义问题，再划边界，再对冲风险，最后放大效率——全程站在你这边。</p>
-      <div class="grid-2">
-        <ServiceCard
-          icon="🛡"
-          title="家庭风险与保障"
-          desc="重疾 / 医疗 / 意外 / 寿险与储蓄传承，全市场横向对比。"
-          points={["先问「你怕什么」，再定方案", "同样保障省 30%–50% 保费", "投保只是服务的开始，理赔陪跑到底"]}
-        />
-        <ServiceCard
-          icon="⚖️"
-          title="法律与契约思维"
-          desc="婚姻财产、契约安排、取证边界的法律视角梳理。"
-          points={["法律职业资格（A 证）加持", "把保险放进家庭资产全盘看", "独立第二意见，不和稀泥"]}
-        />
-        <ServiceCard
-          icon="🌏"
-          title="香港身份与跨境规划"
-          desc="香港高才通申请实操，以及跨境家庭的身份与合规边界梳理。"
-          points={["高才通全流程亲历经验", "跨境身份与教育衔接思路", "跨境安排的合规边界提示"]}
-        />
-        <ServiceCard
-          icon="🤖"
-          title="职业决策与 AI 元能力"
-          desc="职业路径对比分析、AI 工作流搭建、人机协同五科目。"
-          points={["多方案对比式决策（亲历三地规划）", "AI 协作实战——本站即协作产物", "训练「定义问题」的元能力"]}
-        />
-      </div>
-      <div style="margin-top:28px;">
-        <a class="btn btn-ghost" href="/services">查看服务详情 →</a>
-      </div>
-    </div>
-  </section>
+      <!-- CONSULTING DOMAINS -->
+      <section class="section">
+        <div class="wrap">
+          <span class="eyebrow">我能帮你做什么</span>
+          <h2 class="section-title">一个顾问，四张地图</h2>
+          <p class="section-sub">问题域不同，方法一致：先定义问题，再划边界，再对冲风险，最后放大效率——全程站在你这边。</p>
+          <div class="grid-2">
+            {HOME_CARDS_COM.map((c) => (
+              <ServiceCard icon="" title={c.title} desc={c.desc} points={c.points} href={c.href} />
+            ))}
+          </div>
+          <div style="margin-top:28px;">
+            <a class="btn btn-ghost" href="/services">查看服务详情 →</a>
+          </div>
+        </div>
+      </section>
 
-  <!-- QUOTE BAND -->
-  <section class="section" style="background:var(--primary);color:#fff;">
-    <div class="wrap" style="text-align:center;">
-      <p style="font-size:22px;font-weight:800;line-height:1.7;margin:0 0 14px;">
-        「当 AI 把执行力商品化之后，剩下的稀缺资源只有两个：<br />判断力和信任。」
-      </p>
-      <p style="font-size:16px;color:rgba(255,255,255,0.85);margin:0;">
-        AI 能模拟专业，但模拟不了「在乎」。好顾问不是因为用了正确的方法，
-        而是真的在乎你有没有被安排好——这两样，机器都给不了。
-      </p>
-    </div>
-  </section>
+      <!-- QUOTE BAND -->
+      <section class="section" style="background:var(--primary);color:#fff;">
+        <div class="wrap" style="text-align:center;">
+          <p style="font-size:22px;font-weight:800;line-height:1.7;margin:0 0 14px;">
+            「当 AI 把执行力商品化之后，剩下的稀缺资源只有两个：<br />判断力和信任。」
+          </p>
+          <p style="font-size:16px;color:rgba(255,255,255,0.85);margin:0;">
+            AI 能模拟专业，但模拟不了「在乎」。好顾问不是因为用了正确的方法，
+            而是真的在乎你有没有被安排好——这两样，机器都给不了。
+          </p>
+        </div>
+      </section>
 
-  <!-- FEATURED WRITING -->
-  <section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
-    <div class="wrap">
-      <span class="eyebrow">最近在想的事</span>
-      <h2 class="section-title">精选文章</h2>
-      <p class="section-sub">不急着聊产品，先看几天文章，看看这个顾问怎么想问题。</p>
-      <div class="posts">
-        {posts.map((p) => (
-          <a class="post" href={`/writing/${p.slug}`}>
-            <div>
-              <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
-              <h3>{p.data.title}</h3>
-              <p>{p.data.excerpt}</p>
+      <!-- FEATURED WRITING -->
+      <section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+        <div class="wrap">
+          <span class="eyebrow">最近在想的事</span>
+          <h2 class="section-title">精选文章</h2>
+          <p class="section-sub">不急着聊产品，先看几天文章，看看这个顾问怎么想问题。</p>
+          <div class="posts">
+            {comPosts.map((p) => (
+              <a class="post" href={`/writing/${p.slug}`}>
+                <div>
+                  <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
+                  <h3>{p.data.title}</h3>
+                  <p>{p.data.excerpt}</p>
+                </div>
+                <div class="arrow">→</div>
+              </a>
+            ))}
+          </div>
+          <div style="margin-top:24px;">
+            <a class="btn btn-ghost" href="/works">全部文章（{comPosts.length ? '站内全文 + 公众号同步' : ''}） →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT TEASER -->
+      <section class="section">
+        <div class="wrap">
+          <div class="about-teaser">
+            <img class="teaser-avatar" src="/images/avatar.jpg" alt="程成 cc" width="160" height="160" />
+            <div class="prose">
+              <span class="eyebrow">关于我</span>
+              <h2 class="section-title">程成（cc），把复杂的事拆清楚</h2>
+              <p>
+                1995 年生于武汉。复旦哲学硕士、法律职业资格，五年一线操盘（华为荣耀四年销售管理、电商省总），
+                现在是一个不站队任何机构的独立咨询顾问——<strong>你的问题在哪，我的工具箱就开在哪</strong>。
+              </p>
+              <p>
+                我信奉：先定义问题，再找方案；不话术、不骚扰，只忠于客户。
+              </p>
+              <a class="btn btn-primary" href="/about">更多关于我 →</a>
             </div>
-            <div class="arrow">→</div>
-          </a>
-        ))}
-      </div>
-      <div style="margin-top:24px;">
-        <a class="btn btn-ghost" href="/works">全部作品与文章 →</a>
-      </div>
-    </div>
-  </section>
+          </div>
+        </div>
+      </section>
+    </BaseLayout>
+  ) : (
+    <BaseLayout
+      title="3C得九 | 程成 · 格物致知 · 修身齐家"
+      description="cc 的对内站：书房、茶室、工作室、运动与客厅——一个人格物致知、修身齐家的私人角落。"
+    >
+      <!-- HERO -->
+      <section class="hero hero-cc">
+        <div class="wrap">
+          <div class="eyebrow-row">
+            <span>{CC_TAGLINE}</span>
+          </div>
+          <h1>3C得九</h1>
+          <p class="lead">{CC_HERO_SUB}</p>
+          <div class="cta-row">
+            <a class="btn btn-light" href="/notes">翻翻人生随笔 →</a>
+            <a class="btn btn-outline" href="/about">关于我</a>
+          </div>
+        </div>
+      </section>
 
-  <!-- ABOUT TEASER -->
-  <section class="section">
-    <div class="wrap">
-      <div class="about-teaser">
-        <img class="teaser-avatar" src="/images/avatar.jpg" alt="程成 cc" width="160" height="160" />
-        <div class="prose">
-        <span class="eyebrow">关于我</span>
-        <h2 class="section-title">程成（cc），把复杂的事拆清楚</h2>
-        <p>
-          1995 年生于武汉。复旦哲学硕士、法律职业资格，五年一线操盘（华为荣耀四年销售管理、电商省总），
-          2025 年裸辞回家陪产，过去一年以陪产带娃为主线，把保险、法律、自媒体、AI 都实地试了一遍。现在，我是一个不站队任何机构的独立咨询顾问——
-          <strong>你的问题在哪，我的工具箱就开在哪</strong>。
-        </p>
-        <p>
-          我信奉：先定义问题，再找方案；不话术、不骚扰，只忠于客户。
-        </p>
-        <a class="btn btn-primary" href="/about">更多关于我 →</a>
-      </div>
-      </div>
-    </div>
-  </section>
-</BaseLayout>
+      <!-- 户型图 / 房间 -->
+      <section class="section">
+        <div class="wrap">
+          <span class="eyebrow">这间屋子</span>
+          <h2 class="section-title">五个房间</h2>
+          <p class="section-sub">不是户型图，是这一年的生活重心。点进去，看我在每个房间里做什么。</p>
+          <div class="rooms">
+            {CC_ROOMS.map((r) => (
+              <a class="room" href={r.href}>
+                <span class="room-name">{r.name}</span>
+                <span class="room-desc">{r.desc}</span>
+                <span class="room-arrow">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- 最近在写（人生随笔导流） -->
+      <section class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+        <div class="wrap">
+          <span class="eyebrow">书房 · 人生随笔</span>
+          <h2 class="section-title">最近在写</h2>
+          {notesPosts.length > 0 ? (
+            <div class="posts">
+              {notesPosts.slice(0, 3).map((p) => (
+                <a class="post" href={`/writing/${p.slug}`}>
+                  <div>
+                    <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')}</div>
+                    <h3>{p.data.title}</h3>
+                    <p>{p.data.excerpt}</p>
+                  </div>
+                  <div class="arrow">→</div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="section-sub">随笔正在起笔，待补。先去 <a href="/notes">人生随笔</a> 看看。</p>
+          )}
+          <div style="margin-top:24px;">
+            <a class="btn btn-ghost" href="/notes">全部人生随笔 →</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT TEASER (cc) -->
+      <section class="section">
+        <div class="wrap">
+          <div class="about-teaser">
+            <div class="prose">
+              <span class="eyebrow">关于我</span>
+              <h2 class="section-title">顾家，是真正的主业</h2>
+              <p>
+                九儿父母，是我的第一身份——其次，都是其次。这里不谈获客，只记录一个父亲、丈夫、
+                和仍在修行的人，怎么把日子过明白。
+              </p>
+              <a class="btn btn-primary" href="/about">更多关于我 →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </BaseLayout>
+  )
+}
+
+<style>
+  /* .cc 专属：五个房间「户型图」 */
+  .rooms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .room {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 22px 20px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: relative;
+  }
+  .room:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  }
+  .room-name {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--primary);
+  }
+  .room-desc {
+    font-size: 0.92rem;
+    color: var(--text-muted, #6b6b6b);
+    line-height: 1.6;
+  }
+  .room-arrow {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    color: var(--primary);
+    font-size: 1.1rem;
+  }
+  .hero-cc .lead {
+    font-size: 1.05rem;
+    color: var(--text-muted, #6b6b6b);
+    margin-top: 10px;
+  }
+</style>

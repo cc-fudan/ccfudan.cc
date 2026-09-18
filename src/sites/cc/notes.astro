@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE_TARGET } from '../../config/site';
+
+// 人生随笔：.cc 归属的已有文章（生活 / 育儿 / 情感 / 自传），多首发于公众号「cc的奶爸日记」
+const linkOf = (w: { data: { url?: string; internal?: string } }) =>
+  w.data.url ? w.data.url : `/writing/${w.data.internal}`;
+const isExternal = (w: { data: { url?: string; internal?: string } }) => Boolean(w.data.url);
+
+const posts = (await getCollection('works'))
+  .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout
+  title="人生随笔 | 3C得九"
+  description="程成（cc）的人生随笔：生活、育儿、与自己较劲的那些时刻。多首发于公众号「cc的奶爸日记」。"
+>
+  <section class="section">
+    <div class="wrap">
+      <span class="eyebrow">书房 · 人生随笔</span>
+      <h1 class="section-title">人生随笔</h1>
+      <p class="section-sub">
+        生活、育儿、与自己较劲的那些时刻。多数首发于公众号「cc的奶爸日记」，点击直接跳转阅读。
+      </p>
+
+      {
+        posts.length > 0 ? (
+          <div class="posts">
+            {posts.map((w) => (
+              <a
+                class="post"
+                href={linkOf(w)}
+                target={isExternal(w) ? '_blank' : undefined}
+                rel={isExternal(w) ? 'noopener' : undefined}
+              >
+                <div>
+                  <div class="meta">
+                    {w.data.date.toISOString().slice(0, 10)} · {w.data.account}
+                    {isExternal(w) ? ' · 公众号原文 ↗' : ' · 站内全文'}
+                  </div>
+                  <h3>{w.data.title}</h3>
+                  <p>{w.data.excerpt}</p>
+                </div>
+                <div class="arrow">→</div>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p class="section-sub" style="margin-top:18px;">
+            随笔正在整理，待补。先去 <a href="/">首页</a> 看看五个房间。
+          </p>
+        )
+      }
+
+      <div style="margin-top:28px;">
+        <a class="btn btn-ghost" href="/library">去音书影路 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
