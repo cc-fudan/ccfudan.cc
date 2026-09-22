@@ -138,11 +138,13 @@ export const NAV: { href: string; label: string }[] = IS_COM
       { href: '/works', label: '文章' },
       { href: '/about', label: '关于我' },
       { href: '/contact', label: '联系预约' },
+      { href: '/universe/', label: '小宇宙' },
     ]
   : [
       { href: '/', label: '首页' },
       { href: '/notes', label: '人生随笔' },
       { href: '/library', label: '音书影路' },
+      { href: '/universe/', label: '小宇宙' },
       { href: '/about', label: '关于我' },
       { href: '/family', label: '家·吉光片羽' },
     ];

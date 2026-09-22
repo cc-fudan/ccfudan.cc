@@ -38,6 +38,17 @@ function siteTarget() {
       'astro:build:done'({ dir }) {
         const outDir = fileURLToPath(dir);
         fs.writeFileSync(path.join(outDir, 'CNAME'), cname + '\n', 'utf8');
+        // 双站隔离铁律 · 儿童照片隐私护栏：
+        // public/ 会被原样拷入两个产物，故对外站(.com) 构建完成后强制剥离
+        // 儿童/家庭正脸照（/images/family 目录 + scene 合影），确保 ccfudan.com 永不发布。
+        if (isCom) {
+          const familyDir = path.join(outDir, 'images', 'family');
+          if (fs.existsSync(familyDir)) fs.rmSync(familyDir, { recursive: true, force: true });
+          for (const f of ['scene-1.jpg', 'scene-2.jpg', 'scene-3.jpg', 'scene-4.jpg']) {
+            const p = path.join(outDir, 'images', f);
+            if (fs.existsSync(p)) fs.rmSync(p, { force: true });
+          }
+        }
       },
     },
   };

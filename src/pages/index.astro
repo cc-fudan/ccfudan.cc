@@ -16,8 +16,9 @@ import { getCollection } from 'astro:content';
 // 全家福上的朱砂印（白文：朱底白字），内联零请求
 import sealBaiwen from '../assets/brand/seal-jiuer-fumu-baiwen.svg?raw';
 
-// ── .com：精选 3 篇站内全文（职业 / 保险 / 身份） ──────────────────────────
+// ── .com：精选 3 篇站内全文（仅 com 标，避免生活/港险文章漏到对外站） ──────
 const comPosts = (await getCollection('writing'))
+  .filter((p) => p.data.tags.includes('com') || p.data.tags.includes('both'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 

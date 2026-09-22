@@ -10,9 +10,14 @@ const all = (await getCollection('works'))
   .filter((w) => w.data.target === 'both' || w.data.target === SITE_TARGET)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const writings = (await getCollection('writing')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+// 双站隔离：嵌入的「文章观点」只列归属对外站的 com/both 文，
+// 避免生活/港险类（cc 标）全文或其 excerpt 漏进 .com 产物。
+const writings = (await getCollection('writing'))
+  .filter((p) => {
+    const tags = p.data.tags || [];
+    return tags.includes('com') || tags.includes('both');
+  })
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 // 作品集全部优先跳公众号原文；无 url 的回退站内全文
 const linkOf = (w: { data: { url?: string; internal?: string } }) =>
@@ -70,7 +75,7 @@ const byAccount = (name: string) => all.filter((w) => w.data.account === name);
         <span class="eyebrow">站内全文 · 文章观点</span>
         <h2 style="font-size:22px;margin:8px 0 6px;">文章观点</h2>
         <p style="color:var(--muted);font-size:14px;margin:0 0 14px;">
-          三篇长文站内可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
+          站内全文可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
         </p>
         <div class="posts">
           {writings.map((p) => (

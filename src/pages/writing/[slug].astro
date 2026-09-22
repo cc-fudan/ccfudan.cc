@@ -1,10 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
+import { IS_COM } from '../../config/site';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writing');
-  return posts.map((post) => ({
+  const isCom = process.env.SITE_TARGET === 'com';
+  // 双站隔离：对外站只构建 com/both 标文章；对内站只构建 cc/both 标文章。
+  // 生活/港险类文章（cc 标）绝不进入对外站产物。
+  const filtered = posts.filter((p) => {
+    const tags = p.data.tags || [];
+    return isCom
+      ? (tags.includes('com') || tags.includes('both'))
+      : (tags.includes('cc') || tags.includes('both'));
+  });
+  return filtered.map((post) => ({
     params: { slug: post.slug },
     props: { post },
   }));
@@ -12,12 +22,14 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await post.render();
+const backHref = IS_COM ? '/writing' : '/notes';
+const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
 ---
 
 <BaseLayout title={`${post.data.title} | cc · 程成`} description={post.data.excerpt}>
   <section class="section">
     <div class="wrap prose">
-      <a href="/writing" style="color:var(--muted);font-size:14px;">← 返回文章列表</a>
+      <a href={backHref} style="color:var(--muted);font-size:14px;">{backLabel}</a>
       <div class="meta" style="color:var(--muted);font-size:13px;margin:14px 0 6px;">
         {post.data.date.toISOString().slice(0, 10)} · {post.data.tags.join(' / ')}
       </div>
@@ -25,10 +37,12 @@ const { Content } = await post.render();
       <p style="font-size:17px;color:var(--ink-soft);">{post.data.excerpt}</p>
       <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
       <Content />
-      <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
-        <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），
-        先看几天文章，有了基础信任，我们再细说。
-      </div>
+      {IS_COM && (
+        <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
+          <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），
+          先看几天文章，有了基础信任，我们再细说。
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

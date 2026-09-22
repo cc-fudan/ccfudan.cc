@@ -3,9 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { IS_COM } from '../../config/site';
 
-const posts = (await getCollection('writing')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
-);
+const posts = (await getCollection('writing'))
+  .filter((p) => {
+    const tags = p.data.tags || [];
+    // 双站隔离：对外站只列 com/both；对内站只列 cc/both（生活/港险文不进 .com）
+    return IS_COM
+      ? (tags.includes('com') || tags.includes('both'))
+      : (tags.includes('cc') || tags.includes('both'));
+  })
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <BaseLayout
@@ -17,7 +23,7 @@ const posts = (await getCollection('writing')).sort(
       <span class="eyebrow">站内全文 · 文章观点</span>
       <h1 class="section-title">文章观点</h1>
       <p class="section-sub">
-        三篇长文站内可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
+        站内全文可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
       </p>
       <div class="posts">
         {posts.map((p) => (
