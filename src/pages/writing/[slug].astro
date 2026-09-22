@@ -23,6 +23,14 @@ export async function getStaticPaths() {
       ? (tags.includes('com') || tags.includes('both'))
       : (tags.includes('cc') || tags.includes('both'));
   });
+  // 「第 N 篇原创」：全库文章按日期升序编号（intro/career 是页面，不计入）。
+  // 序号跨站连续——.com 只展示 8 篇也会出现「第 3/7/9 篇」，跳号正是公众号同源的真实积累。
+  const PAGE_SLUGS = new Set(['intro', 'career']);
+  const sorted = posts
+    .filter((p) => !PAGE_SLUGS.has(p.slug))
+    .sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+  const orderMap = new Map(sorted.map((p, i) => [p.slug, i + 1]));
+  const ORIG_TOTAL = sorted.length;
   return filtered.map((post) => {
     let richHtml = null;
     const hp = path.join(HTML_DIR, post.slug + '.html');
@@ -36,11 +44,14 @@ export async function getStaticPaths() {
         }
       }
     }
-    return { params: { slug: post.slug }, props: { post, richHtml } };
+    return {
+      params: { slug: post.slug },
+      props: { post, richHtml, origIndex: orderMap.get(post.slug) || null, origTotal: ORIG_TOTAL },
+    };
   });
 }
 
-const { post, richHtml } = Astro.props;
+const { post, richHtml, origIndex, origTotal } = Astro.props;
 const { Content } = await post.render();
 const backHref = IS_COM ? '/writing' : '/notes';
 const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
@@ -54,9 +65,64 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
         {post.data.date.toISOString().slice(0, 10)} · {post.data.tags.join(' / ')}
       </div>
       <h1 class="section-title">{post.data.title}</h1>
+      {origIndex && (
+        <div class="orig-badge">
+          <span class="orig-badge-num">CC 原创 · 第 {origIndex} 篇</span>
+          <span class="orig-badge-total">原创合集 {origTotal}/100</span>
+          <span class="orig-progress"><span style={`width:${origTotal}%`}></span></span>
+        </div>
+      )}
       <p style="font-size:17px;color:var(--ink-soft);">{post.data.excerpt}</p>
       <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
       {richHtml ? <div class="wx-article" set:html={richHtml} /> : <Content />}
+      {origIndex && (
+        <div class="post-stats" data-slug={post.slug}>
+          <span class="stat-pv">阅读 <span class="pv-num">—</span></span>
+          <button class="like-btn" type="button">赞 <span class="like-num">—</span></button>
+        </div>
+      )}
+      <script is:inline define:vars={{ slug: post.slug, origIndex }}>
+        if (origIndex) (function () {
+          var NS = 'ccfudansite';
+          var pvEl = document.querySelector('.post-stats .pv-num');
+          var btn = document.querySelector('.post-stats .like-btn');
+          var likeEl = document.querySelector('.post-stats .like-num');
+          if (!btn) return;
+          function api(path) {
+            return fetch('https://abacus.jasoncameron.dev/' + path)
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; });
+          }
+          function fmt(n) {
+            if (n == null) return '—';
+            if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + 'w';
+            return String(n);
+          }
+          // 阅读量：同一浏览器会话只计 1 次（sessionStorage），否则仅读
+          if (sessionStorage.getItem('pv_' + slug)) {
+            api('get/' + NS + '/pageview_' + slug).then(function (j) { if (pvEl) pvEl.textContent = fmt(j && j.value); });
+          } else {
+            api('hit/' + NS + '/pageview_' + slug).then(function (j) {
+              if (pvEl) pvEl.textContent = fmt(j && j.value);
+              if (j) sessionStorage.setItem('pv_' + slug, '1');
+            });
+          }
+          // 点赞：每篇文章每个浏览器限赞 1 次（localStorage）
+          api('get/' + NS + '/like_' + slug).then(function (j) { if (likeEl) likeEl.textContent = fmt(j && j.value); });
+          if (localStorage.getItem('liked_' + slug)) { btn.classList.add('liked'); btn.disabled = true; }
+          btn.addEventListener('click', function () {
+            if (btn.classList.contains('liked')) return;
+            api('hit/' + NS + '/like_' + slug).then(function (j) {
+              btn.classList.add('liked');
+              btn.disabled = true;
+              localStorage.setItem('liked_' + slug, '1');
+              if (likeEl) likeEl.textContent = fmt(j && j.value);
+              btn.classList.add('pop');
+              setTimeout(function () { btn.classList.remove('pop'); }, 600);
+            });
+          });
+        })();
+      </script>
       {IS_COM && (
         <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
           <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），
