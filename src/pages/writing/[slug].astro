@@ -2,8 +2,17 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import { IS_COM } from '../../config/site';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export async function getStaticPaths() {
+  // 微信原文富 HTML（含表格/原排版）构建期读取：
+  // 只进「对应站点渲染的页面」，绝不进另一站的 bundle（fs 读取不参与打包）。
+  // 路径由 astro.config.mjs 依据自身位置注入 env（对 cwd 完全免疫）。
+  const HTML_DIR = process.env.ARTICLES_HTML_DIR;
+  if (!HTML_DIR || !fs.existsSync(HTML_DIR)) {
+    throw new Error('articles-html dir missing: ' + HTML_DIR + ' (cwd=' + process.cwd() + ')');
+  }
   const posts = await getCollection('writing');
   const isCom = process.env.SITE_TARGET === 'com';
   // 双站隔离：对外站只构建 com/both 标文章；对内站只构建 cc/both 标文章。
@@ -14,13 +23,24 @@ export async function getStaticPaths() {
       ? (tags.includes('com') || tags.includes('both'))
       : (tags.includes('cc') || tags.includes('both'));
   });
-  return filtered.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+  return filtered.map((post) => {
+    let richHtml = null;
+    const hp = path.join(HTML_DIR, post.slug + '.html');
+    if (fs.existsSync(hp)) {
+      richHtml = fs.readFileSync(hp, 'utf8');
+      if (isCom) {
+        // 铁律2：对外站「港险」统一改写「香港身份与跨境规划」
+        richHtml = richHtml.replaceAll('港险', '香港身份与跨境规划');
+        if (/保诚|香港保险|香港储蓄|港险/.test(richHtml)) {
+          throw new Error(`[COM-LEAK] ${post.slug} 原文 HTML 含铁律2违禁词，发布阻断`);
+        }
+      }
+    }
+    return { params: { slug: post.slug }, props: { post, richHtml } };
+  });
 }
 
-const { post } = Astro.props;
+const { post, richHtml } = Astro.props;
 const { Content } = await post.render();
 const backHref = IS_COM ? '/writing' : '/notes';
 const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
@@ -36,7 +56,7 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
       <h1 class="section-title">{post.data.title}</h1>
       <p style="font-size:17px;color:var(--ink-soft);">{post.data.excerpt}</p>
       <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
-      <Content />
+      {richHtml ? <div class="wx-article" set:html={richHtml} /> : <Content />}
       {IS_COM && (
         <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
           <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），

@@ -641,3 +641,15 @@ img { max-width: 100%; display: block; }
 
 /* 导航当前页高亮（两站共用，此前缺失） */
 .nav a.active { color: var(--primary); font-weight: 700; }
+
+/* 微信原文富 HTML 内嵌：保留原排版 + 全端自适应 */
+.wx-article { font-size: 16px; line-height: 1.78; overflow-wrap: break-word; }
+.wx-article, .wx-article * { max-width: 100% !important; box-sizing: border-box; }
+.wx-article img { height: auto !important; }
+.wx-article table { border-collapse: collapse; margin: 18px auto; }
+.wx-article table td, .wx-article table th { border: 1px solid var(--border); padding: 6px 10px; }
+.wx-article hr { border: none; border-top: 1px solid var(--border); }
+.wx-article a { word-break: break-all; }
+@media (max-width: 640px) {
+  .wx-article table { display: block; width: 100% !important; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+}

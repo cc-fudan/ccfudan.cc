@@ -13,6 +13,9 @@ const isCom = target === 'com';
 const site = isCom ? 'https://ccfudan.com' : 'https://ccfudan.cc';
 const cname = isCom ? 'ccfudan.com' : 'ccfudan.cc';
 
+// 项目根 = config 自身所在目录；写进 env 供页面 getStaticPaths 构建期读取（cwd 无关）
+process.env.ARTICLES_HTML_DIR = path.join(fileURLToPath(new URL('.', import.meta.url)), 'src', 'articles-html');
+
 /**
  * 站点目标集成：
  * 1) 按目标注入专属路由（对外站 /credentials，对内站 /family）
