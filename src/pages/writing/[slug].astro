@@ -100,7 +100,7 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
           }
           // 阅读量：同一浏览器会话只计 1 次（sessionStorage），否则仅读
           if (sessionStorage.getItem('pv_' + slug)) {
-            api('get/' + NS + '/pageview_' + slug).then(function (j) { if (pvEl) pvEl.textContent = fmt(j && j.value); });
+            api('get/' + NS + '/pageview_' + slug).then(function (j) { if (pvEl) pvEl.textContent = (j ? fmt(j.value) : '0'); });
           } else {
             api('hit/' + NS + '/pageview_' + slug).then(function (j) {
               if (pvEl) pvEl.textContent = fmt(j && j.value);

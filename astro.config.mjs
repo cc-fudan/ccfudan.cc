@@ -16,6 +16,23 @@ const cname = isCom ? 'ccfudan.com' : 'ccfudan.cc';
 // 项目根 = config 自身所在目录；写进 env 供页面 getStaticPaths 构建期读取（cwd 无关）
 process.env.ARTICLES_HTML_DIR = path.join(fileURLToPath(new URL('.', import.meta.url)), 'src', 'articles-html');
 
+// 文章配图双站隔离映射：读 writing/*.md frontmatter 的 tags，
+// tags 含 com/both 的 slug 才允许其配图（public/images/articles/<slug>/）进 .com 产物。
+function comArticleSlugs() {
+  const dir = path.join(fileURLToPath(new URL('.', import.meta.url)), 'src', 'content', 'writing');
+  const set = new Set();
+  if (!fs.existsSync(dir)) return set;
+  for (const f of fs.readdirSync(dir)) {
+    if (!f.endsWith('.md')) continue;
+    const head = fs.readFileSync(path.join(dir, f), 'utf8').slice(0, 800);
+    const m = head.match(/^tags:\s*\[([^\]]*)\]/m);
+    const tags = m ? m[1] : '';
+    if (/(^|["'\s,])(com|both)(["'\s,\]]|$)/.test(tags)) set.add(f.replace(/\.md$/, ''));
+  }
+  return set;
+}
+const COM_SLUGS = comArticleSlugs();
+
 /**
  * 站点目标集成：
  * 1) 按目标注入专属路由（对外站 /credentials，对内站 /family）
@@ -50,6 +67,16 @@ function siteTarget() {
           for (const f of ['scene-1.jpg', 'scene-2.jpg', 'scene-3.jpg', 'scene-4.jpg']) {
             const p = path.join(outDir, 'images', f);
             if (fs.existsSync(p)) fs.rmSync(p, { force: true });
+          }
+          // 文章配图双站隔离：剥离 cc 独有文章（tags 无 com/both）的配图目录，
+          // com/both 文章的配图保留（对外站文章页同样渲染富 HTML 正文）。
+          const artDir = path.join(outDir, 'images', 'articles');
+          if (fs.existsSync(artDir)) {
+            for (const d of fs.readdirSync(artDir)) {
+              if (!COM_SLUGS.has(d)) {
+                fs.rmSync(path.join(artDir, d), { recursive: true, force: true });
+              }
+            }
           }
         }
       },
