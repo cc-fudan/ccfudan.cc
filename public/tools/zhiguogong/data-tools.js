@@ -64,7 +64,7 @@
       lines.push('',`## 岗位 ${j['部门代码']} / ${j['职位代码']}`);
       for(const k of ['部门名称','用人司局','招考职位','招考人数','工作地点','专业','学历','学位','政治面貌','基层工作最低年限','服务基层项目工作经历','考试类别','职位简介','备注','咨询电话1','咨询电话2','咨询电话3'])if(j[k])lines.push(`${k}：${j[k]}`);
       lines.push(`来源定位：${j.sheet} 第 ${j.excel_row} 行`);
-      if(includeProfile){const e=evaluations.get(j.id);lines.push('本地规则初筛（可有错误，不作为官方结论）：'+e.status,...e.reasons.map(r=>`- ${r.label} [${r.status}]：${r.text}`));}
+      if(includeProfile){const e=evaluations.get(j.id);lines.push('本地规则初筛（可有错误，不作为官方结论）：'+(e.displayStatus||e.status),...e.reasons.map(r=>`- ${r.label} [${r.status}${r.reviewKind?' / '+r.reviewKind:''}]：${r.text}${r.evidence?'；依据原文：'+r.evidence:''}${r.source?'；来源：'+r.source:''}`));}
     }
     lines.push('','## 希望得到的回答','1. 逐岗列出明确条件、已知冲突、待确认事项；不要直接保证可以报考。','2. 引用本材料原文。需要外部政策时核验官方来源，注明年度与链接；无法核验就明确说明。','3. 信息不足时列出最少的补充问题，并给出咨询招录机关的具体问法。','4. 不要将人数或竞争比换算成录取概率。');
     return lines.join('\n');

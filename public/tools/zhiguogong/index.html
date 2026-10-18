@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><meta name="description" content="知国公：国考岗位辅助筛选，专业目录与省市联动，本地处理个人条件。"><meta name="color-scheme" content="light"><title>知国公 · 国考选岗工作台</title>
-  <link rel="stylesheet" href="styles.bcf7e4835763.css">
+  <link rel="stylesheet" href="styles.85d29600a96e.css">
 </head>
 <body>
 <header class="topbar">
@@ -19,7 +19,7 @@
     <div class="preset-row"><button data-preset="philosophy">试用：哲学硕士</button><button data-preset="law">试用：法学本科</button></div>
     <form id="profileForm" autocomplete="off">
       <div class="field-row"><label>年龄<input name="age" type="number" min="18" max="70" placeholder="如 29"></label><label>性别<select name="sex"><option value="">未填写</option><option>女</option><option>男</option></select></label></div>
-      <label>最高学历 · 必填<select name="education" required><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
+      <label>出生年月（精确核对年度年龄）<input name="birthMonth" type="month" min="1950-01" max="2010-12"></label><p class="hint">年龄按2027公告的出生区间核对；未填年月时不据此排除岗位，人民警察另有规定。</p><label>最高学历 · 必填<select name="education" required><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
       <div class="field-row"><label>最高学历对应学位 · 必填<select name="degree" required><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
       <label>最高学历专业 · 必填<div class="major-input-row"><input name="major" required placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
       <datalist id="majors"><option>法学</option><option>中国哲学</option><option>哲学</option><option>马克思主义哲学</option><option>汉语言文学</option><option>计算机科学与技术</option><option>会计学</option><option>金融学</option></datalist>
@@ -40,12 +40,12 @@
     <section id="discoveryView">
       <div class="eyebrow">2027 NATIONAL CIVIL SERVICE EXAM</div>
       <div class="hero"><div><h1 id="pageTitle">知国考，选好下一站<span>。</span></h1><p id="pageSubtitle">把复杂的报考条件，变成一份清晰的职位清单。</p></div><div class="hero-orbit" aria-hidden="true" title="知国考，也借一个国公的雅号。"><span>27</span><i></i></div></div>
-      <div class="stats-grid"><article class="stat"><span>本地职位库</span><strong id="totalCount">—</strong><small id="seatCount">加载中</small></article><article class="stat mint"><span>基础条件匹配</span><strong id="matchCount">—</strong><small>已填条件通过，仍需资格审核</small></article><article class="stat"><span>还有条件待核对</span><strong id="reviewCount">—</strong><small>专业范围或附加要求尚未明确</small></article><article class="stat"><span>有报名快照的候选</span><strong id="snapshotCount">—</strong><small>导入数据后可比较竞争情况</small></article></div>
-      <div class="notice"><span class="notice-icon">i</span><div><b>先看资格，再看竞争。</b> 年龄及年度报考通则尚未核验；专业目录、非全日制学历认可和工作经历认定以招录机关为准。<button id="showPolicy" class="text-button">查看筛选边界 ↗</button></div></div>
+      <div class="stats-grid"><article class="stat"><span>本地职位库</span><strong id="totalCount">—</strong><small id="seatCount">加载中</small></article><article class="stat mint"><span>基础条件匹配</span><strong id="matchCount">—</strong><small>已填条件通过，仍需资格审核</small></article><article class="stat"><span>待补资料或机关解释</span><strong id="reviewCount">—</strong><small>不含工具尚未识别的岗位；候选不含规则缺口</small></article><article class="stat"><span>工具规则待完善</span><strong id="snapshotCount" hidden></strong><strong id="rulegapCount">—</strong><small>保留原文与未识别原因，单独展示</small></article></div>
+      <div class="notice"><span class="notice-icon">i</span><div><b>先看资格，再看竞争。</b> 已核验2027公告与指南，新增“报考与备考”时间轴和岗位考试卡。专业目录按机关适用；出生年月未填时不据年龄排除。<button id="showPolicy" class="text-button">查看筛选边界 ↗</button></div></div>
       <section class="results-panel">
         <div class="filter-top"><div class="searchbox"><span>⌕</span><input id="search" aria-label="搜索职位" placeholder="搜索单位、职位名称或职位代码"></div><button id="exportResults" class="button subtle">导出筛选结果 ↗</button></div>
         <div class="filter-row"><div class="city-filter"><label>省份（可多选）<select id="province"><option value="">全国 / 添加省份</option></select></label><div id="provinceChips" class="city-chips"></div></div><div class="city-filter"><label>城市<select id="citySelect"><option value="">请先选择省份</option></select></label><div id="cityChips" class="city-chips"></div><input id="cities" type="hidden"><datalist id="cityList"></datalist></div><label>排序<select id="sort"><option value="match">匹配程度优先</option><option value="seats">招录人数从多到少</option><option value="ratio">有数据：竞争比从低到高</option></select></label></div>
-        <div class="results-bar"><div class="segments" aria-label="匹配状态"><button data-status="eligible" class="selected">候选岗位</button><button data-status="match">基础匹配</button><button data-status="review">待核对</button><button data-status="reject">不符合</button><button data-status="all">全部</button></div><span id="resultCount" class="muted small"></span></div>
+        <div class="results-bar"><div class="segments" aria-label="匹配状态"><button data-status="eligible" class="selected">候选岗位</button><button data-status="match">基础匹配</button><button data-status="review">全部待处理</button><button data-status="missing">缺个人资料</button><button data-status="policy">需机关解释</button><button data-status="rulegap">工具待完善</button><button data-status="reject">不符合</button><button data-status="all">全部</button></div><span id="resultCount" class="muted small"></span></div>
         <div id="results" aria-live="polite"></div>
         <div class="pagination"><span id="pageInfo"></span><div><button id="prev" class="button subtle">← 上一页</button><button id="next" class="button subtle">下一页 →</button></div></div>
       </section>
@@ -111,5 +111,5 @@
 </dialog>
 
 <dialog id="majorDialog"><div class="dialog-top"><h2>查找你的专业</h2><button class="close-dialog" aria-label="关闭专业目录">×</button></div><p class="small muted">按实际学历查找。可搜索名称、专业代码、类别和门类；没有找到时仍可手填。</p><div class="major-search"><select id="majorLevel" aria-label="专业目录学历"><option value="bachelor">本科目录</option><option value="graduate">研究生目录与历史专业</option></select><input id="majorSearch" placeholder="如：电子、会计、0301" aria-label="搜索专业"></div><p id="majorSearchCount" class="small muted"></p><div id="majorResults"></div></dialog><input id="importFile" type="file" accept=".csv,.json" hidden><input id="backupFile" type="file" accept=".json" hidden><div id="toast" role="status" hidden></div>
-<script src="edition.003f1f559c1e.js"></script><script src="data.49c8c41be2de.js"></script><script src="major-catalog.4b5a310d86fc.js"></script><script src="major-engine.178fa897b47d.js"></script><script src="engine.81e074ee1d61.js"></script><script src="data-tools.1f8e1b01226c.js"></script><script src="app.c072333ee21e.js"></script><script src="selection-ui.72b42dd7d144.js"></script>
+<script src="edition.003f1f559c1e.js"></script><script src="data.49c8c41be2de.js"></script><script src="major-catalog.4b5a310d86fc.js"></script><script src="major-engine.63c31d50a423.js"></script><script src="policy.9751076a99f8.js"></script><script src="engine.5e04be876f1c.js"></script><script src="data-tools.fc442c190347.js"></script><script src="app.1ba6b09ca422.js"></script><script src="selection-ui.72b42dd7d144.js"></script><script src="policy-ui.1e81709c96a0.js"></script>
 </body></html>

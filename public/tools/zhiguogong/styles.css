@@ -11,3 +11,24 @@
 @media(max-width:350px){.nav{font-size:11px;padding:4px 3px}.hero h1{font-size:23px}.segments button{font-size:10px}.field-row{grid-template-columns:1fr}.job-right{flex-wrap:wrap}.brand strong{font-size:21px}}
 
 .education-core{margin:16px 0;padding:13px 12px;border:1px solid #dfe7dc;border-radius:10px;background:#f6f8f3}.education-core h3{font-size:13px;margin:0 0 10px}.education-core[hidden]{display:none}#coreProfileStatus{line-height:1.7}
+
+/* Annual guide, timeline and exam card share the existing local visual system. */
+#policyView {min-width:0;max-width:100%;padding-bottom:40px;}
+.policy-callout {background:#eaf2eb;border:1px solid #bbd1bf;border-radius:18px;padding:20px 24px;margin:24px 0;line-height:1.8;}
+.policy-callout p {margin:8px 0 0;}
+.policy-heading {display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.exam-timeline {border:1px solid var(--line,#dee6e3);border-radius:18px;background:#fff;overflow:hidden;margin:18px 0;}
+.timeline-row {display:flex;gap:18px;padding:20px;border-bottom:1px solid #edf0ee;line-height:1.65;}
+.timeline-row:last-child {border:0;}.timeline-row p {margin:4px 0;}.timeline-row small {color:#61726b;}
+.timeline-state {font-size:12px;flex-shrink:0;align-self:flex-start;border-radius:14px;background:#f2f4f2;padding:4px 10px;}
+.timeline-state.active {background:#d5eadb;color:#24593a;}
+.policy-columns {display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:28px 0;}
+.policy-columns>* {min-width:0;overflow-wrap:anywhere;}.policy-columns a,.exam-card a {color:#31745a;text-decoration:underline;}
+.policy-faq dt {font-weight:650;margin:22px 0 8px;}.policy-faq dd {margin:0;color:#596b63;line-height:1.85;}
+.policy-columns p,.exam-card p {line-height:1.8;}.exam-card {background:#f1f5f1;padding:22px;border-radius:18px;overflow-wrap:anywhere;}
+.score-inputs {display:flex;align-items:end;gap:12px;flex-wrap:wrap;}.score-inputs label {flex:1;min-width:100px;}.score-inputs input {width:100%;}
+#examScoreResult {display:block;margin-top:15px;color:#21543c;font-weight:650;}
+.segments {flex-wrap:wrap;}
+@media(max-width:900px){.policy-columns{grid-template-columns:1fr;}.policy-callout{padding:17px;}.timeline-row{padding:15px;gap:12px;}.exam-card{padding:16px;}}
+@media(max-width:900px){.topbar nav{height:auto;min-height:47px;}}
+@media(max-width:480px){.topbar nav{flex-wrap:wrap;}.topbar nav .nav{padding:10px 9px;}.timeline-row{flex-direction:column;gap:8px;}.policy-heading .button{width:100%;}.score-inputs label{min-width:85px;}}

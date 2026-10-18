@@ -53,6 +53,32 @@ async function noOverflow(page,label){
    return {guangzhou:E.evaluate(get('133123:300140123001'),p).status,shenzhen:E.evaluate(get('133124:300141825001'),p).status,msa:E.evaluate(get('118308:300110003014'),{...p,education:'本科'}).status};
   });
   assert.deepEqual(notesRegression,{guangzhou:'match',shenzhen:'reject',msa:'reject'});
+  const coverageRegression=await page.evaluate(()=>{
+   const p={education:'硕士研究生',degree:'yes',bachelorDegree:'yes',major:'中国哲学',bachelorMajor:'哲学',bachelorMajorCode:'010101',politics:'群众',graduate:'social',years:'6',project:'none',certificate:'lawA',cet4:'425',cet6:'425'};
+   const j=window.JOB_DATA.jobs.find(x=>x.id==='126117:300110001002'),e=window.Screening.evaluate(j,p),M=window.MajorMatcher;
+   return {gap:e.displayStatus,work:e.reasons.find(x=>x.label==='特定工作经历').reviewKind,excluded:M.match('法学类（不含监狱学）','监狱学',2).status,alternative:M.match('法学类（不含监狱学）、监狱学','监狱学',2).status};
+  });
+  assert.deepEqual(coverageRegression,{gap:'rulegap',work:'missing',excluded:'reject',alternative:'pass'});
+  await page.click('[data-tab="policy"]');
+  assert.equal(await page.locator('.timeline-row').count(),9);
+  assert.ok(await page.locator('#policyView').isVisible());
+  const calendarDownload=page.waitForEvent('download');await page.click('#exportExamCalendar');
+  const calendar=await calendarDownload,calendarFile=path.join(shots,'exam-calendar.ics');await calendar.saveAs(calendarFile);
+  const ics=fs.readFileSync(calendarFile,'utf8');assert.equal((ics.match(/BEGIN:VEVENT/g)||[]).length,9);assert.ok(ics.includes('DTSTART:20261023T100000Z'));
+  for(const line of ics.split('\r\n'))assert.ok(Buffer.byteLength(line)<=75);
+  await page.screenshot({path:path.join(shots,'policy-desktop.png'),fullPage:true});
+  await page.click('[data-tab="discover"]');
+  await page.evaluate(()=>showDetail('133123:300140123001'));
+  assert.ok((await page.locator('#jobExamCard').textContent()).includes('财金'));
+  await page.fill('[name="score0"]','60');await page.fill('[name="score1"]','70');await page.fill('[name="score2"]','80');await page.click('#examScoreForm button');
+  assert.ok((await page.locator('#examScoreResult').textContent()).includes('72.50'));
+  await page.screenshot({path:path.join(shots,'exam-plan-desktop.png'),fullPage:false});
+  await page.click('#detailDialog .close-dialog');
+  const exemptions=await page.evaluate(()=>window.ExamPolicy.exam(window.JOB_DATA.jobs.find(j=>j.id==='109000:200121114001')));
+  assert.equal(exemptions.publicOnly,true);assert.equal(exemptions.special,false);assert.equal(exemptions.weights,null);
+  await page.evaluate(()=>{comparison=['133123:300140123001','130121:300110001001'];showCompare();});
+  assert.ok((await page.locator('#compareBody').textContent()).includes('考试方案 / 笔试权重'));
+  await page.click('#compareDialog .close-dialog');
   const screenshotRegression=await page.evaluate(()=>{
    const p={education:'硕士研究生',degree:'yes',major:'中国哲学',bachelorMajor:'哲学',bachelorMajorCode:'010101',politics:'群众',graduate:'social',years:'6',project:'none',certificate:'lawA',cet4:'425',cet6:'425'};
    return ['133124:300141825002','133138:300141138001','137119:400110119001','130124:300129005001','130124:300129005002'].map(id=>{
@@ -79,6 +105,10 @@ async function noOverflow(page,label){
   for(const width of [320,375,390,430,768]){
    await page.setViewportSize({width,height:844});
    await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await noOverflow(page,'zhiguogong '+width);
+   await page.click('[data-tab="policy"]');assert.ok(await page.locator('#policyView').isVisible());await noOverflow(page,'policy '+width);
+   await page.screenshot({path:path.join(shots,'policy-'+width+'.png'),fullPage:false});
+   await page.click('[data-tab="discover"]');
+   await page.evaluate(()=>showDetail('133123:300140123001'));await noOverflow(page,'exam detail '+width);await page.click('#detailDialog .close-dialog');
    if(width<=900){await page.click('#profileToggle');assert.ok(await page.locator('#profileForm').isVisible());await noOverflow(page,'profile open '+width);await page.click('#browseMajor');await page.fill('#majorSearch','计算机');await noOverflow(page,'major dialog '+width);await page.click('#majorDialog .close-dialog');await page.click('#applyMobileProfile');}
    await page.screenshot({path:path.join(shots,'zhiguogong-'+width+'.png'),fullPage:false});
    await page.goto(url+'/tools/',{waitUntil:'networkidle'});await noOverflow(page,'tools '+width);
@@ -92,8 +122,12 @@ async function noOverflow(page,label){
   await offline.setOffline(true);const p=await offline.newPage();p.on('pageerror',e=>errors.push(e.message));
   await p.goto('file://'+path.join(root,'tools/downloads/zhiguogong.html'),{waitUntil:'load'});await p.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
   await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'5');await noOverflow(p,'portable offline');
+  await p.click('#applyMobileProfile');await p.click('[data-tab="policy"]');assert.equal(await p.locator('.timeline-row').count(),9);await noOverflow(p,'portable policy offline');
+  await p.click('[data-tab="discover"]');await p.evaluate(()=>showDetail('133123:300140123001'));
+  await p.fill('[name="score0"]','60');await p.fill('[name="score1"]','70');await p.fill('[name="score2"]','80');await p.click('#examScoreForm button');
+  assert.ok((await p.locator('#examScoreResult').textContent()).includes('72.50'));await noOverflow(p,'portable exam offline');
   assert.deepEqual(errors,[]);
-  fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,errors},null,2));
+  fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,policy:true,calendarEvents:9,examScore:72.5,ruleVersion:await p.evaluate(()=>window.WORKBENCH_RULE_VERSION||null),errors},null,2));
   console.log('TOOLS BROWSER PASS: source-built pages, 4 tools, cascading provinces/cities, profiles, majors, persistence, mobile layouts, standalone offline.');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);console.log('::error title=Tools browser verification::'+String(e.stack||e).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));server.close();process.exit(1);});

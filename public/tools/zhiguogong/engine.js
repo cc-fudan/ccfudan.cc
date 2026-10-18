@@ -37,14 +37,30 @@
   function majorMatch(raw,value,level,p={},j={}){return root.MajorMatcher.match(raw,value,level,p.majorCode,p.majorCatalogLevel,p.majorCatalogSource,j);}
   function evaluate(j,p,policy={}){
     const reasons=[];
-    const add=(status,label,text)=>reasons.push({status,label,text});
+    const add=(status,label,text,detail={})=>{
+      let reviewKind=detail.reviewKind;
+      if(status==='review'&&!reviewKind){
+        reviewKind=/尚未填写|未填写|尚未提供|请补充|未填完整|缺少个人|证书选项不能确认/.test(text)?'missing':
+          /工具|尚未完成|未能自动|未在当前学历目录|多个专业代码|未识别|未被结构化/.test(text)?'rulegap':'policy';
+      }
+      const {label:ignoredLabel,status:ignoredStatus,text:ignoredText,reviewKind:ignoredKind,...metadata}=detail;
+      reasons.push({...metadata,status,label,text,...(status==='review'?{reviewKind}:{} )});
+    };
     const check=(v,label,fn)=>v===''||v==null?add('review',label,'尚未填写'):fn(v);
     const raw=j['备注']||'', req=j['专业']||'', level=levels[p.education]||0;
     let note=raw;
-    if(/职位要求专业为最高学历对应专业/.test(note)){
+    if(/职位要求专业(?:条件)?为(?:报考者)?最高学历对应专业/.test(note)){
       add(p.major&&p.education?'pass':'review','报考专业学历','按已填写的最高学历及其对应专业核对，不以本科专业或职业证书替代');
-      note=note.replace(/职位要求专业为最高学历对应专业/g,'');
+      note=note.replace(/职位要求专业(?:条件)?为(?:报考者)?最高学历对应专业/g,'');
     }
+    if(/高等学历教育各阶段均需同时取得相应学历学位/.test(note)){
+      const needed=level>=3?[p.degree,p.bachelorDegree]:[p.degree];
+      add(needed.includes('no')?'reject':needed.every(x=>x==='yes')?'pass':'review','各阶段学历学位','原文要求各高等教育阶段同时取得学历学位；本科及最高学历已填信息逐项核对，其他阶段证明仍应备齐',{evidence:'高等学历教育各阶段均需同时取得相应学历学位',reviewKind:'missing'});
+      note=note.replace(/高等学历教育各阶段均需同时取得相应学历学位/g,'');
+    }
+    note=note.replace(/应具有(\d+)年以上([^。；;]+工作经历)/g,(whole,years,scope)=>{
+      add('review','特定工作经历','岗位要求'+years+'年以上'+scope+'；普通基层总年限不能替代，请补充工作职责与证明',{reviewKind:'missing',evidence:whole});return '';
+    });
     check(p.education,'学历',()=>{
       const d=j['学历'], exact=/仅限/.test(d), min=d.includes('大专')?1:d.includes('本科')?2:d.includes('硕士')?3:4;
       const max=d.includes('或')?(d.includes('硕士')?3:2):exact?min:4;
@@ -54,7 +70,8 @@
     const mm=majorMatch(req,p.major,level,p,j);
     const degreeRules=root.MajorMatcher.educationNotes(raw,p,j);
     const eitherMajor=degreeRules.checks.find(r=>r.label==='专业（本科或研究生）');
-    add(eitherMajor?eitherMajor.status:mm.status,'专业',eitherMajor?eitherMajor.text:mm.text);
+    const professional=eitherMajor||mm;
+    add(professional.status,'专业',professional.text,{...professional,evidence:professional.evidence||req});
     if(p.major&&level&& !root.MajorMatcher.records(p.major,level).length&&root.MajorMatcher.records(p.major,level>=3?2:3).length)add('review','学历与专业信息','所填专业名称未在当前学历目录中找到，但在另一学历目录中存在，请按毕业证核正，目录差异不自动视为可报');
     check(p.politics,'政治面貌',v=>{
       const r=j['政治面貌'];add(r==='不限'||r===v||(v==='共青团员'&&r.includes('共青团员'))||(v==='中共党员'&&r.includes('中共党员'))?'pass':'reject','政治面貌',r);
@@ -77,9 +94,9 @@
       const strict=/(?:仅限|限|要求|须为)全日制/.test(note)&&!/(?:不限|不限制|非全日制)/.test(note);
       check(p.study,'学习形式',v=>add(v==='part'&&strict?'reject':'review','学习形式','备注涉及学习形式，请核对原文'));
     }
-    if(level>=3){
+    if(level>=2){
       const parsed=root.MajorMatcher.educationNotes(note,p,j);
-      for(const r of parsed.checks)add(r.status,r.label,r.text);
+      for(const r of parsed.checks)if(r.label!=='专业（本科或研究生）')add(r.status,r.label,r.text,r);
       note=parsed.remaining;
     }
     if(/本科(?:所学)?专业(?:限|为|须|应)|本科和研究生|本科、研究生|研究生和本科/.test(note)){
@@ -89,6 +106,11 @@
       }
     }
     note=note.replace(/有关专业考试信息及大纲可在中国证监会网站上查询[。]?/g,'');
+    if(/注册会计师专业阶段和综合阶段考试/.test(note)){
+      add('review','CPA全科合格证书','要求通过CPA专业及综合阶段并取得全科合格证；当前未单独提供此资质，不能由所选法考证书推断有或无',{reviewKind:'missing',evidence:raw.match(/[^。]*注册会计师专业阶段和综合阶段考试[^。]*/)?.[0]});
+      note=note.replace(/[^。]*注册会计师专业阶段和综合阶段考试[^。]*[。]?/g,'');
+    }
+    note=note.replace(/报名时须在备注栏注明学科代码[。]?/g,'');
     if(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书/.test(note)){
       add('review','CPA专业阶段证书','要求报名前取得CPA专业阶段合格证并填证书编号；当前证书选项不能确认此阶段资质，法考A证不能替代');
       note=note.replace(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书[，,]报名时须在备注中注明证书编号[。]?/g,'');
@@ -116,16 +138,22 @@
       note=note.replace(/(?:大学|全国大学)?英语[四六46]级[^。\n]*[。\n]?/g,'');
     }
     if(/户籍|户口|生源/.test(raw))add('review','户籍生源',p.hometown?'已填 '+p.hometown+'，需对照户籍或生源原文确认':'存在户籍或生源限制，尚未填写');
+    if(p.birthMonth&&root.ExamPolicy){
+      const annual=root.ExamPolicy.age(p,j,root.JOB_DATA?.meta.year);
+      if(annual)add(annual.status,annual.label,annual.text,annual);
+    }
     if(policy.min!==undefined&&policy.max!==undefined&&policy.source){
       check(p.age,'年龄',v=>add(Number(v)>=policy.min&&Number(v)<=policy.max?'pass':'review','年龄',`自设规则 ${policy.min}–${policy.max} 岁；超范围或特殊放宽需核实`));
     }
     if(/(?:年龄|周岁|岁以下|岁以内)/.test(raw))add('review','岗位年龄','备注存在年龄条件，请按出生日期和截止日核对');
     // Whitelist only low-risk housekeeping language. Anything left stays visible as review.
     note=note.replace(/在(?:本单位|北京税务系统)最低服务年限为?\s*5年(?:（含试用期）)?/g,'').replace(/本单位不提供宿舍/g,'').replace(/(?:仅限|限)?[男女]性/g,'').replace(/(?:限|招考对象为)?(?:2027届|应届)高校毕业生/g,'').replace(/[\s，,；;。\d．.、：:]+/g,'');
-    if(note&&!reasons.some(r=>r.status==='reject')&&!reasons.some(r=>['专项身份','户籍生源','本科专业','非应届附加条件','学习形式','岗位年龄'].includes(r.label)&&r.status==='review'))add('review','备注复核','工具规则待完善：以下备注尚未被结构化识别，应先完成规则核验；详情保留完整原文');
+    if(note)add('review','规则覆盖缺口','工具尚未完成以下备注的结构化识别：'+note,{reviewKind:'rulegap',evidence:raw,unparsed:note});
     if(!p.graduate&&!graduate)add('review','毕业身份','未填写毕业身份，需结合年度公告确认');
     const status=reasons.some(r=>r.status==='reject')?'reject':reasons.some(r=>r.status==='review')?'review':'match';
-    return {status,reasons,passes:reasons.filter(r=>r.status==='pass').length};
+    const reviewKinds=[...new Set(reasons.filter(r=>r.status==='review').map(r=>r.reviewKind))];
+    const displayStatus=status!=='review'?status:reviewKinds.includes('rulegap')?'rulegap':reviewKinds.includes('missing')?'missing':'policy';
+    return {status,displayStatus,reviewKinds,reasons,passes:reasons.filter(r=>r.status==='pass').length};
   }
   function parseCSV(text){
     text=text.replace(/^\uFEFF/,'');const rows=[];let row=[],field='',quoted=false;

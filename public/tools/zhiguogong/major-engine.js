@@ -34,12 +34,46 @@
     for(const c of text){if(c==='（'||c==='('){depth++;plain+=c;}else if(c==='）'||c===')'){depth=Math.max(0,depth-1);plain+=c;}else plain+=depth&&/[、,，;；]/.test(c)?' ':c;}
     return plain.split(/[、,，;；\n/]/).map(v=>strip(v).replace(/^[：:\s]+/,'').replace(/^[0-9A-Za-z]+/,'').replace(/[0-9A-Za-z]+$/,'').replace(/^(?:一级学科|专业类别|专业类|专业)[:：]/,'').replace(/等(?:专业)?$/,'')).filter(Boolean);
   }
+  function clauses(text){
+    const parts=[];let depth=0,start=0;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];if(/[（(]/.test(c))depth++;else if(/[）)]/.test(c))depth=Math.max(0,depth-1);
+      else if(!depth&&/[、，,；;]/.test(c)){parts.push(text.slice(start,i));start=i+1;}
+    }
+    parts.push(text.slice(start));return parts.filter(Boolean);
+  }
   function match(raw,value,level,explicitCode='',explicitLevel='',explicitSource='',job={}){
     const original=String(value||'').trim(),v=strip(original),part=section(String(raw||''),level),text=part.text;
     if(!value)return {status:'review',text:'尚未填写专业'};
+    const ownRecords=records(value,level);
+    if(explicitCode&&ownRecords.length&&!ownRecords.some(e=>e.code===explicitCode))return {status:'review',reviewKind:'missing',text:'所填专业名称与目录代码不一致，请重新选择'};
     if(part.ambiguous)return {status:'review',text:'岗位按学历分别列专业，但未识别出当前学历对应段落，请核对原文'};
     if(/^(?:不限|无限制|专业不限)[；;，。\s]*$/.test(text.trim()))return {status:'pass',text:'当前学历对应专业不限'};
-    if(/排除|不含|不包括|除外|仅限.*方向|限.*方向/.test(text))return {status:'review',text:'专业原文包含排除项或方向限制，请逐项核对'};
+    const branches=clauses(text);
+    if(branches.length>1&&branches.some(t=>/[（(](?:不含|不包括|排除)/.test(t))){
+      const results=branches.map(t=>match(t,value,level,explicitCode,explicitLevel,explicitSource,job));
+      const status=results.some(r=>r.status==='pass')?'pass':results.every(r=>r.status==='reject')?'reject':'review';
+      const unresolved=results.filter(r=>r.status==='review');
+      return {status,reviewKind:unresolved.some(r=>r.reviewKind==='rulegap'||/工具/.test(r.text))?'rulegap':unresolved.some(r=>r.reviewKind==='missing')?'missing':'policy',
+        text:results.map((r,i)=>branches[i]+'：'+r.text).join('；'),rule:{op:'any',source:text,children:results.map((r,i)=>({source:branches[i],status:r.status,rule:r.rule}))}};
+    }
+    // Parse exclusions before stripping parentheses. A failed inclusion stays failed,
+    // even when an exclusion branch cannot be resolved.
+    const exclusions=[];
+    let inclusion=text.replace(/[（(](?:不含|不包括|排除)([^）)]+)[）)]/g,(_,items)=>{exclusions.push(items);return '';});
+    inclusion=inclusion.replace(/[，,；;](?:不含|不包括|排除)(.+)$/g,(_,items)=>{exclusions.push(items);return '';});
+    if(exclusions.length){
+      const args=[value,level,explicitCode,explicitLevel,explicitSource,job];
+      const included=match(inclusion,...args);
+      const excluded=exclusions.map(items=>match(items.replace(/等(?:专业)?$/,''),...args));
+      const rule={op:'all',source:text,children:[{op:'include',source:inclusion},...exclusions.map(source=>({op:'exclude',source}))]};
+      if(excluded.some(r=>r.status==='pass'))return {status:'reject',text:'专业不符：所填专业属于原文明确排除范围“'+exclusions.join('；')+'”',rule};
+      if(included.status==='reject')return {...included,rule};
+      if(included.status==='review')return {...included,rule};
+      if(excluded.some((r,i)=>r.status==='review'||/等/.test(exclusions[i])))return {status:'review',reviewKind:'policy',text:'已核对包含范围；排除项含未明确列举的范围，需核实是否涉及所填专业',rule};
+      return {...included,text:included.text+'；已核对明确排除项，所填专业不在其中',rule};
+    }
+    if(/排除|不含|不包括|除外|仅限.*方向|限.*方向/.test(text))return {status:'review',reviewKind:'rulegap',text:'工具尚未解析此排除或方向条件，保留原文：'+text};
     const list=records(value,level),tokens=tokenize(text),direction=original.replace(/\s/g,'')!==v;
     const allCoded=tokens.length&&tokens.every(t=>t)&&text.split(/[、，,;；\n](?![^（(]*[）)])/).every(t=>/\d{4,6}/.test(t));
     const requestedCodes=[...text.matchAll(/(?<!\d)(\d{4,6})(?:TK|T|K)?(?!\d)/g)].map(m=>m[1]);
@@ -120,15 +154,26 @@
   }
   function educationNotes(raw,p,job={}){
     const checks=[];
-    const either=String(raw).match(/本科阶段为(.+?)(?:专业)?[，,]\s*或者研究生阶段为(.+?)专业[，,]并取得相应的学位[、，,]学历证书/);
-    if(either&&['硕士研究生','博士研究生'].includes(p.education)){
+    const either=String(raw).match(/本科阶段为([^。；;]+?)(?:专业)?[，,]?\s*(?:或者|或)研究生阶段为([^。；;]+?)专业(?:[，,]并取得相应的学位[、，,]学历证书)?/);
+    if(either){
       const b=match(either[1],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
-      const g=match(either[2],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job);
+      const graduate=['硕士研究生','博士研究生'].includes(p.education);
+      const g=graduate?match(either[2],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job):{status:'reject',text:'未填报研究生学历，该分支不适用'};
+      if(!graduate)Object.assign(b,match(either[1],p.major,2,p.majorCode,'bachelor',p.majorCatalogSource,job));
       if(b.status!=='pass'&&explicitCodeConflict(either[1],p.bachelorMajor,2)){b.status='reject';b.text='本科专业与所列学科代码门类不符';}
       if(g.status!=='pass'&&explicitCodeConflict(either[2],p.major,3)){g.status='reject';g.text='研究生专业与所列学科代码门类不符';}
       const status=b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review';
-      checks.push({label:'专业（本科或研究生）',status,text:'满足任一学历分支即可。本科：'+b.text+'；研究生：'+g.text});
+      checks.push({label:'专业（本科或研究生）',status,reviewKind:status==='review'?(b.reviewKind||g.reviewKind||(!p.bachelorMajor?'missing':'rulegap')):undefined,evidence:either[0],rule:{op:'any',source:either[0],children:[{stage:'bachelor',source:either[1],status:b.status},{stage:'graduate',source:either[2],status:g.status}]},text:'满足任一学历分支即可。本科：'+b.text+'；研究生：'+g.text});
       return {checks,remaining:String(raw).replace(either[0],'')};
+    }
+    const shorthand=String(raw).match(/要求本科(?:或|和)(?:硕士)?研究生(?:阶段)?(?:专业符合|阶段均为[^；;。]+|均为[^；;。]+)/);
+    if(shorthand){
+      const isAny=/本科或/.test(shorthand[0]),requirement=shorthand[0].includes('均为')?shorthand[0].split('均为')[1]:job['专业'];
+      const b=match(requirement,['硕士研究生','博士研究生'].includes(p.education)?p.bachelorMajor:p.major,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
+      const g=['硕士研究生','博士研究生'].includes(p.education)?match(requirement,p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job):{status:'reject',text:'无研究生学历'};
+      const status=isAny?(b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review'):(b.status==='reject'||g.status==='reject'?'reject':b.status==='pass'&&g.status==='pass'?'pass':'review');
+      checks.push({label:isAny?'专业（本科或研究生）':'专业（本科且研究生）',status,evidence:shorthand[0],rule:{op:isAny?'any':'all',source:shorthand[0]},text:'本科：'+b.text+'；研究生：'+g.text});
+      return {checks,remaining:String(raw).replace(shorthand[0],'')};
     }
     if(/本科或硕士任一学习阶段为相关专业/.test(raw)&&['硕士研究生','博士研究生'].includes(p.education)){
       const b=match(job['专业'],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
@@ -154,7 +199,7 @@
     });
     return {checks,remaining};
   }
-  root.MajorMatcher={match,records,section,tokenize,strip,educationNotes,explicitCodeConflict};
+  root.MajorMatcher={match,records,section,tokenize,strip,educationNotes,explicitCodeConflict,clauses};
 })(typeof window!=='undefined'?window:globalThis);
 
-window.WORKBENCH_RULE_VERSION="202710-bcfc08440c";
+window.WORKBENCH_RULE_VERSION="202710-9573e2b0ac";
