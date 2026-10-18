@@ -53,6 +53,14 @@ async function noOverflow(page,label){
    return {guangzhou:E.evaluate(get('133123:300140123001'),p).status,shenzhen:E.evaluate(get('133124:300141825001'),p).status,msa:E.evaluate(get('118308:300110003014'),{...p,education:'本科'}).status};
   });
   assert.deepEqual(notesRegression,{guangzhou:'match',shenzhen:'reject',msa:'reject'});
+  const screenshotRegression=await page.evaluate(()=>{
+   const p={education:'硕士研究生',degree:'yes',major:'中国哲学',bachelorMajor:'哲学',bachelorMajorCode:'010101',politics:'群众',graduate:'social',years:'6',project:'none',certificate:'lawA',cet4:'425',cet6:'425'};
+   return ['133124:300141825002','133138:300141138001','137119:400110119001','130124:300129005001','130124:300129005002'].map(id=>{
+    const e=window.Screening.evaluate(window.JOB_DATA.jobs.find(j=>j.id===id),p);
+    return {id,status:e.status,major:e.reasons.find(r=>r.label==='专业').status};
+   });
+  });
+  assert.ok(screenshotRegression.every(e=>e.status==='reject'&&e.major==='reject'),JSON.stringify(screenshotRegression));
   await page.selectOption('#province','湖北省');
   let city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('武汉市'));assert.ok(!city.includes('长沙市'));
   await page.selectOption('#citySelect','武汉市');

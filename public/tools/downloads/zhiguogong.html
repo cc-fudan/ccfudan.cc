@@ -164,6 +164,11 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
     return {text:selected.map(p=>{const i=labels.indexOf(p);return raw.slice(p.index+p[0].length,labels[i+1]?.index??raw.length);}).join('；'),ambiguous:false};
   }
   function tokenize(text){
+    // Explicit enumerations inside a category are requirements, not expendable notes.
+    text=text.replace(/([^、，,;；\n]+类)[（(]([^）)]+)[）)]/g,(whole,label,inner)=>{
+      const names=inner.split(/[、，,]/).map(strip);
+      return names.length>1&&names.every(n=>catalog.some(e=>e.name===n))?names.join('、'):whole;
+    });
     // Preserve commas inside explanatory parentheses; keep exact compound names from the catalogue.
     let plain='',depth=0;
     for(const c of text){if(c==='（'||c==='('){depth++;plain+=c;}else if(c==='）'||c===')'){depth=Math.max(0,depth-1);plain+=c;}else plain+=depth&&/[、,，;；]/.test(c)?' ':c;}
@@ -176,11 +181,20 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
     if(/^(?:不限|无限制|专业不限)[；;，。\s]*$/.test(text.trim()))return {status:'pass',text:'当前学历对应专业不限'};
     if(/排除|不含|不包括|除外|仅限.*方向|限.*方向/.test(text))return {status:'review',text:'专业原文包含排除项或方向限制，请逐项核对'};
     const list=records(value,level),tokens=tokenize(text),direction=original.replace(/\s/g,'')!==v;
+    const allCoded=tokens.length&&tokens.every(t=>t)&&text.split(/[、，,;；\n](?![^（(]*[）)])/).every(t=>/\d{4,6}/.test(t));
+    const requestedCodes=[...text.matchAll(/(?<!\d)(\d{4,6})(?:TK|T|K)?(?!\d)/g)].map(m=>m[1]);
+    if(allCoded&&requestedCodes.length&&list.length&&!direction&&requestedCodes.every(c=>catalog.some(e=>e.code.startsWith(c)))){
+      if(!list.some(e=>requestedCodes.some(c=>e.code.startsWith(c))))return {status:'reject',text:'专业不符：岗位明确要求学科代码'+requestedCodes.join('、')+'；“'+v+'”的目录代码为'+[...new Set(list.map(e=>e.code))].join('、')};
+    }
     const actualLevel=explicitLevel===(level>=3?'graduate':'bachelor')?explicitLevel:(level>=3?'graduate':'bachelor');
     const chosen=explicitCode?catalog.find(e=>e.code===explicitCode&&e.level===actualLevel&&(!explicitSource||e.source===explicitSource)):list.length===1?list[0]:null;
     const finish=reason=>({status:direction?'review':'pass',text:direction?'已识别主专业，培养方向仍需核对':reason});
     const agency=root.AGENCY_MAJOR_CATALOG;
     const scoped=agency?.year===2027&&level>=2&&/国家税务总局/.test(job['部门名称']||'');
+    if(scoped&&tokens.length&&tokens.every(t=>/^(?:英语|法语|阿拉伯语|德语|西班牙语|俄语|日语|韩语|朝鲜语)相关专业$/.test(t))){
+      const own=possibleDisciplines(list);
+      if(own.length&&!own.some(d=>['文学','交叉学科'].includes(d)))return {status:'reject',text:'专业不符：岗位限定'+tokens.join('、')+'；“'+v+'”归属'+own.join('、')+'，不属于所需外语专业范围（税务2027外语分类参照说明）'};
+    }
     if(scoped){
       const groups=tokens.filter(t=>agency.categories[t]);
       const names=new Set([v,agency.aliases[v]].filter(Boolean));
@@ -234,13 +248,19 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
       return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
     }
     const wanted=new Set((chosen?[chosen]:list).flatMap(e=>[e.name,e.category,e.discipline+'门类']).filter(Boolean));
-    if(tokens.some(t=>/门类$|类别?$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'岗位采用招录自定义专业分类，本地目录不能直接排除，请核对原文'};
+    const targetRecords=tokens.map(t=>catalog.filter(e=>[e.name,e.category,e.category+'类'].includes(t)));
+    if(!direction&&list.length&&targetRecords.length&&targetRecords.every(es=>es.length)&&!/相关|相近|方向/.test(text)){
+      const own=possibleDisciplines(chosen?[chosen]:list),target=possibleDisciplines(targetRecords.flat());
+      if(own.length&&target.length&&!own.includes('交叉学科')&&!target.includes('交叉学科')&&!own.some(d=>target.includes(d)))
+        return {status:'reject',text:'专业不符：逐项核对'+tokens.join('、')+'后，其目录门类为'+target.join('、')+'；“'+v+'”归属'+own.join('、')};
+    }
+    if(tokens.some(t=>/门类$|类别?$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'工具规则待完善：尚未完成该机关专业类别与目录的对应核验，不表示个人资格存在疑问；请勿据此认定可以报考'};
     if(tokens.some(t=>wanted.has(t)))return {status:'review',text:'专业存在关联，需要确认类别与学历层级'};
     return {status:'reject',text:'当前学历对应的专业原文未包含所填专业或目录类别'};
   }
   function educationNotes(raw,p,job={}){
     const checks=[];
-    const either=String(raw).match(/本科阶段为(.+?)专业[，,]\s*或者研究生阶段为(.+?)专业[，,]并取得相应的学位[、，,]学历证书/);
+    const either=String(raw).match(/本科阶段为(.+?)(?:专业)?[，,]\s*或者研究生阶段为(.+?)专业[，,]并取得相应的学位[、，,]学历证书/);
     if(either&&['硕士研究生','博士研究生'].includes(p.education)){
       const b=match(either[1],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
       const g=match(either[2],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job);
@@ -249,6 +269,13 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
       const status=b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review';
       checks.push({label:'专业（本科或研究生）',status,text:'满足任一学历分支即可。本科：'+b.text+'；研究生：'+g.text});
       return {checks,remaining:String(raw).replace(either[0],'')};
+    }
+    if(/本科或硕士任一学习阶段为相关专业/.test(raw)&&['硕士研究生','博士研究生'].includes(p.education)){
+      const b=match(job['专业'],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
+      const g=match(job['专业'],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job);
+      const status=b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review';
+      checks.push({label:'专业（本科或研究生）',status,text:'本科或硕士任一阶段符合即可。本科：'+b.text+'；研究生：'+g.text});
+      return {checks,remaining:String(raw).replace(/本科或硕士任一学习阶段为相关专业[，,]并取得相应的学历[、，,]学位证书/g,'')};
     }
     // Parse only explicit degree-specific lists, leaving OR/AND shorthand and other
     // constraints intact for review. Parenthetical codes stay attached to names.
@@ -270,7 +297,7 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
   root.MajorMatcher={match,records,section,tokenize,strip,educationNotes,explicitCodeConflict};
 })(typeof window!=='undefined'?window:globalThis);
 
-window.WORKBENCH_RULE_VERSION="202710-3bdf8c2dc9";
+window.WORKBENCH_RULE_VERSION="202710-bcfc08440c";
 
 </script><script>
 /* Conservative, explainable local screening. No probabilistic eligibility claims. */
@@ -397,7 +424,7 @@ window.WORKBENCH_RULE_VERSION="202710-3bdf8c2dc9";
     if(/(?:年龄|周岁|岁以下|岁以内)/.test(raw))add('review','岗位年龄','备注存在年龄条件，请按出生日期和截止日核对');
     // Whitelist only low-risk housekeeping language. Anything left stays visible as review.
     note=note.replace(/在(?:本单位|北京税务系统)最低服务年限为?\s*5年(?:（含试用期）)?/g,'').replace(/本单位不提供宿舍/g,'').replace(/(?:仅限|限)?[男女]性/g,'').replace(/(?:限|招考对象为)?(?:2027届|应届)高校毕业生/g,'').replace(/[\s，,；;。\d．.、：:]+/g,'');
-    if(note&&!reasons.some(r=>r.status==='reject')&&!reasons.some(r=>['专项身份','户籍生源','本科专业','非应届附加条件','学习形式','岗位年龄'].includes(r.label)&&r.status==='review'))add('review','备注复核','原文含附加要求，需逐条确认（详情可见完整备注）');
+    if(note&&!reasons.some(r=>r.status==='reject')&&!reasons.some(r=>['专项身份','户籍生源','本科专业','非应届附加条件','学习形式','岗位年龄'].includes(r.label)&&r.status==='review'))add('review','备注复核','工具规则待完善：以下备注尚未被结构化识别，应先完成规则核验；详情保留完整原文');
     if(!p.graduate&&!graduate)add('review','毕业身份','未填写毕业身份，需结合年度公告确认');
     const status=reasons.some(r=>r.status==='reject')?'reject':reasons.some(r=>r.status==='review')?'review':'match';
     return {status,reasons,passes:reasons.filter(r=>r.status==='pass').length};

@@ -122,7 +122,7 @@
     if(/(?:年龄|周岁|岁以下|岁以内)/.test(raw))add('review','岗位年龄','备注存在年龄条件，请按出生日期和截止日核对');
     // Whitelist only low-risk housekeeping language. Anything left stays visible as review.
     note=note.replace(/在(?:本单位|北京税务系统)最低服务年限为?\s*5年(?:（含试用期）)?/g,'').replace(/本单位不提供宿舍/g,'').replace(/(?:仅限|限)?[男女]性/g,'').replace(/(?:限|招考对象为)?(?:2027届|应届)高校毕业生/g,'').replace(/[\s，,；;。\d．.、：:]+/g,'');
-    if(note&&!reasons.some(r=>r.status==='reject')&&!reasons.some(r=>['专项身份','户籍生源','本科专业','非应届附加条件','学习形式','岗位年龄'].includes(r.label)&&r.status==='review'))add('review','备注复核','原文含附加要求，需逐条确认（详情可见完整备注）');
+    if(note&&!reasons.some(r=>r.status==='reject')&&!reasons.some(r=>['专项身份','户籍生源','本科专业','非应届附加条件','学习形式','岗位年龄'].includes(r.label)&&r.status==='review'))add('review','备注复核','工具规则待完善：以下备注尚未被结构化识别，应先完成规则核验；详情保留完整原文');
     if(!p.graduate&&!graduate)add('review','毕业身份','未填写毕业身份，需结合年度公告确认');
     const status=reasons.some(r=>r.status==='reject')?'reject':reasons.some(r=>r.status==='review')?'review':'match';
     return {status,reasons,passes:reasons.filter(r=>r.status==='pass').length};
