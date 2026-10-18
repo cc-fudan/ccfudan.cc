@@ -14,6 +14,8 @@
 @media(max-width:900px){.hero-orbit{display:none}}
 @media(max-width:900px){html{scroll-padding-top:15px}.topbar{position:relative;height:auto;min-height:76px;flex-wrap:wrap;padding:12px 14px 0;gap:8px}.topbar nav{width:100%;height:47px;margin:0;gap:2px}.nav{padding:5px 6px;min-height:44px;white-space:nowrap;font-size:12px}.brand strong{font-size:23px}.brandmark{height:36px;width:34px}.layout{display:flex;flex-direction:column}.sidebar{padding:12px 16px;min-height:auto}.sidebar #profileToggle{display:block;width:100%;background:#edf5ef;border:1px solid #cfdfd2;color:#27684f;padding:11px;border-radius:8px;font-size:14px;text-align:left;min-height:46px}.sidebar .section-label,.sidebar .profile-heading,.sidebar>.small,.sidebar .preset-row,.sidebar #profileForm,.sidebar .profile-footer{display:none}.sidebar.mobile-open .profile-heading{display:flex}.sidebar.mobile-open>.small{display:block}.sidebar.mobile-open .preset-row{display:flex;margin:13px 0}.sidebar.mobile-open #profileForm{display:block}.sidebar.mobile-open .profile-footer{display:block}.sidebar.mobile-open #applyMobileProfile{display:block;width:100%;margin-top:18px;min-height:46px}.profile-heading{margin-top:15px}input,select,textarea,label input,label select{font-size:16px;min-height:44px}.major-input-row .button{font-size:13px;min-height:44px}.field-row{gap:9px}main{padding:22px 13px 90px}.edition-ribbon{font-size:11px;margin-bottom:19px}.hero{min-height:85px;margin-bottom:18px}.hero h1{font-size:26px;line-height:1.45}.hero p{font-size:12px}.stat span{font-size:11px}.stat small{font-size:10px}.notice{padding:12px;gap:8px;font-size:11px}.filter-top{padding:13px;gap:10px}.filter-top .searchbox{min-width:0;flex:1 1 100%}.filter-top>.button{width:100%;min-height:42px}.filter-row{display:grid;grid-template-columns:1fr 1fr;padding:0 13px 13px;gap:12px}.filter-row>label,.filter-row>.city-filter{margin:0;min-width:0;display:block}.filter-row>label:last-child{grid-column:1/-1}.filter-row label select,.city-filter select{width:100%;max-width:none;min-width:0;min-height:44px}.city-filter{min-width:0}.filter-row input{width:100%;max-width:none}.segments{width:100%;gap:3px;padding:3px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}.segments button{min-height:42px;padding:7px 3px;font-size:11px;white-space:nowrap}.results-bar{padding:10px;gap:10px}.job-card{grid-template-columns:1fr;gap:13px;padding:18px 14px}.job-title{font-size:16px;min-height:30px}.job-right{flex-direction:row;align-items:center;justify-content:space-between;text-align:left;border-top:1px solid #eaf0e9;padding-top:12px;gap:8px}.job-actions{margin-top:0;flex-wrap:wrap}.job-actions button{min-height:42px;font-size:12px;padding:8px 11px}.job-right strong{font-size:20px}.job-reason{font-size:12px;line-height:1.8}.chip{font-size:11px}.job-meta{font-size:11px}.pagination{gap:8px;flex-wrap:wrap}.pagination .button{min-height:44px}.compare-dock{bottom:max(12px,env(safe-area-inset-bottom));max-width:calc(100vw - 18px);padding:9px;gap:8px;white-space:normal}.compare-dock button{min-height:42px}.compare-dock span{font-size:11px}dialog{width:calc(100vw - 18px);padding:17px;max-height:calc(100dvh - 35px);border-radius:12px}.dialog-top{top:-17px;padding-top:2px}.close-dialog{height:42px;width:42px;min-width:42px}.detail-grid{grid-template-columns:1fr 1fr}.detail-grid dd{font-size:12px}.detail-grid dt{font-size:11px}.major-search{grid-template-columns:1fr;gap:8px}.major-choice{grid-template-columns:1fr;padding:14px 4px;min-height:68px}.major-choice small{grid-column:auto}.major-choice span{font-size:12px}.data-actions .button{min-height:44px}.count-form{grid-template-columns:1fr}.data-card{padding:17px 14px}.data-card .field-row{display:block}.bulk-count{min-width:90px}#toast{font-size:12px;max-width:calc(100vw - 28px)}.page-footer{font-size:10px}.guide-grid .data-card{margin-top:12px}.watch-toolbar label{display:block;width:100%}.watch-toolbar select{width:100%;margin-top:7px}.stats-grid{gap:10px}.stat{padding:13px 12px}.detail-section .raw{padding:12px;font-size:12px}.reason-list li{font-size:12px;line-height:1.9}}
 @media(max-width:350px){.nav{font-size:11px;padding:4px 3px}.hero h1{font-size:23px}.segments button{font-size:10px}.field-row{grid-template-columns:1fr}.job-right{flex-wrap:wrap}.brand strong{font-size:21px}}
+
+.education-core{margin:16px 0;padding:13px 12px;border:1px solid #dfe7dc;border-radius:10px;background:#f6f8f3}.education-core h3{font-size:13px;margin:0 0 10px}.education-core[hidden]{display:none}#coreProfileStatus{line-height:1.7}
 </style>
 </head>
 <body>
@@ -30,16 +32,16 @@
     <div class="preset-row"><button data-preset="philosophy">试用：哲学硕士</button><button data-preset="law">试用：法学本科</button></div>
     <form id="profileForm" autocomplete="off">
       <div class="field-row"><label>年龄<input name="age" type="number" min="18" max="70" placeholder="如 29"></label><label>性别<select name="sex"><option value="">未填写</option><option>女</option><option>男</option></select></label></div>
-      <label>最高学历<select name="education"><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
-      <div class="field-row"><label>对应学位<select name="degree"><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
-      <label>最高学历专业<div class="major-input-row"><input name="major" placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
+      <label>最高学历 · 必填<select name="education" required><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
+      <div class="field-row"><label>最高学历对应学位 · 必填<select name="degree" required><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
+      <label>最高学历专业 · 必填<div class="major-input-row"><input name="major" required placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
       <datalist id="majors"><option>法学</option><option>中国哲学</option><option>哲学</option><option>马克思主义哲学</option><option>汉语言文学</option><option>计算机科学与技术</option><option>会计学</option><option>金融学</option></datalist>
-      <label>政治面貌<select name="politics"><option value="">未填写</option><option>群众</option><option>共青团员</option><option>中共党员</option><option>其他民主党派</option></select></label>
+      <section id="bachelorEducation" class="education-core"><h3>本科阶段信息 <span class="small muted">必填</span></h3><label>本科专业<div class="major-input-row"><input name="bachelorMajor" required placeholder="部分岗位同时限制本科专业"><button id="browseBachelorMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="bachelorMajorCode"><input type="hidden" name="bachelorMajorCatalogLevel"><input type="hidden" name="bachelorMajorCatalogSource">
+        <label>本科对应学位<select name="bachelorDegree" required><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><p class="hint">部分岗位同时限制本科和研究生专业。未填完整时，这些岗位仍需核对。</p></section><p id="coreProfileStatus" class="hint" role="status"></p><label>政治面貌<select name="politics"><option value="">未填写</option><option>群众</option><option>共青团员</option><option>中共党员</option><option>其他民主党派</option></select></label>
       <div class="field-row"><label>毕业身份<select name="graduate"><option value="">待确认</option><option value="social">非应届</option><option value="current">2027届毕业生</option><option value="other">其他应届身份</option></select></label><label>基层工作年限<input name="years" type="number" min="0" max="50" step="0.5" placeholder="如 6"></label></div>
       <label>服务基层项目经历<select name="project"><option value="">未确认</option><option value="none">无专项经历（普通工作）</option><option>大学生村官</option><option>三支一扶</option><option>大学生志愿服务西部计划</option><option>农村义务教育阶段学校教师特设岗位计划</option><option value="veteran">服役满5年的高校毕业生退役士兵</option></select></label>
       <p class="hint">普通基层工作年限不等于服务基层项目身份。</p>
-      <details class="more-fields"><summary>补充证书、英语与本科专业 <span>＋</span></summary>
-        <label>本科专业<div class="major-input-row"><input name="bachelorMajor" placeholder="部分岗位同时限制本科专业"><button id="browseBachelorMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="bachelorMajorCode"><input type="hidden" name="bachelorMajorCatalogLevel"><input type="hidden" name="bachelorMajorCatalogSource">
+      <details class="more-fields"><summary>补充证书、英语与户籍 <span>＋</span></summary>
         <label>职业证书<select name="certificate"><option value="">未填写</option><option value="none">无相关证书</option><option value="lawA">法律职业资格 A 证</option><option value="lawyer">律师执业证</option><option value="cpa">注册会计师全科合格</option><option value="tax">税务师</option><option value="pmp">PMP</option><option value="other">其他证书（逐岗核对）</option></select></label>
         <div class="field-row"><label>英语四级分数<input name="cet4" type="number" min="0" max="710" placeholder="未填写"></label><label>英语六级分数<input name="cet6" type="number" min="0" max="710" placeholder="未填写"></label></div>
         <label>户籍 / 生源地<input name="hometown" placeholder="如湖北省荆州市（仍需逐岗核实）"></label>
@@ -143,6 +145,14 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
   const strip=s=>String(s??'').replace(/\s/g,'').replace(/[（(][^）)]*[）)]/g,'').replace(/[＊*]/g,'');
   const nameIndex=new Map();
   for(const e of catalog){const k=e.level+':'+e.name;if(!nameIndex.has(k))nameIndex.set(k,[]);nameIndex.get(k).push(e);}
+  function possibleDisciplines(entries){return [...new Set(entries.flatMap(e=>[e.discipline,...root.DISCIPLINE_BOUNDS?.crossAwards[e.code.slice(0,4)]||[]]).filter(Boolean))];}
+  function explicitCodeConflict(text,value,level){
+    const own=records(value,level),ownDisciplines=possibleDisciplines(own);
+    const codes=[...text.matchAll(/(?:学科|专业)代码(?:为)?\s*(\d{4,6})(?:TK|T|K)?/g)].map(m=>m[1]);
+    if(!own.length||!codes.length||!ownDisciplines.length||ownDisciplines.includes('交叉学科'))return false;
+    const indexed=codes.map(c=>catalog.filter(e=>e.code.startsWith(c)));
+    return indexed.every(es=>es.length)&&!possibleDisciplines(indexed.flat()).some(d=>ownDisciplines.includes(d));
+  }
   function records(value,level){const key=level>=3?'graduate':'bachelor';return nameIndex.get(key+':'+strip(value))||[];}
   function section(raw,level){
     const re=/(大学本科|本科(?:生)?|硕士研究生|博士研究生|研究生|硕士|博士|大专|专科)(?:所学)?(?:专业)?(?:报考)?\s*[:：]/g;
@@ -217,16 +227,50 @@ window.DISCIPLINE_BOUNDS={"graduateDisciplines": ["哲学", "经济学", "法学
     }
     // Tokens from current/legacy catalogues are kept distinct; no substring-equals-major shortcut.
     if(/相关|相近|等专业|专业不限/.test(text)||text.includes(v))return {status:'review',text:'专业表述、相关范围或培养方向需由招录机关确认'};
-    if(!list.length&&!chosen)return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
+    if(!list.length&&!chosen){
+      const other=records(value,level>=3?2:3);
+      const exactList=tokens.length&&tokens.every(t=>/^[\u4e00-\u9fff·]{2,30}$/.test(t)&&!/(?:类|门类|等|方向)$/.test(t)&&![...catalog].some(e=>[e.category,e.discipline].includes(t)&&e.name!==t));
+      if(other.length&&exactList&&!direction&&!tokens.includes(v))return {status:'reject',text:'专业不符：岗位逐项列出的专业不含“'+v+'”；另：该名称仅在其他学历目录中找到，请核正学历及证书专业名称'};
+      return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
+    }
     const wanted=new Set((chosen?[chosen]:list).flatMap(e=>[e.name,e.category,e.discipline+'门类']).filter(Boolean));
     if(tokens.some(t=>/门类$|类别?$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'岗位采用招录自定义专业分类，本地目录不能直接排除，请核对原文'};
     if(tokens.some(t=>wanted.has(t)))return {status:'review',text:'专业存在关联，需要确认类别与学历层级'};
     return {status:'reject',text:'当前学历对应的专业原文未包含所填专业或目录类别'};
   }
-  root.MajorMatcher={match,records,section,tokenize,strip};
+  function educationNotes(raw,p,job={}){
+    const checks=[];
+    const either=String(raw).match(/本科阶段为(.+?)专业[，,]\s*或者研究生阶段为(.+?)专业[，,]并取得相应的学位[、，,]学历证书/);
+    if(either&&['硕士研究生','博士研究生'].includes(p.education)){
+      const b=match(either[1],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
+      const g=match(either[2],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job);
+      if(b.status!=='pass'&&explicitCodeConflict(either[1],p.bachelorMajor,2)){b.status='reject';b.text='本科专业与所列学科代码门类不符';}
+      if(g.status!=='pass'&&explicitCodeConflict(either[2],p.major,3)){g.status='reject';g.text='研究生专业与所列学科代码门类不符';}
+      const status=b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review';
+      checks.push({label:'专业（本科或研究生）',status,text:'满足任一学历分支即可。本科：'+b.text+'；研究生：'+g.text});
+      return {checks,remaining:String(raw).replace(either[0],'')};
+    }
+    // Parse only explicit degree-specific lists, leaving OR/AND shorthand and other
+    // constraints intact for review. Parenthetical codes stay attached to names.
+    const re=/(?:要求)?(本科|研究生)(?:所学)?专业(?:为|须为|应为|限于)\s*([^；;\n。]+?)(?=[，,](?:硕士)?研究生专业|[；;\n。]|$)/g;
+    const remaining=String(raw).replace(re,(whole,stage,requirement)=>{
+      const bachelor=stage==='本科',value=bachelor?p.bachelorMajor:p.major,code=bachelor?p.bachelorMajorCode:p.majorCode;
+      const source=bachelor?p.bachelorMajorCatalogSource:p.majorCatalogSource,level=bachelor?2:3;
+      const scope=bachelor?'bachelor':'graduate',parts=tokenize(requirement);
+      // Do not consume a sentence that mixes a major list with unparsed conditions.
+      if(!parts.length||!parts.every(t=>catalog.some(e=>e.level===scope&&[e.name,e.category,e.category+'类',e.discipline,e.discipline+'类'].includes(t))))return whole;
+      const list=records(value,level);
+      const conflict=code&&!list.some(e=>e.code===code);
+      const result=conflict?{status:'review',text:'所填专业名称与目录代码不一致，请重新选择'}:match(requirement,value,level,code,bachelor?'bachelor':'graduate',source,job);
+      checks.push({label:bachelor?'本科专业':'研究生专业',...result});
+      return '';
+    });
+    return {checks,remaining};
+  }
+  root.MajorMatcher={match,records,section,tokenize,strip,educationNotes,explicitCodeConflict};
 })(typeof window!=='undefined'?window:globalThis);
 
-window.WORKBENCH_RULE_VERSION="202710-67ce8e9646";
+window.WORKBENCH_RULE_VERSION="202710-3bdf8c2dc9";
 
 </script><script>
 /* Conservative, explainable local screening. No probabilistic eligibility claims. */
@@ -282,7 +326,11 @@ window.WORKBENCH_RULE_VERSION="202710-67ce8e9646";
       add(level>=min&&level<=max?'pass':'reject','学历',d);
     });
     if(j['学位']!=='无要求') check(p.degree,'学位',v=>add(v==='no'?'reject':'pass','学位',v==='no'?'岗位要求取得相应学位':j['学位']));
-    const mm=majorMatch(req,p.major,level,p,j);add(mm.status,'专业',mm.text);
+    const mm=majorMatch(req,p.major,level,p,j);
+    const degreeRules=root.MajorMatcher.educationNotes(raw,p,j);
+    const eitherMajor=degreeRules.checks.find(r=>r.label==='专业（本科或研究生）');
+    add(eitherMajor?eitherMajor.status:mm.status,'专业',eitherMajor?eitherMajor.text:mm.text);
+    if(p.major&&level&& !root.MajorMatcher.records(p.major,level).length&&root.MajorMatcher.records(p.major,level>=3?2:3).length)add('review','学历与专业信息','所填专业名称未在当前学历目录中找到，但在另一学历目录中存在，请按毕业证核正，目录差异不自动视为可报');
     check(p.politics,'政治面貌',v=>{
       const r=j['政治面貌'];add(r==='不限'||r===v||(v==='共青团员'&&r.includes('共青团员'))||(v==='中共党员'&&r.includes('中共党员'))?'pass':'reject','政治面貌',r);
     });
@@ -304,11 +352,21 @@ window.WORKBENCH_RULE_VERSION="202710-67ce8e9646";
       const strict=/(?:仅限|限|要求|须为)全日制/.test(note)&&!/(?:不限|不限制|非全日制)/.test(note);
       check(p.study,'学习形式',v=>add(v==='part'&&strict?'reject':'review','学习形式','备注涉及学习形式，请核对原文'));
     }
+    if(level>=3){
+      const parsed=root.MajorMatcher.educationNotes(note,p,j);
+      for(const r of parsed.checks)add(r.status,r.label,r.text);
+      note=parsed.remaining;
+    }
     if(/本科(?:所学)?专业(?:限|为|须|应)|本科和研究生|本科、研究生|研究生和本科/.test(note)){
       if(level>=3){
         if(!p.bachelorMajor)add('review','本科专业','岗位同时限制本科专业，请补充核对');
         else add('review','本科专业','已填写 '+p.bachelorMajor+'，需逐项核对备注规定的本科专业范围');
       }
+    }
+    note=note.replace(/有关专业考试信息及大纲可在中国证监会网站上查询[。]?/g,'');
+    if(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书/.test(note)){
+      add('review','CPA专业阶段证书','要求报名前取得CPA专业阶段合格证并填证书编号；当前证书选项不能确认此阶段资质，法考A证不能替代');
+      note=note.replace(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书[，,]报名时须在备注中注明证书编号[。]?/g,'');
     }
     const certRequired=/具有[^。]*证书|至少具有|需取得|取得[^。]*法律职业资格|通过[^。]*法律职业资格/.test(note);
     if(certRequired){
@@ -833,10 +891,25 @@ $('#catalogSources').innerHTML=Object.values(CATALOG.sources).map(s=>`<li><a hre
 $('#catalogStatus').textContent='专业库更新于 '+CATALOG.checkedAt+' · 目录版本各自保留';
 const oldProfileInput=$('#profileForm').oninput;
 $('#profileForm').addEventListener('input',()=>setTimeout(updateMajorHint,250));
+function updateEducationCore(){
+  const graduate=['硕士研究生','博士研究生'].includes(state.profile.education);
+  $('#bachelorEducation').hidden=!graduate;
+  for(const name of ['bachelorMajor','bachelorDegree'])$('#profileForm').elements.namedItem(name).required=graduate;
+  const required=['education','degree','major',...(graduate?['bachelorMajor','bachelorDegree']:[])];
+  const labels={education:'最高学历',degree:'对应学位',major:'最高学历专业',bachelorMajor:'本科专业',bachelorDegree:'本科学位'};
+  const missing=required.filter(k=>!state.profile[k]);
+  $('#coreProfileStatus').textContent=missing.length?'核心资料待补齐：'+missing.map(k=>labels[k]).join('、')+'。可先浏览，涉及这些条件的资格仍待核对。':'学历核心资料已填写，按岗位逐项核对。';
+}
+const loadEducationForm=loadForm;
+loadForm=function(){loadEducationForm();updateEducationCore();};
+$('#profileForm').addEventListener('input',()=>setTimeout(updateEducationCore,250));
+$('#profileForm').addEventListener('change',()=>setTimeout(updateEducationCore,250));
+$('#profileForm').onsubmit=e=>e.preventDefault();
 $$('[data-preset]').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncCities();updateMajorHint();};});
 $('#profileToggle').onclick=()=>{const panel=$('.sidebar'),open=!panel.classList.contains('mobile-open');panel.classList.toggle('mobile-open',open);$('#profileToggle').setAttribute('aria-expanded',String(open));$('#profileToggle').textContent=open?'收起条件 ↑':'填写 / 修改我的条件 ↓';};
 $('#applyMobileProfile').onclick=()=>{$('.sidebar').classList.remove('mobile-open');$('#profileToggle').setAttribute('aria-expanded','false');$('#profileToggle').textContent='填写 / 修改我的条件 ↓';$('.results-panel').scrollIntoView({behavior:'smooth',block:'start'});};
 $('#catalogStatus').textContent+=' · 规则 '+window.WORKBENCH_RULE_VERSION;
+updateEducationCore();
 syncCities();updateMajorHint();render();
 
 

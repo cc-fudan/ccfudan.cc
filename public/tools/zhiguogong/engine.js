@@ -51,7 +51,11 @@
       add(level>=min&&level<=max?'pass':'reject','学历',d);
     });
     if(j['学位']!=='无要求') check(p.degree,'学位',v=>add(v==='no'?'reject':'pass','学位',v==='no'?'岗位要求取得相应学位':j['学位']));
-    const mm=majorMatch(req,p.major,level,p,j);add(mm.status,'专业',mm.text);
+    const mm=majorMatch(req,p.major,level,p,j);
+    const degreeRules=root.MajorMatcher.educationNotes(raw,p,j);
+    const eitherMajor=degreeRules.checks.find(r=>r.label==='专业（本科或研究生）');
+    add(eitherMajor?eitherMajor.status:mm.status,'专业',eitherMajor?eitherMajor.text:mm.text);
+    if(p.major&&level&& !root.MajorMatcher.records(p.major,level).length&&root.MajorMatcher.records(p.major,level>=3?2:3).length)add('review','学历与专业信息','所填专业名称未在当前学历目录中找到，但在另一学历目录中存在，请按毕业证核正，目录差异不自动视为可报');
     check(p.politics,'政治面貌',v=>{
       const r=j['政治面貌'];add(r==='不限'||r===v||(v==='共青团员'&&r.includes('共青团员'))||(v==='中共党员'&&r.includes('中共党员'))?'pass':'reject','政治面貌',r);
     });
@@ -73,11 +77,21 @@
       const strict=/(?:仅限|限|要求|须为)全日制/.test(note)&&!/(?:不限|不限制|非全日制)/.test(note);
       check(p.study,'学习形式',v=>add(v==='part'&&strict?'reject':'review','学习形式','备注涉及学习形式，请核对原文'));
     }
+    if(level>=3){
+      const parsed=root.MajorMatcher.educationNotes(note,p,j);
+      for(const r of parsed.checks)add(r.status,r.label,r.text);
+      note=parsed.remaining;
+    }
     if(/本科(?:所学)?专业(?:限|为|须|应)|本科和研究生|本科、研究生|研究生和本科/.test(note)){
       if(level>=3){
         if(!p.bachelorMajor)add('review','本科专业','岗位同时限制本科专业，请补充核对');
         else add('review','本科专业','已填写 '+p.bachelorMajor+'，需逐项核对备注规定的本科专业范围');
       }
+    }
+    note=note.replace(/有关专业考试信息及大纲可在中国证监会网站上查询[。]?/g,'');
+    if(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书/.test(note)){
+      add('review','CPA专业阶段证书','要求报名前取得CPA专业阶段合格证并填证书编号；当前证书选项不能确认此阶段资质，法考A证不能替代');
+      note=note.replace(/需在报名前通过注册会计师专业阶段考试并取得专业阶段成绩合格证书[，,]报名时须在备注中注明证书编号[。]?/g,'');
     }
     const certRequired=/具有[^。]*证书|至少具有|需取得|取得[^。]*法律职业资格|通过[^。]*法律职业资格/.test(note);
     if(certRequired){

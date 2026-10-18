@@ -5,6 +5,14 @@
   const strip=s=>String(s??'').replace(/\s/g,'').replace(/[（(][^）)]*[）)]/g,'').replace(/[＊*]/g,'');
   const nameIndex=new Map();
   for(const e of catalog){const k=e.level+':'+e.name;if(!nameIndex.has(k))nameIndex.set(k,[]);nameIndex.get(k).push(e);}
+  function possibleDisciplines(entries){return [...new Set(entries.flatMap(e=>[e.discipline,...root.DISCIPLINE_BOUNDS?.crossAwards[e.code.slice(0,4)]||[]]).filter(Boolean))];}
+  function explicitCodeConflict(text,value,level){
+    const own=records(value,level),ownDisciplines=possibleDisciplines(own);
+    const codes=[...text.matchAll(/(?:学科|专业)代码(?:为)?\s*(\d{4,6})(?:TK|T|K)?/g)].map(m=>m[1]);
+    if(!own.length||!codes.length||!ownDisciplines.length||ownDisciplines.includes('交叉学科'))return false;
+    const indexed=codes.map(c=>catalog.filter(e=>e.code.startsWith(c)));
+    return indexed.every(es=>es.length)&&!possibleDisciplines(indexed.flat()).some(d=>ownDisciplines.includes(d));
+  }
   function records(value,level){const key=level>=3?'graduate':'bachelor';return nameIndex.get(key+':'+strip(value))||[];}
   function section(raw,level){
     const re=/(大学本科|本科(?:生)?|硕士研究生|博士研究生|研究生|硕士|博士|大专|专科)(?:所学)?(?:专业)?(?:报考)?\s*[:：]/g;
@@ -79,13 +87,47 @@
     }
     // Tokens from current/legacy catalogues are kept distinct; no substring-equals-major shortcut.
     if(/相关|相近|等专业|专业不限/.test(text)||text.includes(v))return {status:'review',text:'专业表述、相关范围或培养方向需由招录机关确认'};
-    if(!list.length&&!chosen)return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
+    if(!list.length&&!chosen){
+      const other=records(value,level>=3?2:3);
+      const exactList=tokens.length&&tokens.every(t=>/^[\u4e00-\u9fff·]{2,30}$/.test(t)&&!/(?:类|门类|等|方向)$/.test(t)&&![...catalog].some(e=>[e.category,e.discipline].includes(t)&&e.name!==t));
+      if(other.length&&exactList&&!direction&&!tokens.includes(v))return {status:'reject',text:'专业不符：岗位逐项列出的专业不含“'+v+'”；另：该名称仅在其他学历目录中找到，请核正学历及证书专业名称'};
+      return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
+    }
     const wanted=new Set((chosen?[chosen]:list).flatMap(e=>[e.name,e.category,e.discipline+'门类']).filter(Boolean));
     if(tokens.some(t=>/门类$|类别?$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'岗位采用招录自定义专业分类，本地目录不能直接排除，请核对原文'};
     if(tokens.some(t=>wanted.has(t)))return {status:'review',text:'专业存在关联，需要确认类别与学历层级'};
     return {status:'reject',text:'当前学历对应的专业原文未包含所填专业或目录类别'};
   }
-  root.MajorMatcher={match,records,section,tokenize,strip};
+  function educationNotes(raw,p,job={}){
+    const checks=[];
+    const either=String(raw).match(/本科阶段为(.+?)专业[，,]\s*或者研究生阶段为(.+?)专业[，,]并取得相应的学位[、，,]学历证书/);
+    if(either&&['硕士研究生','博士研究生'].includes(p.education)){
+      const b=match(either[1],p.bachelorMajor,2,p.bachelorMajorCode,'bachelor',p.bachelorMajorCatalogSource,job);
+      const g=match(either[2],p.major,3,p.majorCode,'graduate',p.majorCatalogSource,job);
+      if(b.status!=='pass'&&explicitCodeConflict(either[1],p.bachelorMajor,2)){b.status='reject';b.text='本科专业与所列学科代码门类不符';}
+      if(g.status!=='pass'&&explicitCodeConflict(either[2],p.major,3)){g.status='reject';g.text='研究生专业与所列学科代码门类不符';}
+      const status=b.status==='pass'||g.status==='pass'?'pass':b.status==='reject'&&g.status==='reject'?'reject':'review';
+      checks.push({label:'专业（本科或研究生）',status,text:'满足任一学历分支即可。本科：'+b.text+'；研究生：'+g.text});
+      return {checks,remaining:String(raw).replace(either[0],'')};
+    }
+    // Parse only explicit degree-specific lists, leaving OR/AND shorthand and other
+    // constraints intact for review. Parenthetical codes stay attached to names.
+    const re=/(?:要求)?(本科|研究生)(?:所学)?专业(?:为|须为|应为|限于)\s*([^；;\n。]+?)(?=[，,](?:硕士)?研究生专业|[；;\n。]|$)/g;
+    const remaining=String(raw).replace(re,(whole,stage,requirement)=>{
+      const bachelor=stage==='本科',value=bachelor?p.bachelorMajor:p.major,code=bachelor?p.bachelorMajorCode:p.majorCode;
+      const source=bachelor?p.bachelorMajorCatalogSource:p.majorCatalogSource,level=bachelor?2:3;
+      const scope=bachelor?'bachelor':'graduate',parts=tokenize(requirement);
+      // Do not consume a sentence that mixes a major list with unparsed conditions.
+      if(!parts.length||!parts.every(t=>catalog.some(e=>e.level===scope&&[e.name,e.category,e.category+'类',e.discipline,e.discipline+'类'].includes(t))))return whole;
+      const list=records(value,level);
+      const conflict=code&&!list.some(e=>e.code===code);
+      const result=conflict?{status:'review',text:'所填专业名称与目录代码不一致，请重新选择'}:match(requirement,value,level,code,bachelor?'bachelor':'graduate',source,job);
+      checks.push({label:bachelor?'本科专业':'研究生专业',...result});
+      return '';
+    });
+    return {checks,remaining};
+  }
+  root.MajorMatcher={match,records,section,tokenize,strip,educationNotes,explicitCodeConflict};
 })(typeof window!=='undefined'?window:globalThis);
 
-window.WORKBENCH_RULE_VERSION="202710-67ce8e9646";
+window.WORKBENCH_RULE_VERSION="202710-3bdf8c2dc9";

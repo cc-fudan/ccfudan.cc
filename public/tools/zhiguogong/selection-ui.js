@@ -96,9 +96,24 @@ $('#catalogSources').innerHTML=Object.values(CATALOG.sources).map(s=>`<li><a hre
 $('#catalogStatus').textContent='专业库更新于 '+CATALOG.checkedAt+' · 目录版本各自保留';
 const oldProfileInput=$('#profileForm').oninput;
 $('#profileForm').addEventListener('input',()=>setTimeout(updateMajorHint,250));
+function updateEducationCore(){
+  const graduate=['硕士研究生','博士研究生'].includes(state.profile.education);
+  $('#bachelorEducation').hidden=!graduate;
+  for(const name of ['bachelorMajor','bachelorDegree'])$('#profileForm').elements.namedItem(name).required=graduate;
+  const required=['education','degree','major',...(graduate?['bachelorMajor','bachelorDegree']:[])];
+  const labels={education:'最高学历',degree:'对应学位',major:'最高学历专业',bachelorMajor:'本科专业',bachelorDegree:'本科学位'};
+  const missing=required.filter(k=>!state.profile[k]);
+  $('#coreProfileStatus').textContent=missing.length?'核心资料待补齐：'+missing.map(k=>labels[k]).join('、')+'。可先浏览，涉及这些条件的资格仍待核对。':'学历核心资料已填写，按岗位逐项核对。';
+}
+const loadEducationForm=loadForm;
+loadForm=function(){loadEducationForm();updateEducationCore();};
+$('#profileForm').addEventListener('input',()=>setTimeout(updateEducationCore,250));
+$('#profileForm').addEventListener('change',()=>setTimeout(updateEducationCore,250));
+$('#profileForm').onsubmit=e=>e.preventDefault();
 $$('[data-preset]').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncCities();updateMajorHint();};});
 $('#profileToggle').onclick=()=>{const panel=$('.sidebar'),open=!panel.classList.contains('mobile-open');panel.classList.toggle('mobile-open',open);$('#profileToggle').setAttribute('aria-expanded',String(open));$('#profileToggle').textContent=open?'收起条件 ↑':'填写 / 修改我的条件 ↓';};
 $('#applyMobileProfile').onclick=()=>{$('.sidebar').classList.remove('mobile-open');$('#profileToggle').setAttribute('aria-expanded','false');$('#profileToggle').textContent='填写 / 修改我的条件 ↓';$('.results-panel').scrollIntoView({behavior:'smooth',block:'start'});};
 $('#catalogStatus').textContent+=' · 规则 '+window.WORKBENCH_RULE_VERSION;
+updateEducationCore();
 syncCities();updateMajorHint();render();
 

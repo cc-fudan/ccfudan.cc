@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><meta name="description" content="知国公：国考岗位辅助筛选，专业目录与省市联动，本地处理个人条件。"><meta name="color-scheme" content="light"><title>知国公 · 国考选岗工作台</title>
-  <link rel="stylesheet" href="styles.ddceeb3f207e.css">
+  <link rel="stylesheet" href="styles.bcf7e4835763.css">
 </head>
 <body>
 <header class="topbar">
@@ -19,16 +19,16 @@
     <div class="preset-row"><button data-preset="philosophy">试用：哲学硕士</button><button data-preset="law">试用：法学本科</button></div>
     <form id="profileForm" autocomplete="off">
       <div class="field-row"><label>年龄<input name="age" type="number" min="18" max="70" placeholder="如 29"></label><label>性别<select name="sex"><option value="">未填写</option><option>女</option><option>男</option></select></label></div>
-      <label>最高学历<select name="education"><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
-      <div class="field-row"><label>对应学位<select name="degree"><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
-      <label>最高学历专业<div class="major-input-row"><input name="major" placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
+      <label>最高学历 · 必填<select name="education" required><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
+      <div class="field-row"><label>最高学历对应学位 · 必填<select name="degree" required><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
+      <label>最高学历专业 · 必填<div class="major-input-row"><input name="major" required placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
       <datalist id="majors"><option>法学</option><option>中国哲学</option><option>哲学</option><option>马克思主义哲学</option><option>汉语言文学</option><option>计算机科学与技术</option><option>会计学</option><option>金融学</option></datalist>
-      <label>政治面貌<select name="politics"><option value="">未填写</option><option>群众</option><option>共青团员</option><option>中共党员</option><option>其他民主党派</option></select></label>
+      <section id="bachelorEducation" class="education-core"><h3>本科阶段信息 <span class="small muted">必填</span></h3><label>本科专业<div class="major-input-row"><input name="bachelorMajor" required placeholder="部分岗位同时限制本科专业"><button id="browseBachelorMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="bachelorMajorCode"><input type="hidden" name="bachelorMajorCatalogLevel"><input type="hidden" name="bachelorMajorCatalogSource">
+        <label>本科对应学位<select name="bachelorDegree" required><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><p class="hint">部分岗位同时限制本科和研究生专业。未填完整时，这些岗位仍需核对。</p></section><p id="coreProfileStatus" class="hint" role="status"></p><label>政治面貌<select name="politics"><option value="">未填写</option><option>群众</option><option>共青团员</option><option>中共党员</option><option>其他民主党派</option></select></label>
       <div class="field-row"><label>毕业身份<select name="graduate"><option value="">待确认</option><option value="social">非应届</option><option value="current">2027届毕业生</option><option value="other">其他应届身份</option></select></label><label>基层工作年限<input name="years" type="number" min="0" max="50" step="0.5" placeholder="如 6"></label></div>
       <label>服务基层项目经历<select name="project"><option value="">未确认</option><option value="none">无专项经历（普通工作）</option><option>大学生村官</option><option>三支一扶</option><option>大学生志愿服务西部计划</option><option>农村义务教育阶段学校教师特设岗位计划</option><option value="veteran">服役满5年的高校毕业生退役士兵</option></select></label>
       <p class="hint">普通基层工作年限不等于服务基层项目身份。</p>
-      <details class="more-fields"><summary>补充证书、英语与本科专业 <span>＋</span></summary>
-        <label>本科专业<div class="major-input-row"><input name="bachelorMajor" placeholder="部分岗位同时限制本科专业"><button id="browseBachelorMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="bachelorMajorCode"><input type="hidden" name="bachelorMajorCatalogLevel"><input type="hidden" name="bachelorMajorCatalogSource">
+      <details class="more-fields"><summary>补充证书、英语与户籍 <span>＋</span></summary>
         <label>职业证书<select name="certificate"><option value="">未填写</option><option value="none">无相关证书</option><option value="lawA">法律职业资格 A 证</option><option value="lawyer">律师执业证</option><option value="cpa">注册会计师全科合格</option><option value="tax">税务师</option><option value="pmp">PMP</option><option value="other">其他证书（逐岗核对）</option></select></label>
         <div class="field-row"><label>英语四级分数<input name="cet4" type="number" min="0" max="710" placeholder="未填写"></label><label>英语六级分数<input name="cet6" type="number" min="0" max="710" placeholder="未填写"></label></div>
         <label>户籍 / 生源地<input name="hometown" placeholder="如湖北省荆州市（仍需逐岗核实）"></label>
@@ -111,5 +111,5 @@
 </dialog>
 
 <dialog id="majorDialog"><div class="dialog-top"><h2>查找你的专业</h2><button class="close-dialog" aria-label="关闭专业目录">×</button></div><p class="small muted">按实际学历查找。可搜索名称、专业代码、类别和门类；没有找到时仍可手填。</p><div class="major-search"><select id="majorLevel" aria-label="专业目录学历"><option value="bachelor">本科目录</option><option value="graduate">研究生目录与历史专业</option></select><input id="majorSearch" placeholder="如：电子、会计、0301" aria-label="搜索专业"></div><p id="majorSearchCount" class="small muted"></p><div id="majorResults"></div></dialog><input id="importFile" type="file" accept=".csv,.json" hidden><input id="backupFile" type="file" accept=".json" hidden><div id="toast" role="status" hidden></div>
-<script src="edition.003f1f559c1e.js"></script><script src="data.49c8c41be2de.js"></script><script src="major-catalog.4b5a310d86fc.js"></script><script src="major-engine.1bd6caf2cfff.js"></script><script src="engine.397435ee4d46.js"></script><script src="data-tools.1f8e1b01226c.js"></script><script src="app.c072333ee21e.js"></script><script src="selection-ui.6d4fcb66a31e.js"></script>
+<script src="edition.003f1f559c1e.js"></script><script src="data.49c8c41be2de.js"></script><script src="major-catalog.4b5a310d86fc.js"></script><script src="major-engine.afc93fc4e475.js"></script><script src="engine.6bfd10fb6ad9.js"></script><script src="data-tools.1f8e1b01226c.js"></script><script src="app.c072333ee21e.js"></script><script src="selection-ui.72b42dd7d144.js"></script>
 </body></html>

@@ -47,14 +47,22 @@ async function noOverflow(page,label){
    return {status:e.status,major:e.reasons.find(r=>r.label==='专业').status,extraReview:e.reasons.some(r=>r.label==='备注复核')};
   });
   assert.deepEqual(financeRegression,{status:'reject',major:'reject',extraReview:false});
+  const notesRegression=await page.evaluate(()=>{
+   const p={age:'31',sex:'男',education:'硕士研究生',degree:'yes',study:'full',major:'中国哲学',bachelorMajor:'哲学',bachelorMajorCode:'010101',politics:'群众',graduate:'social',years:'6',project:'none',certificate:'lawA',cet4:'425',cet6:'425'};
+   const get=id=>window.JOB_DATA.jobs.find(j=>j.id===id),E=window.Screening;
+   return {guangzhou:E.evaluate(get('133123:300140123001'),p).status,shenzhen:E.evaluate(get('133124:300141825001'),p).status,msa:E.evaluate(get('118308:300110003014'),{...p,education:'本科'}).status};
+  });
+  assert.deepEqual(notesRegression,{guangzhou:'match',shenzhen:'reject',msa:'reject'});
   await page.selectOption('#province','湖北省');
   let city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('武汉市'));assert.ok(!city.includes('长沙市'));
   await page.selectOption('#citySelect','武汉市');
   await page.selectOption('#province','湖南省');assert.equal(await page.locator('.province-chip').count(),2);city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('长沙市'));assert.ok(city.includes('武汉市'));
   await page.selectOption('#citySelect','长沙市');assert.equal(await page.locator('#cityChips .city-chip').count(),2);
   await page.locator('[data-province-remove="0"]').click();city=await page.locator('#citySelect option').allTextContents();assert.ok(!city.includes('武汉市'));assert.equal(await page.locator('#cityChips .city-chip').count(),1);
-  await page.click('[data-preset="philosophy"]');assert.equal(await page.locator('#matchCount').textContent(),'4');
-  await page.click('[data-status="match"]');assert.equal(await page.locator('.job-card').count(),4);
+  await page.click('[data-preset="philosophy"]');assert.equal(await page.locator('#matchCount').textContent(),'5');
+  assert.ok(await page.locator('#bachelorEducation').isVisible());
+  assert.equal(await page.locator('[name="bachelorMajor"]').evaluate(e=>e.closest('details')),null);
+  await page.click('[data-status="match"]');assert.equal(await page.locator('.job-card').count(),5);
   await page.click('.job-card [data-action="favorite"]');
   await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('#savedCount').textContent(),'1');
   await page.click('#browseMajor');await page.fill('#majorSearch','电子');assert.ok(await page.locator('.major-choice').count()>5);
@@ -75,7 +83,7 @@ async function noOverflow(page,label){
   const offline=await browser.newContext({viewport:{width:390,height:844}});
   await offline.setOffline(true);const p=await offline.newPage();p.on('pageerror',e=>errors.push(e.message));
   await p.goto('file://'+path.join(root,'tools/downloads/zhiguogong.html'),{waitUntil:'load'});await p.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
-  await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'4');await noOverflow(p,'portable offline');
+  await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'5');await noOverflow(p,'portable offline');
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,errors},null,2));
   console.log('TOOLS BROWSER PASS: source-built pages, 4 tools, cascading provinces/cities, profiles, majors, persistence, mobile layouts, standalone offline.');
