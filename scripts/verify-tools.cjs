@@ -31,6 +31,12 @@ async function noOverflow(page,label){
   await page.screenshot({path:path.join(shots,'tools-desktop.png'),fullPage:true});
   await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});
   await page.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
+  const majorRegression=await page.evaluate(()=>{
+   const j=window.JOB_DATA.jobs.find(x=>x.id==='130121:300110001001');
+   const evaluate=p=>window.Screening.evaluate(j,p);
+   return {conflict:evaluate({major:'中国哲学',education:'硕士研究生'}).status,unknown:evaluate({major:'未收录的自设专业',education:'硕士研究生'}).status,missing:evaluate({}).status};
+  });
+  assert.deepEqual(majorRegression,{conflict:'reject',unknown:'review',missing:'review'});
   await page.selectOption('#province','湖北省');
   let city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('武汉市'));assert.ok(!city.includes('长沙市'));
   await page.selectOption('#citySelect','武汉市');

@@ -42,7 +42,13 @@
         if(hits.some(h=>!h.e.review))return finish('税务系统2027专业参考目录：'+v+'属于“'+hits.find(h=>!h.e.review).g+'”');
         return {status:'review',text:'税务系统2027目录列有该专业，但还需确认所学语种等附加条件'};
       }
-      if(groups.length===tokens.length&&groups.length&&!tokens.includes(v))return {status:'review',text:'税务系统2027参考目录未直接列入该类别；相近专业须提交课程和专业说明，由招录机关审查'};
+      if(groups.length===tokens.length&&groups.length&&!tokens.includes(v)){
+        const knownGroups=Object.entries(agency.categories).filter(([,entries])=>entries.some(e=>!e.review&&names.has(strip(e.name)))).map(([g])=>g);
+        // A known major excluded by every fully parsed requested category is a conflict.
+        // Unknown names and directions remain unresolved; absence alone is not exclusion.
+        if(knownGroups.length&&!direction)return {status:'reject',text:'专业不符：税务系统2027目录将“'+v+'”列入'+knownGroups.join('、')+'，未列入本岗位要求的'+groups.join('、')};
+        return {status:'review',text:'税务系统2027目录尚不能确认该专业名称或方向的归属；如按相近专业申请，需由招录机关审查'};
+      }
     }
     if(tokens.includes(v)||strip(text)===v)return finish('专业名称与当前学历要求一致');
     if(list.length>1&&!chosen){
