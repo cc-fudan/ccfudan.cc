@@ -45,7 +45,7 @@ async function noOverflow(page,label){
   for(const width of [320,375,390,430,768]){
    await page.setViewportSize({width,height:844});
    await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await noOverflow(page,'zhiguogong '+width);
-   if(width<760){await page.click('#profileToggle');assert.ok(await page.locator('#profileForm').isVisible());await noOverflow(page,'profile open '+width);await page.click('#browseMajor');await page.fill('#majorSearch','计算机');await noOverflow(page,'major dialog '+width);await page.click('#majorDialog .close-dialog');await page.click('#applyMobileProfile');}
+   if(width<=900){await page.click('#profileToggle');assert.ok(await page.locator('#profileForm').isVisible());await noOverflow(page,'profile open '+width);await page.click('#browseMajor');await page.fill('#majorSearch','计算机');await noOverflow(page,'major dialog '+width);await page.click('#majorDialog .close-dialog');await page.click('#applyMobileProfile');}
    await page.screenshot({path:path.join(shots,'zhiguogong-'+width+'.png'),fullPage:false});
    await page.goto(url+'/tools/',{waitUntil:'networkidle'});await noOverflow(page,'tools '+width);
   }
