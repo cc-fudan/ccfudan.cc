@@ -65,15 +65,27 @@
       if(inText.includes(code))return finish(`专业代码 ${e.code} 与当前学历要求匹配`);
       if(e.kind==='major'&&inText.includes(code.slice(0,4)))return finish(`专业属于代码 ${code.slice(0,4)} 的类别，需核对岗位目录版本`);
     }
+    // Broad labels may be wider than a specific subject; use them only to rule out
+    // disjoint disciplines, never to grant an ambiguous broad-category match.
+    const bounds=root.DISCIPLINE_BOUNDS;
+    if(level>=3&&bounds&&!direction&&list.length&&!scoped&&tokens.length){
+      const broad=tokens.map(t=>bounds.graduateDisciplines.find(d=>[d+'类',d+'门类',d+'学科门类'].includes(t)));
+      if(broad.every(Boolean)){
+        const possibilities=(chosen?[chosen]:list).flatMap(e=>[e.discipline,...bounds.crossAwards[e.code.slice(0,4)]||[]]);
+        if(possibilities.every(d=>d&&d!=='交叉学科')&&!possibilities.some(d=>broad.includes(d)))
+          return {status:'reject',text:'专业不符：按教育部研究生目录，“'+v+'”归属'+[...new Set(possibilities)].join('、')+'；与岗位要求“'+tokens.join('、')+'”的学科门类不符。机关特殊分类以其补充说明为准'};
+        return {status:'review',text:'专业与岗位所述门类存在关联或可跨门类授学位，但“类”的具体范围尚需招录机关确认'};
+      }
+    }
     // Tokens from current/legacy catalogues are kept distinct; no substring-equals-major shortcut.
     if(/相关|相近|等专业|专业不限/.test(text)||text.includes(v))return {status:'review',text:'专业表述、相关范围或培养方向需由招录机关确认'};
     if(!list.length&&!chosen)return {status:'review',text:'未在当前学历目录中建立该专业的完整归属，请查看岗位原文或补充专业代码'};
     const wanted=new Set((chosen?[chosen]:list).flatMap(e=>[e.name,e.category,e.discipline+'门类']).filter(Boolean));
-    if(tokens.some(t=>/门类$|类$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'岗位采用招录自定义专业分类，本地目录不能直接排除，请核对原文'};
+    if(tokens.some(t=>/门类$|类别?$/.test(t)&&!catalog.some(e=>e.name===t||e.category===t||e.discipline+'门类'===t)))return {status:'review',text:'岗位采用招录自定义专业分类，本地目录不能直接排除，请核对原文'};
     if(tokens.some(t=>wanted.has(t)))return {status:'review',text:'专业存在关联，需要确认类别与学历层级'};
     return {status:'reject',text:'当前学历对应的专业原文未包含所填专业或目录类别'};
   }
   root.MajorMatcher={match,records,section,tokenize,strip};
 })(typeof window!=='undefined'?window:globalThis);
 
-window.WORKBENCH_RULE_VERSION="202710-c3697bacbb";
+window.WORKBENCH_RULE_VERSION="202710-67ce8e9646";

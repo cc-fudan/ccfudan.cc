@@ -41,6 +41,12 @@ async function noOverflow(page,label){
    return {conflict:evaluate({major:'中国哲学',education:'硕士研究生'}).status,unknown:evaluate({major:'未收录的自设专业',education:'硕士研究生'}).status,missing:evaluate({}).status};
   });
   assert.deepEqual(majorRegression,{conflict:'reject',unknown:'review',missing:'review'});
+  const financeRegression=await page.evaluate(()=>{
+   const j=window.JOB_DATA.jobs.find(x=>x.id==='113123:300110123001');
+   const e=window.Screening.evaluate(j,{major:'中国哲学',education:'硕士研究生',degree:'yes',politics:'群众',years:'6',graduate:'social'});
+   return {status:e.status,major:e.reasons.find(r=>r.label==='专业').status,extraReview:e.reasons.some(r=>r.label==='备注复核')};
+  });
+  assert.deepEqual(financeRegression,{status:'reject',major:'reject',extraReview:false});
   await page.selectOption('#province','湖北省');
   let city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('武汉市'));assert.ok(!city.includes('长沙市'));
   await page.selectOption('#citySelect','武汉市');

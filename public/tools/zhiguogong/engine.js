@@ -41,6 +41,10 @@
     const check=(v,label,fn)=>v===''||v==null?add('review',label,'尚未填写'):fn(v);
     const raw=j['备注']||'', req=j['专业']||'', level=levels[p.education]||0;
     let note=raw;
+    if(/职位要求专业为最高学历对应专业/.test(note)){
+      add(p.major&&p.education?'pass':'review','报考专业学历','按已填写的最高学历及其对应专业核对，不以本科专业或职业证书替代');
+      note=note.replace(/职位要求专业为最高学历对应专业/g,'');
+    }
     check(p.education,'学历',()=>{
       const d=j['学历'], exact=/仅限/.test(d), min=d.includes('大专')?1:d.includes('本科')?2:d.includes('硕士')?3:4;
       const max=d.includes('或')?(d.includes('硕士')?3:2):exact?min:4;
