@@ -99,5 +99,6 @@ $('#profileForm').addEventListener('input',()=>setTimeout(updateMajorHint,250));
 $$('[data-preset]').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncCities();updateMajorHint();};});
 $('#profileToggle').onclick=()=>{const panel=$('.sidebar'),open=!panel.classList.contains('mobile-open');panel.classList.toggle('mobile-open',open);$('#profileToggle').setAttribute('aria-expanded',String(open));$('#profileToggle').textContent=open?'收起条件 ↑':'填写 / 修改我的条件 ↓';};
 $('#applyMobileProfile').onclick=()=>{$('.sidebar').classList.remove('mobile-open');$('#profileToggle').setAttribute('aria-expanded','false');$('#profileToggle').textContent='填写 / 修改我的条件 ↓';$('.results-panel').scrollIntoView({behavior:'smooth',block:'start'});};
+$('#catalogStatus').textContent+=' · 规则 '+window.WORKBENCH_RULE_VERSION;
 syncCities();updateMajorHint();render();
 

@@ -75,3 +75,5 @@
   }
   root.MajorMatcher={match,records,section,tokenize,strip};
 })(typeof window!=='undefined'?window:globalThis);
+
+window.WORKBENCH_RULE_VERSION="202710-c3697bacbb";

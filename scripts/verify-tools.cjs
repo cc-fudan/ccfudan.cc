@@ -29,7 +29,11 @@ async function noOverflow(page,label){
   await page.goto(url+'/tools/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('.tool-card').count(),4);
   await page.screenshot({path:path.join(shots,'tools-desktop.png'),fullPage:true});
+  await page.route('**/major-engine.js',route=>route.fulfill({contentType:'text/javascript',body:'throw new Error("stale unversioned engine was requested")'}));
   await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});
+  const assetSources=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('src')));
+  assert.ok(assetSources.length>0&&assetSources.every(src=>/\.[0-9a-f]{12}\.js$/.test(src)));
+  assert.ok(await page.evaluate(()=>!!window.WORKBENCH_RULE_VERSION));
   await page.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
   const majorRegression=await page.evaluate(()=>{
    const j=window.JOB_DATA.jobs.find(x=>x.id==='130121:300110001001');
