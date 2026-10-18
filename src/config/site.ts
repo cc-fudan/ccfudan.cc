@@ -142,6 +142,7 @@ export const NAV: { href: string; label: string }[] = IS_COM
     ]
   : [
       { href: '/', label: '首页' },
+      { href: '/tools', label: '小工具 ✦' },
       { href: '/notes', label: '人生随笔' },
       { href: '/library', label: '音书影路' },
       { href: '/universe/', label: '小宇宙' },

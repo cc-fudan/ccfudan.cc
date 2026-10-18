@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><meta name="description" content="知国公：国考岗位辅助筛选，专业目录与省市联动，本地处理个人条件。"><meta name="color-scheme" content="light"><title>知国公 · 国考选岗工作台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html" aria-label="知国公首页"><span class="brandmark">公</span><strong>知国公<span>ZHIGUOGONG</span></strong></a>
+  <nav aria-label="主导航"><button class="nav active" data-tab="discover">职位探索</button><button class="nav" data-tab="saved">我的收藏 <span id="savedCount">0</span></button><button class="nav enhanced-only" data-tab="monitor">人数观察</button><button class="nav" data-tab="assistant">离线助手</button><button class="nav" data-tab="data">数据管理</button></nav>
+  <a class="text-button" href="/tools">← cc的小工具</a><div class="offline" hidden></div>
+</header>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="section-label">YOUR PROFILE <span>01</span></div>
+    <button id="profileToggle" type="button" aria-expanded="false">填写 / 修改我的条件 ↓</button><div class="profile-heading"><h2>从你的条件出发</h2><button id="resetProfile" class="text-button">清空</button></div>
+    <p class="muted small">可以只填几项。未填条件会保留为待核对。</p>
+    <div class="preset-row"><button data-preset="philosophy">试用：哲学硕士</button><button data-preset="law">试用：法学本科</button></div>
+    <form id="profileForm" autocomplete="off">
+      <div class="field-row"><label>年龄<input name="age" type="number" min="18" max="70" placeholder="如 29"></label><label>性别<select name="sex"><option value="">未填写</option><option>女</option><option>男</option></select></label></div>
+      <label>最高学历<select name="education"><option value="">未填写</option><option>大专</option><option>本科</option><option>硕士研究生</option><option>博士研究生</option></select></label>
+      <div class="field-row"><label>对应学位<select name="degree"><option value="">待确认</option><option value="yes">已取得</option><option value="no">未取得</option></select></label><label>学习形式<select name="study"><option value="">未填写</option><option value="full">全日制</option><option value="part">非全日制 / 函授</option></select></label></div>
+      <label>最高学历专业<div class="major-input-row"><input name="major" placeholder="毕业证专业，可手填" list="majors"><button id="browseMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="majorCode"><input type="hidden" name="majorCatalogLevel"><input type="hidden" name="majorCatalogSource"><p id="majorHint" class="hint"></p>
+      <datalist id="majors"><option>法学</option><option>中国哲学</option><option>哲学</option><option>马克思主义哲学</option><option>汉语言文学</option><option>计算机科学与技术</option><option>会计学</option><option>金融学</option></datalist>
+      <label>政治面貌<select name="politics"><option value="">未填写</option><option>群众</option><option>共青团员</option><option>中共党员</option><option>其他民主党派</option></select></label>
+      <div class="field-row"><label>毕业身份<select name="graduate"><option value="">待确认</option><option value="social">非应届</option><option value="current">2027届毕业生</option><option value="other">其他应届身份</option></select></label><label>基层工作年限<input name="years" type="number" min="0" max="50" step="0.5" placeholder="如 6"></label></div>
+      <label>服务基层项目经历<select name="project"><option value="">未确认</option><option value="none">无专项经历（普通工作）</option><option>大学生村官</option><option>三支一扶</option><option>大学生志愿服务西部计划</option><option>农村义务教育阶段学校教师特设岗位计划</option><option value="veteran">服役满5年的高校毕业生退役士兵</option></select></label>
+      <p class="hint">普通基层工作年限不等于服务基层项目身份。</p>
+      <details class="more-fields"><summary>补充证书、英语与本科专业 <span>＋</span></summary>
+        <label>本科专业<div class="major-input-row"><input name="bachelorMajor" placeholder="部分岗位同时限制本科专业"><button id="browseBachelorMajor" class="button subtle" type="button">查专业</button></div></label><input type="hidden" name="bachelorMajorCode"><input type="hidden" name="bachelorMajorCatalogLevel"><input type="hidden" name="bachelorMajorCatalogSource">
+        <label>职业证书<select name="certificate"><option value="">未填写</option><option value="none">无相关证书</option><option value="lawA">法律职业资格 A 证</option><option value="lawyer">律师执业证</option><option value="cpa">注册会计师全科合格</option><option value="tax">税务师</option><option value="pmp">PMP</option><option value="other">其他证书（逐岗核对）</option></select></label>
+        <div class="field-row"><label>英语四级分数<input name="cet4" type="number" min="0" max="710" placeholder="未填写"></label><label>英语六级分数<input name="cet6" type="number" min="0" max="710" placeholder="未填写"></label></div>
+        <label>户籍 / 生源地<input name="hometown" placeholder="如湖北省荆州市（仍需逐岗核实）"></label>
+      </details>
+    </form><button id="applyMobileProfile" class="button primary">查看筛选结果 →</button>
+    <div class="profile-footer"><span class="save-dot"></span><span id="saveState">条件自动保存在本机</span></div>
+  </aside>
+  <main id="main"><div class="edition-ribbon"><div><b id="editionTitle"></b> <span id="editionDescription"></span></div><small>完整岗位库 · 无模型调用</small></div>
+    <section id="discoveryView">
+      <div class="eyebrow">2027 NATIONAL CIVIL SERVICE EXAM</div>
+      <div class="hero"><div><h1 id="pageTitle">知国考，选好下一站<span>。</span></h1><p id="pageSubtitle">把复杂的报考条件，变成一份清晰的职位清单。</p></div><div class="hero-orbit" aria-hidden="true" title="知国考，也借一个国公的雅号。"><span>27</span><i></i></div></div>
+      <div class="stats-grid"><article class="stat"><span>本地职位库</span><strong id="totalCount">—</strong><small id="seatCount">加载中</small></article><article class="stat mint"><span>基础条件匹配</span><strong id="matchCount">—</strong><small>已填条件通过，仍需资格审核</small></article><article class="stat"><span>还有条件待核对</span><strong id="reviewCount">—</strong><small>专业范围或附加要求尚未明确</small></article><article class="stat"><span>有报名快照的候选</span><strong id="snapshotCount">—</strong><small>导入数据后可比较竞争情况</small></article></div>
+      <div class="notice"><span class="notice-icon">i</span><div><b>先看资格，再看竞争。</b> 年龄及年度报考通则尚未核验；专业目录、非全日制学历认可和工作经历认定以招录机关为准。<button id="showPolicy" class="text-button">查看筛选边界 ↗</button></div></div>
+      <section class="results-panel">
+        <div class="filter-top"><div class="searchbox"><span>⌕</span><input id="search" aria-label="搜索职位" placeholder="搜索单位、职位名称或职位代码"></div><button id="exportResults" class="button subtle">导出筛选结果 ↗</button></div>
+        <div class="filter-row"><label>地区<select id="province"><option value="">全国</option></select></label><div class="city-filter"><label>城市<select id="citySelect"><option value="">请先选择省份</option></select></label><div id="cityChips" class="city-chips"></div><input id="cities" type="hidden"><datalist id="cityList"></datalist></div><label>排序<select id="sort"><option value="match">匹配程度优先</option><option value="seats">招录人数从多到少</option><option value="ratio">有数据：竞争比从低到高</option></select></label></div>
+        <div class="results-bar"><div class="segments" aria-label="匹配状态"><button data-status="eligible" class="selected">候选岗位</button><button data-status="match">基础匹配</button><button data-status="review">待核对</button><button data-status="reject">不符合</button><button data-status="all">全部</button></div><span id="resultCount" class="muted small"></span></div>
+        <div id="results" aria-live="polite"></div>
+        <div class="pagination"><span id="pageInfo"></span><div><button id="prev" class="button subtle">← 上一页</button><button id="next" class="button subtle">下一页 →</button></div></div>
+      </section>
+      <footer class="page-footer">来源：用户提供的 2027 年招考简章 · 本地导入版本 <span id="importDate"></span><br>基础匹配不等于审核通过。没有报名数据时，不推测录取概率。</footer>
+    </section>
+    <section id="dataView" hidden>
+      <div class="eyebrow">DATA & SOURCES</div><h1>每一个判断，都有出处。</h1><p class="muted">职位原文与报名快照分开保存，数据更新过程可追溯。</p>
+      <article class="data-card"><div class="section-label">职位数据库</div><h2>2027 年度国考招考简章</h2><p id="dbDescription"></p><p class="muted">本页通过静态文件运行，筛选在你的浏览器完成。完整SQLite数据库和只读本地API包含在完整增强版压缩包中。</p><div class="data-actions"><button id="downloadDatabase" class="button subtle">下载职位 JSON</button><a href="/tools/downloads/zhiguogong.html" download class="button subtle">下载单文件离线版 ↓</a><a href="/tools/downloads/zhiguogong-enhanced.zip" download class="button subtle">下载完整增强版 ↓</a><button id="downloadBackup" class="button subtle">导出个人数据备份</button><button id="restoreBackup" class="button subtle">恢复个人数据</button></div></article>
+      <article class="data-card"><div class="section-label">报名人数 · 手动快照</div><h2>用有来源的快照比较竞争</h2><p>支持导入 CSV / JSON，也可以在职位详情中录入。仅比较同一统计口径的“人数 ÷ 招录人数”，它不是录取概率。</p><div class="data-actions"><button id="importCounts" class="button primary">导入报名快照</button><button id="downloadTemplate" class="button subtle">下载 CSV 模板</button><button id="exportCounts" class="button subtle">导出全部快照</button></div><div class="filter-row"><label>比较口径<select id="metric"><option value="approved">审核通过人数</option><option value="registered">提交报名人数</option><option value="paid">缴费人数</option></select></label><span class="muted small">待审人数仅展示，不参与竞争比排序。零人不显示为低竞争。</span></div><div id="countSummary"></div></article>
+      <article id="pasteCard" class="data-card enhanced-only"><div class="section-label">表格导入 · 离线处理</div><h2>复制一整张表，数字自动归位。</h2><p>从官网收藏表或 Excel 复制，连同表头一起粘贴。支持制表符表格和 CSV；先预览匹配，再保存。职位代码有重名时，必须补充部门代码或招录机关全称。</p>
+  <div class="field-row"><label>观察时间（北京时间）<input id="pasteTime" type="datetime-local"></label><label>来源<input id="pasteSource" placeholder="如官网职位收藏页 · 本人查看"></label></div>
+  <label>粘贴表格<textarea id="pasteText" rows="6" spellcheck="false" placeholder="部门代码&#9;职位代码&#9;待审查人数&#9;审查通过人数"></textarea></label>
+  <div class="data-actions"><button id="previewPaste" class="button subtle">解析并预览</button><button id="commitPaste" class="button primary" disabled>确认导入</button><button id="pasteTemplate" class="text-button">下载填写模板</button></div><div id="pastePreview" class="table-scroll" role="status"></div>
+</article>
+
+<article class="data-card enhanced-only"><div class="section-label">联网更新 · 可选数据源</div><h2>接入你有权访问的数据源</h2><p>目前未接入官方实时人数。可配置允许跨域访问的 JSON 地址，格式与快照导入相同。不会自动登录报名系统。</p><label>数据源 URL<input id="feedUrl" type="url" placeholder="https://你的数据源/counts.json"></label><button id="refreshFeed" class="button subtle">从此地址刷新</button><div class="refresh-control"><label>刷新间隔<select id="refreshInterval"><option value="15">每15分钟</option><option value="30" selected>每30分钟</option><option value="60">每60分钟</option></select></label><button id="autoRefresh" class="button subtle">开启定期刷新</button></div><p id="scheduleStatus" class="small muted">默认关闭。需先提供可访问的JSON数据源，仅页面打开期间运行。</p><p id="feedStatus" class="muted small"></p></article>
+      <article class="data-card"><div class="section-label">年龄核对 · 可选</div><p>尚未载入经核验的 2027 年年龄规则。只有填写来源和上下限后才启用初筛；生日、年龄计算截止日和特殊放宽条件仍需人工核对。</p><div class="field-row"><label>年龄下限<input id="ageMin" type="number" min="0" max="70"></label><label>年龄上限<input id="ageMax" type="number" min="0" max="70"></label></div><label>规则来源<input id="ageSource" placeholder="公告名称及链接"></label><button id="saveAge" class="button subtle">保存年龄筛选规则</button></article>
+      <article class="data-card"><h2>专业目录与来源</h2><p id="catalogDescription"></p><p id="catalogStatus" class="small muted"></p><ul id="catalogSources" class="source-links"></ul><p class="small muted">目录帮助确认专业归属，不代表所有招录机关使用同一套目录。历史名称、专业学位与学术学位分别保留；方向、自设专业和跨版本对应关系仍需核对。</p></article><article class="data-card"><h2>本机隐私</h2><p>个人条件、收藏、快照只保存在此浏览器。清理浏览器数据可能丢失记录；请先导出备份。</p><button id="clearLocal" class="button danger">清除本机个人数据</button></article>
+    </section>
+<section id="assistantView" class="extra-view" hidden>
+  <div class="eyebrow">LOCAL KNOWLEDGE · OPTIONAL AI</div>
+  <h1>日常靠工具，难题带着材料问。</h1>
+  <p class="muted">这里的解释由本地规则和固定知识提供。生成求助材料完全离线，不调用模型。</p>
+  <div class="guide-grid">
+    <article class="data-card"><span class="section-label">01 · 在本机完成</span><h2>筛选、比较、留下依据</h2><p>岗位原文、逐项核对、收藏和对比都可离线使用。没有填写的条件会保留为待核对。</p><button class="button subtle" id="backDiscover">去筛选岗位 →</button></article>
+    <article class="data-card"><span class="section-label">02 · 有疑问再求助</span><h2>把背景一次说清楚</h2><p>将问题、岗位原文和待核对事项整理成一份材料。你可以复制到自己使用的 AI，或带着它咨询招录机关。</p><button class="button primary" id="openHelp">生成求助材料 ↗</button></article>
+  </div>
+  <article class="data-card"><h2>常见问题 · 离线可查</h2>
+    <details class="faq"><summary>“基础匹配”就一定能报吗？</summary><p>它表示已识别的条件通过本地规则初筛。专业映射、备注识别和年度通则均可能需要进一步核对，请打开岗位详情查看原文与咨询电话。</p></details>
+    <details class="faq"><summary>函授本科、非全日制学历如何处理？</summary><p>工具不会仅因非全日制就排除。仍需核实学历认可、学位、取得时间及招录机关补充要求。学历和学位是两项不同条件。</p></details>
+    <details class="faq"><summary>企业工作六年，算服务基层项目吗？</summary><p>普通工作经历与三支一扶、大学生村官等专项身份是不同条件。工作年限认定和专项身份分别填写，不能互相代替。</p></details>
+    <details class="faq"><summary>审核通过人数为零，是否说明没有竞争？</summary><p>还需要看待审查人数、统计时间和审核进度。增强版仅在同一时点、同一来源有完整的通过及待审数据时，计算“当前可见申请压力”。它不是最终报录比。</p></details>
+    <details class="faq"><summary>“生成求助材料”会消耗 API 吗？</summary><p>生成、复制和下载都在本机完成。你自行把材料发送给外部 AI 时，才会按该服务的规则消耗额度；本工具没有模型连接，也不收集密钥。</p></details>
+    <details class="faq"><summary>把文件发给朋友，收藏会跟着走吗？</summary><p>收藏和条件保存在浏览器里，不会跟文件自动移动。请在数据管理中导出个人备份，再在另一版本或另一设备中恢复。清理浏览器前也应备份。</p></details>
+  </article>
+</section>
+<section id="monitorView" class="extra-view enhanced-only" hidden>
+  <div class="eyebrow">APPLICATION OBSERVATORY</div><h1>关注变化，再做选择。</h1>
+  <p class="muted">仅观察已收藏岗位。每次录入都保留来源与时间，未采集的数据保持空白。</p>
+  <div class="data-actions"><button id="openBulk" class="button primary">批量更新收藏人数</button><button id="goPaste" class="button subtle">粘贴官方表格导入</button><button id="exportWatch" class="button subtle">导出观察清单</button></div>
+  <div id="watchStats" class="stats-grid"></div>
+  <article class="data-card"><div class="watch-toolbar"><h2>我的岗位观察清单</h2><label>排序<select id="watchSort"><option value="pressure">可见申请压力从低到高</option><option value="approved">审核通过竞争比从低到高</option><option value="change">可见申请量净增从少到多</option></select></label></div><p class="small muted">零值和超过24小时的数据不排在低竞争推荐前列。变化值需有两个不同时点的完整快照。</p><div id="watchTable" class="table-scroll"></div></article>
+  <div class="notice"><span class="notice-icon">i</span><div>申请压力 = 同一时点、同一来源的（审查通过＋待审查）÷ 招录人数。不同时间的比较仍会受审核、撤回和改报影响。</div></div>
+</section>
+
+  </main>
+</div>
+<div id="compareDock" class="compare-dock" hidden><span id="compareText"></span><button id="compareOpen" class="button primary">对比职位 →</button><button id="compareClear" class="text-button">清空</button></div>
+<dialog id="detailDialog"><div class="dialog-top"><span class="section-label">POSITION DETAILS</span><button class="close-dialog" aria-label="关闭详情">×</button></div><div id="detailBody"></div></dialog>
+<dialog id="compareDialog" class="wide-dialog"><div class="dialog-top"><h2>把选择放在一起看</h2><button class="close-dialog" aria-label="关闭对比">×</button></div><div id="compareBody"></div></dialog>
+<dialog id="policyDialog"><div class="dialog-top"><h2>理解匹配结果</h2><button class="close-dialog" aria-label="关闭说明">×</button></div><div class="policy-body"><p><b>基础匹配</b>：已填写的核心条件和已识别的限制通过检查，不代表最终可报。部分专业归类来自本地有限映射，仍需按目录和招录机关解释确认。</p><p><b>待核对</b>：条件未填、专业范围不明确，或备注含复杂资格要求。不会默认为符合。</p><p><b>不符合</b>：存在已识别的硬性冲突。每个职位可查看具体原因和原文。</p><p>年龄规则默认关闭。当前文件没有完整年度报考通则；报名资格、学历证书取得时间、基层经历计算截止日、回避关系、在职身份限制等需要结合官方公告核实。</p><p>非全日制/函授不自动排除，但需核实国家认可、学位、毕业时间和机关补充公告。专项项目身份不能用普通工作年限替代。</p><p>报名快照来自手工录入或导入。只有相同口径可比较；快照超过24小时标记为旧数据。不同时间的快照可能有偏差，较低比例不代表更容易录取。</p></div></dialog>
+<dialog id="helpDialog" class="wide-dialog"><div class="dialog-top"><h2>带着完整材料去求助</h2><button class="close-dialog" aria-label="关闭求助材料">×</button></div>
+  <p class="muted small">先预览，再复制给你使用的 AI 或咨询人员。此处不会发送任何内容。</p>
+  <div class="field-row"><label>包含哪些岗位<select id="helpScope"><option value="context">当前详情 / 对比岗位</option><option value="saved">我的收藏（最多10个）</option><option value="results">当前筛选前5个</option></select></label><label>附加条件<select id="helpPrivacy"><option value="no">只附岗位原文</option><option value="yes">附上我填写的条件和初筛结果</option></select></label></div>
+  <label>你想核对的问题<textarea id="helpQuestion" rows="2" placeholder="例如：我的专业方向与岗位要求是否一致？还要向招录机关确认什么？"></textarea></label>
+  <div class="data-actions"><button id="generateHelp" class="button primary">生成 / 更新材料</button><button id="copyHelp" class="button subtle">复制全部</button><button id="downloadHelp" class="button subtle">下载为文本</button></div>
+  <p id="helpSummary" class="small muted"></p><label>材料预览 · 可以编辑<textarea id="helpOutput" rows="16" spellcheck="false"></textarea></label>
+</dialog>
+<dialog id="bulkDialog" class="wide-dialog enhanced-only"><div class="dialog-top"><h2>批量更新收藏人数</h2><button class="close-dialog" aria-label="关闭批量更新">×</button></div>
+  <p class="small muted">只填发生更新的数字。空白表示未提供，0表示明确为零。同批保存相同来源和观察时间，原始历史保留。</p>
+  <div class="field-row"><label>观察时间（北京时间）<input id="bulkTime" type="datetime-local"></label><label>来源<input id="bulkSource" placeholder="如官网职位收藏页 · 本人查看"></label></div>
+  <form id="bulkForm"><div id="bulkRows" class="table-scroll"></div><p id="bulkError" role="status"></p><button type="submit" class="button primary">保存本批快照</button></form>
+</dialog>
+
+<dialog id="majorDialog"><div class="dialog-top"><h2>查找你的专业</h2><button class="close-dialog" aria-label="关闭专业目录">×</button></div><p class="small muted">按实际学历查找。可搜索名称、专业代码、类别和门类；没有找到时仍可手填。</p><div class="major-search"><select id="majorLevel" aria-label="专业目录学历"><option value="bachelor">本科目录</option><option value="graduate">研究生目录与历史专业</option></select><input id="majorSearch" placeholder="如：电子、会计、0301" aria-label="搜索专业"></div><p id="majorSearchCount" class="small muted"></p><div id="majorResults"></div></dialog><input id="importFile" type="file" accept=".csv,.json" hidden><input id="backupFile" type="file" accept=".json" hidden><div id="toast" role="status" hidden></div>
+<script src="edition.js"></script><script src="data.js"></script><script src="major-catalog.js"></script><script src="major-engine.js"></script><script src="engine.js"></script><script src="data-tools.js"></script><script src="app.js"></script><script src="selection-ui.js"></script>
+</body></html>

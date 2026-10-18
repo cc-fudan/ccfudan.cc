@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人生计时器 · 珍惜眼前的时间</title>
+<style>
+  :root{
+    --blue:#00B1FF;
+    --blue-deep:#0072CE;
+    --bg:#071426;
+    --bg2:#0C1E33;
+    --card:rgba(255,255,255,.045);
+    --line:rgba(255,255,255,.10);
+    --txt:#EAF4FF;
+    --txt2:#9DB4CC;
+    --txt3:#6A829B;
+    --warn:#FF9F43;
+    --danger:#FF5C6C;
+    --good:#2ED8A7;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(0,177,255,.22), transparent 60%),
+      radial-gradient(900px 500px at 95% 5%, rgba(0,114,206,.20), transparent 55%),
+      linear-gradient(180deg,var(--bg) 0%, var(--bg2) 55%, #050F1C 100%);
+    background-attachment:fixed;
+    color:var(--txt);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    min-height:100vh;
+    padding:24px 16px 60px;
+    line-height:1.6;
+  }
+  .wrap{max-width:680px;margin:0 auto;}
+
+  header{text-align:center;margin-bottom:26px;}
+  .badge{
+    display:inline-block;font-size:12px;letter-spacing:2px;color:var(--blue);
+    border:1px solid rgba(0,177,255,.35);border-radius:999px;
+    padding:4px 14px;margin-bottom:14px;background:rgba(0,177,255,.07);
+  }
+  h1{
+    margin:0 0 10px;font-size:30px;line-height:1.3;font-weight:800;letter-spacing:1px;
+    background:linear-gradient(90deg,#fff 10%,var(--blue) 60%,var(--blue-deep) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sub{color:var(--txt2);font-size:14px;margin:0;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:20px;margin-bottom:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .card-title{
+    font-size:13px;color:var(--blue);letter-spacing:1.5px;font-weight:700;
+    display:flex;align-items:center;gap:8px;margin-bottom:16px;
+  }
+  .card-title::before{content:"";width:3px;height:14px;background:var(--blue);border-radius:2px;}
+
+  .tabs{display:flex;gap:8px;margin-bottom:16px;background:rgba(0,0,0,.22);padding:4px;border-radius:12px;}
+  .tab{
+    flex:1;text-align:center;padding:9px 0;border-radius:9px;font-size:14px;
+    color:var(--txt2);cursor:pointer;transition:.2s;border:none;background:transparent;font-family:inherit;
+  }
+  .tab.on{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);color:#fff;font-weight:700;box-shadow:0 4px 14px rgba(0,114,206,.35);}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;color:var(--txt2);margin-bottom:7px;}
+  input[type=text],input[type=date],select{
+    width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--line);
+    background:rgba(0,0,0,.25);color:var(--txt);font-size:16px;font-family:inherit;outline:none;transition:.2s;
+  }
+  input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,177,255,.13);}
+  input::placeholder{color:var(--txt3);}
+  select option{background:#0C1E33;color:var(--txt);}
+
+  .btn{
+    width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:700;
+    font-family:inherit;cursor:pointer;color:#fff;letter-spacing:1px;
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);
+    box-shadow:0 8px 22px rgba(0,114,206,.32);transition:transform .12s;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn.ghost{background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--txt2);box-shadow:none;font-weight:500;font-size:14px;padding:11px;}
+  .err{color:var(--danger);font-size:13px;margin-top:10px;min-height:18px;}
+  .hint{color:var(--good);font-size:12.5px;margin-top:8px;min-height:18px;}
+
+  #result{display:none;}
+  .who{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
+  .avatar{
+    width:52px;height:52px;border-radius:16px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--blue) 0%,var(--blue-deep) 100%);
+    display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;
+    box-shadow:0 6px 18px rgba(0,114,206,.35);
+  }
+  .who-main{flex:1;min-width:0;}
+  .who-name{font-size:18px;font-weight:700;}
+  .who-meta{font-size:12.5px;color:var(--txt3);}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .box{background:rgba(0,0,0,.22);border:1px solid var(--line);border-radius:14px;padding:14px;}
+  .box .k{font-size:12px;color:var(--txt3);margin-bottom:6px;letter-spacing:.5px;}
+  .box .v{font-size:26px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums;}
+  .box .v small{font-size:13px;font-weight:600;color:var(--txt2);margin-left:2px;}
+  .box .note{font-size:11.5px;color:var(--txt3);margin-top:5px;}
+  .box.hl{background:linear-gradient(135deg,rgba(0,177,255,.16),rgba(0,114,206,.07));border-color:rgba(0,177,255,.35);}
+  .box.hl .v{color:var(--blue);}
+
+  .bar-wrap{margin-top:16px;}
+  .bar-top{display:flex;justify-content:space-between;font-size:12.5px;color:var(--txt2);margin-bottom:8px;}
+  .bar{height:14px;border-radius:999px;background:rgba(0,0,0,.35);overflow:hidden;border:1px solid var(--line);}
+  .bar-in{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--blue-deep),var(--blue));box-shadow:0 0 14px rgba(0,177,255,.6);transition:width .6s cubic-bezier(.22,1,.36,1);}
+
+  /* 口径对比 */
+  .cmp{display:flex;flex-direction:column;gap:10px;}
+  .cmp-row{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:13px 14px;border-radius:13px;background:rgba(0,0,0,.22);border:1px solid var(--line);
+  }
+  .cmp-row.now{background:linear-gradient(135deg,rgba(0,177,255,.16),rgba(0,114,206,.05));border-color:rgba(0,177,255,.4);}
+  .cmp-l{font-size:13px;color:var(--txt2);}
+  .cmp-l b{display:block;color:var(--txt);font-size:14px;font-weight:700;}
+  .cmp-l span{font-size:11.5px;color:var(--txt3);}
+  .cmp-r{text-align:right;white-space:nowrap;}
+  .cmp-r .n{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;}
+  .cmp-r .u{font-size:11.5px;color:var(--txt3);}
+  .cmp-row.now .cmp-r .n{color:var(--blue);}
+  .gain{
+    text-align:center;padding:12px;border-radius:13px;font-size:14px;
+    background:rgba(46,216,167,.10);border:1px dashed rgba(46,216,167,.4);color:var(--good);
+  }
+  .gain b{font-size:18px;}
+  .expl{font-size:12.5px;color:var(--txt3);line-height:1.8;margin:14px 0 0;}
+  .expl b{color:var(--txt2);font-weight:600;}
+
+  .cd{text-align:center;padding:8px 0 4px;}
+  .cd-label{font-size:12.5px;color:var(--txt2);letter-spacing:2px;margin-bottom:14px;}
+  .cd-row{display:flex;justify-content:center;gap:8px;}
+  .cd-cell{min-width:74px;padding:14px 6px;border-radius:14px;
+    background:linear-gradient(180deg,rgba(0,177,255,.14),rgba(0,114,206,.05));border:1px solid rgba(0,177,255,.28);}
+  .cd-num{font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 18px rgba(0,177,255,.45);}
+  .cd-unit{font-size:11.5px;color:var(--txt3);margin-top:7px;letter-spacing:1px;}
+  .cd-end{font-size:12.5px;color:var(--txt3);margin-top:16px;}
+  .cd-end b{color:var(--warn);font-weight:700;}
+  .over{color:var(--warn);font-size:14px;margin-top:12px;line-height:1.7;}
+
+  canvas{width:100%;display:block;border-radius:10px;}
+  .legend{display:flex;gap:16px;font-size:11.5px;color:var(--txt3);margin-top:12px;justify-content:center;flex-wrap:wrap;}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+
+  .facts{list-style:none;padding:0;margin:0;}
+  .facts li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    padding:11px 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:14px;}
+  .facts li:last-child{border-bottom:none;}
+  .facts .fk{color:var(--txt2);}
+  .facts .fv{font-weight:700;font-variant-numeric:tabular-nums;color:var(--blue);white-space:nowrap;}
+
+  .quote{font-size:16px;line-height:1.9;text-align:center;padding:6px 4px;color:#fff;
+    min-height:60px;display:flex;align-items:center;justify-content:center;}
+  .quote em{font-style:normal;color:var(--blue);font-weight:700;}
+
+  footer{text-align:center;font-size:11.5px;color:var(--txt3);line-height:1.9;margin-top:22px;padding:0 8px;}
+  .privacy{display:flex;align-items:center;justify-content:center;gap:6px;font-size:11.5px;color:var(--txt3);margin-top:6px;}
+
+  /* 海报导出 */
+  #poster-overlay{position:fixed;inset:0;background:rgba(3,8,16,.92);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+  #poster-overlay.show{display:flex;}
+  .poster-sheet{width:100%;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  #poster-img{width:100%;max-height:72vh;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);display:block;object-fit:contain;background:#071426;}
+  .poster-actions{display:flex;gap:10px;width:100%;}
+  .poster-actions .btn{flex:1;padding:12px;font-size:15px;}
+  .poster-tip{font-size:12px;color:var(--txt3);text-align:center;}
+  @media (max-width:400px){
+    h1{font-size:25px;}
+    .cd-cell{min-width:62px;padding:12px 4px;}
+    .cd-num{font-size:27px;}
+    .box .v{font-size:22px;}
+    .cmp-r .n{font-size:19px;}
+  }
+</style>
+<meta name="robots" content="noindex, nofollow"><meta name="referrer" content="no-referrer"><style>.cc-tool-return{position:fixed;right:12px;bottom:12px;z-index:100000;background:#fff9ef;color:#4a634f;border:1px solid #ccd8c5;border-radius:20px;padding:7px 12px;font:12px/1.5 system-ui;text-decoration:none;box-shadow:0 3px 16px #18281a15;min-height:34px;display:flex;align-items:center}@media print{.cc-tool-return{display:none}}</style></head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badge">LIFE COUNTDOWN</div>
+    <h1>你还能活多少天</h1>
+    <p class="sub">输入身份证号或生日，看看时间的余额</p>
+  </header>
+
+  <!-- 输入 -->
+  <div class="card">
+    <div class="card-title">第一步 · 告诉我你是谁</div>
+    <div class="tabs">
+      <button class="tab on" data-mode="id">身份证号</button>
+      <button class="tab" data-mode="bday">生日</button>
+    </div>
+
+    <div id="pane-id">
+      <div class="field">
+        <label for="idnum">18 位身份证号（自动识别出生日与性别）</label>
+        <input type="text" id="idnum" maxlength="18" autocomplete="off" placeholder="输入后自动识别">
+      </div>
+    </div>
+
+    <div id="pane-bday" style="display:none;">
+      <div class="field">
+        <label for="bdate">出生日期</label>
+        <input type="date" id="bdate">
+      </div>
+      <div class="field">
+        <label for="sex">性别（选了会按对应性别的生命表算，更准）</label>
+        <select id="sex">
+          <option value="">不填 · 按全国平均</option>
+          <option value="M">男</option>
+          <option value="F">女</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="mode">估算口径</label>
+      <select id="mode">
+        <option value="auto">生命表精算：按性别 + 当前年龄（推荐）</option>
+        <option value="flat">固定值：按出生时的平均预期寿命</option>
+        <option value="custom">自定义：我预计自己能活到</option>
+      </select>
+    </div>
+    <div class="field" id="custom-wrap" style="display:none;">
+      <input type="text" id="custom-age" inputmode="decimal" placeholder="输入你预计的总寿命（岁），如 85">
+    </div>
+
+    <button class="btn" id="go">开始计算</button>
+    <div class="err" id="err"></div>
+    <div class="hint" id="hint"></div>
+    <div class="privacy">🔒 全部计算在你手机本地完成，不上传、不保存、无网络请求</div>
+  </div>
+
+  <!-- 结果 -->
+  <div id="result">
+
+    <div class="card">
+      <div class="card-title">第二步 · 关于你</div>
+      <div class="who">
+        <div class="avatar" id="sex-icon">♂</div>
+        <div class="who-main">
+          <div class="who-name" id="who-name">—</div>
+          <div class="who-meta" id="who-meta">—</div>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="box">
+          <div class="k">精确年龄</div>
+          <div class="v" id="age">—</div>
+          <div class="note" id="age-note">—</div>
+        </div>
+        <div class="box hl">
+          <div class="k">已经活了</div>
+          <div class="v" id="lived">—<small>天</small></div>
+          <div class="note" id="lived-note">—</div>
+        </div>
+        <div class="box">
+          <div class="k">预计还剩</div>
+          <div class="v" id="left">—<small>天</small></div>
+          <div class="note" id="left-note">—</div>
+        </div>
+        <div class="box">
+          <div class="k">人生进度</div>
+          <div class="v" id="pct">—<small>%</small></div>
+          <div class="note" id="pct-note">—</div>
+        </div>
+      </div>
+      <div class="bar-wrap">
+        <div class="bar-top"><span>出生</span><span id="bar-mid">—</span><span>终点</span></div>
+        <div class="bar"><div class="bar-in" id="bar-in"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">口径说明 · 你已经比"人均"活得更久了</div>
+      <div class="cmp">
+        <div class="cmp-row">
+          <div class="cmp-l"><b>出生时口径</b><span>新生儿预期寿命，不考虑你已经活了多少年</span></div>
+          <div class="cmp-r"><div class="n" id="cmp-flat-n">—</div><div class="u" id="cmp-flat-u">—</div></div>
+        </div>
+        <div class="cmp-row now">
+          <div class="cmp-l"><b>你的现龄口径</b><span id="cmp-now-label">按你现在的年龄重新计算</span></div>
+          <div class="cmp-r"><div class="n" id="cmp-now-n">—</div><div class="u" id="cmp-now-u">—</div></div>
+        </div>
+        <div class="gain" id="gain">—</div>
+      </div>
+      <div class="expl">
+        <b>为什么两个数不一样？</b>「人均预期寿命 79.25 岁」是<b>新生儿口径</b>：假设一批刚出生的人，按当前各年龄死亡率走完一生，平均能活到的岁数。
+        但它没算上"你已经平安活到现在"这件事——你一旦活到 30 岁，就<b>自动排除了 30 岁前死亡的所有可能</b>，
+        分母变小了，你自己的预期总寿命自然上浮。年龄越大，这个上浮越明显。
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">第三步 · 你的时间正在流逝</div>
+      <div class="cd">
+        <div class="cd-label" id="cd-label">距预期生命终点还有</div>
+        <div class="cd-row">
+          <div class="cd-cell"><div class="cd-num" id="d">--</div><div class="cd-unit">天</div></div>
+          <div class="cd-cell"><div class="cd-num" id="h">--</div><div class="cd-unit">时</div></div>
+          <div class="cd-cell"><div class="cd-num" id="m">--</div><div class="cd-unit">分</div></div>
+          <div class="cd-cell"><div class="cd-num" id="s">--</div><div class="cd-unit">秒</div></div>
+        </div>
+        <div class="cd-end" id="cd-end">—</div>
+        <div class="over" id="over" style="display:none;"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">第四步 · 你的人生周历</div>
+      <canvas id="grid"></canvas>
+      <div class="legend">
+        <span><i style="background:linear-gradient(90deg,#0072CE,#00B1FF)"></i>已度过</span>
+        <span><i style="background:#00B1FF;box-shadow:0 0 8px #00B1FF"></i>本周</span>
+        <span><i style="background:rgba(255,255,255,.10)"></i>未来的格子</span>
+      </div>
+      <p style="font-size:12px;color:var(--txt3);margin:14px 0 0;text-align:center;">
+        每一格 = 你生命中的一周，每行 = 一年，共 <span id="cell-total">—</span> 格
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">第五步 · 换算成更容易心疼的单位</div>
+      <ul class="facts" id="facts"></ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">最后 · 请珍惜时间</div>
+      <div class="quote" id="quote"></div>
+    </div>
+
+    <button class="btn" id="poster">🖼️ 导出分享海报</button>
+    <div style="height:14px"></div>
+    <button class="btn ghost" id="copy">📋 复制我的结果（可发朋友圈）</button>
+    <div style="height:14px"></div>
+    <button class="btn ghost" id="reset">↩︎ 重新输入</button>
+  </div>
+
+  <footer>
+    <div><b style="color:var(--txt2)">口径与数据来源</b></div>
+    <div>基准值：国家卫生健康委《2025 年我国卫生健康事业发展统计公报》——2025 年末我国人均预期寿命 <b>79.25 岁</b>、婴儿死亡率 3.8‰（2026 年 8 月发布）</div>
+    <div style="margin-top:8px;">分年龄死亡率结构：联合国《世界人口展望 2024》（WPP 2024）中国生命表，已按上述 79.25 岁官方基准重新校准；分性别在官方合计基准上按 WPP 的性别差平移</div>
+    <div style="margin-top:8px;">本工具采用时期生命表口径，假设当前各年龄死亡率不变；现实中医疗水平仍在进步，你的真实余命大概率还会更长</div>
+    <div style="margin-top:8px;">统计意义上的估算，不是对你个人的预测。活得久，更要活得好。</div>
+  </footer>
+
+  <!-- 海报导出弹层 -->
+  <div id="poster-overlay">
+    <div class="poster-sheet">
+      <img id="poster-img" alt="生命倒计时分享海报">
+      <div class="poster-actions">
+        <button class="btn" id="poster-save">💾 保存图片</button>
+        <button class="btn ghost" id="poster-close">关闭</button>
+      </div>
+      <div class="poster-tip">手机端可长按上方图片保存到相册</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var YEAR_DAYS = 365.2425;
+  var DAY = 86400000;
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ----------------------------------------------------------
+     生命表：分性别、分年龄的「平均余命 ex（年）」，索引 = 年龄 0~100
+     由联合国 WPP 2024 中国生命表重建，并校准至中国官方 2025 年口径
+       合计 e0 = 79.25（官方公报口径）
+       男性 e0 = 76.50，女性 e0 = 82.21（按 WPP 性别差平移）
+     校验：重建结果 0~95 岁各年龄与 WPP 原始公布值偏差稳定在 -0.22 岁，
+           合计 e0 重建值 77.95 与 WPP 中国 2023 年 77.95 完全一致
+     ---------------------------------------------------------- */
+  var EX = {
+    M:[76.5,75.79,74.83,73.86,72.9,71.93,70.95,69.97,68.99,68.0,67.02,66.04,65.05,64.07,63.08,62.1,61.12,60.14,59.16,58.18,57.21,56.24,55.27,54.3,53.32,52.35,51.39,50.43,49.47,48.5,47.54,46.58,45.62,44.66,43.7,42.74,41.79,40.83,39.87,38.91,37.95,37.02,36.08,35.14,34.19,33.25,32.33,31.41,30.49,29.57,28.64,27.77,26.9,26.02,25.14,24.26,23.42,22.59,21.74,20.89,20.04,19.28,18.52,17.75,16.96,16.17,15.48,14.78,14.07,13.34,12.6,11.99,11.37,10.73,10.06,9.38,8.87,8.34,7.77,7.18,6.56,6.2,5.8,5.37,4.89,4.37,4.14,3.87,3.55,3.17,2.72,2.61,2.46,2.26,1.98,1.59,1.58,1.57,1.56,1.55,1.55],
+    F:[82.21,81.52,80.55,79.58,78.61,77.64,76.66,75.67,74.69,73.7,72.72,71.73,70.74,69.75,68.76,67.77,66.78,65.8,64.81,63.82,62.83,61.85,60.88,59.89,58.91,57.93,56.96,55.98,55.01,54.03,53.05,52.08,51.11,50.13,49.16,48.18,47.21,46.24,45.27,44.29,43.32,42.35,41.39,40.42,39.45,38.49,37.53,36.58,35.62,34.66,33.7,32.77,31.84,30.9,29.96,29.02,28.11,27.2,26.28,25.36,24.44,23.58,22.71,21.83,20.95,20.07,19.25,18.43,17.6,16.76,15.91,15.15,14.39,13.61,12.83,12.03,11.39,10.73,10.05,9.35,8.63,8.15,7.63,7.09,6.52,5.91,5.58,5.21,4.8,4.34,3.82,3.66,3.45,3.2,2.9,2.52,2.5,2.48,2.46,2.45,2.43],
+    B:[79.25,78.55,77.59,76.62,75.65,74.69,73.7,72.72,71.74,70.75,69.77,68.78,67.8,66.81,65.82,64.84,63.86,62.87,61.89,60.91,59.92,58.95,57.98,57.0,56.03,55.05,54.08,53.12,52.15,51.18,50.21,49.24,48.28,47.31,46.35,45.38,44.42,43.45,42.49,41.53,40.56,39.61,38.66,37.71,36.75,35.8,34.87,33.93,32.99,32.05,31.11,30.21,29.31,28.41,27.5,26.6,25.73,24.86,23.98,23.1,22.22,21.41,20.6,19.78,18.96,18.13,17.38,16.62,15.86,15.08,14.29,13.61,12.92,12.22,11.5,10.77,10.2,9.61,8.99,8.36,7.69,7.28,6.83,6.35,5.83,5.28,5.0,4.68,4.32,3.91,3.44,3.31,3.14,2.92,2.64,2.29,2.28,2.26,2.25,2.23,2.22]
+  };
+  var E0 = { M:76.50, F:82.21, B:79.25 };
+
+  var state = { birth:null, sex:'', mode:'auto', custom:0, timer:null };
+
+  /* ---------- 身份证解析 ---------- */
+  var W = [7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2];
+  var CK = ['1','0','X','9','8','7','6','5','4','3','2'];
+
+  function validCheck(id){
+    var sum = 0;
+    for(var i=0;i<17;i++) sum += parseInt(id.charAt(i),10) * W[i];
+    return CK[sum % 11] === id.charAt(17);
+  }
+
+  function parseID(raw){
+    var id = (raw||'').trim().toUpperCase().replace(/\s/g,'');
+    if(id.length === 18){
+      if(!/^\d{17}[\dX]$/.test(id)) return {err:'身份证号应为 17 位数字 + 最后一位数字或 X'};
+      if(!validCheck(id)) return {err:'这个身份证号校验位不对，请检查是否输错了一位'};
+      var b = mkDate(id.substr(6,4), id.substr(10,2), id.substr(12,2));
+      if(!b) return {err:'身份证里的出生日期不是一个真实日期'};
+      return { birth:b, sex:(parseInt(id.charAt(16),10) % 2 === 1 ? 'M' : 'F') };
+    }
+    if(id.length === 15){
+      if(!/^\d{15}$/.test(id)) return {err:'15 位老身份证应全部为数字'};
+      var b2 = mkDate('19' + id.substr(6,2), id.substr(8,2), id.substr(10,2));
+      if(!b2) return {err:'身份证里的出生日期不是一个真实日期'};
+      return { birth:b2, sex:(parseInt(id.charAt(14),10) % 2 === 1 ? 'M' : 'F') };
+    }
+    return {err:'请输入 18 位身份证号（15 位老号码也支持）'};
+  }
+
+  function mkDate(y, m, d){
+    var yi = parseInt(y,10), mi = parseInt(m,10), di = parseInt(d,10);
+    if(mi < 1 || mi > 12 || di < 1 || di > 31) return null;
+    var dt = new Date(yi, mi-1, di, 0, 0, 0, 0);
+    if(dt.getFullYear() !== yi || dt.getMonth() !== mi-1 || dt.getDate() !== di) return null;
+    return dt;
+  }
+
+  /* ---------- 核心：按当前年龄取平均余命 ---------- */
+  function exAt(age, sex){
+    var tbl = EX[sex] || EX.B;
+    if(age >= 100){                                   // 100 岁以上按指数衰减外推
+      return Math.max(0.25, tbl[100] * Math.exp(-0.35 * (age - 100)));
+    }
+    var i = Math.floor(age), f = age - i;
+    if(i >= 100) return tbl[100];
+    return tbl[i] + (tbl[i+1] - tbl[i]) * f;
+  }
+
+  function preciseAge(b, now){
+    var y = now.getFullYear() - b.getFullYear();
+    var mo = now.getMonth() - b.getMonth();
+    var d = now.getDate() - b.getDate();
+    if(d < 0){ mo--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+    if(mo < 0){ y--; mo += 12; }
+    return {y:y, m:mo, d:d};
+  }
+
+  function fmt(n){ return n.toLocaleString('zh-CN'); }
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+  function calc(){
+    var now = new Date();
+    var b0 = new Date(state.birth.getFullYear(), state.birth.getMonth(), state.birth.getDate());
+    var livedMs = now.getTime() - b0.getTime();
+    var livedDays = Math.floor(livedMs / DAY);
+    var ageF = livedMs / DAY / YEAR_DAYS;                 // 精确年龄（含小数，单位：年）
+    var key = state.sex || 'B';
+
+    var e0 = E0[key];                                     // 出生时口径
+    var le;                                               // 预计总寿命
+    if(state.mode === 'custom'){
+      le = state.custom;
+    }else if(state.mode === 'flat'){
+      le = e0;
+    }else{
+      le = ageF + exAt(ageF, key);                        // 现龄口径
+    }
+
+    var remainMs = (le - ageF) * YEAR_DAYS * DAY;
+    var flatRemainMs = (e0 - ageF) * YEAR_DAYS * DAY;
+    var r = Math.max(0, remainMs);
+    var end = new Date(now.getTime() + remainMs);
+
+    return {
+      now:now, b0:b0, livedMs:livedMs, livedDays:livedDays, ageF:ageF,
+      age: preciseAge(b0, now),
+      le: le, e0: e0,
+      remainMs: remainMs, flatRemainMs: flatRemainMs,
+      leftDays: Math.floor(remainMs / DAY),
+      rd: Math.floor(r / DAY),
+      rh: Math.floor(r % DAY / 3600000),
+      rm: Math.floor(r % 3600000 / 60000),
+      rs: Math.floor(r % 60000 / 1000),
+      end: end,
+      pct: Math.max(0, Math.min(100, livedMs / (le * YEAR_DAYS * DAY) * 100)),
+      isBirthday: now.getMonth() === b0.getMonth() && now.getDate() === b0.getDate()
+    };
+  }
+
+  /* ---------- 渲染 ---------- */
+  function render(){
+    var c = calc();
+    var sexTxt = state.sex === 'M' ? '男' : (state.sex === 'F' ? '女' : '性别未填');
+
+    $('sex-icon').textContent = state.sex === 'F' ? '♀' : (state.sex === 'M' ? '♂' : '◍');
+    $('who-name').textContent = (state.sex ? sexTxt + ' · ' : '') + '出生于 ' +
+      c.b0.getFullYear() + ' 年 ' + (c.b0.getMonth()+1) + ' 月 ' + c.b0.getDate() + ' 日';
+    $('who-meta').textContent = '星期' + '日一二三四五六'.charAt(c.b0.getDay()) +
+      ' · ' + zodiacOf(c.b0) + ' · 已度过 ' + fmt(Math.floor(c.livedDays/7)) + ' 周';
+
+    $('age').innerHTML = c.age.y + '<small>岁</small>' + c.age.m + '<small>月</small>' + c.age.d + '<small>天</small>';
+    $('age-note').textContent = c.isBirthday ? '🎂 今天是你生日，生日快乐' : ('下次生日还有 ' + daysToBirthday(c) + ' 天');
+
+    $('lived').innerHTML = fmt(c.livedDays) + '<small>天</small>';
+    $('lived-note').textContent = '≈ ' + fmt(Math.floor(c.livedMs/3600000)) + ' 小时';
+
+    $('left').innerHTML = fmt(Math.max(0, c.leftDays)) + '<small>天</small>';
+    $('left-note').textContent = '≈ ' + Math.max(0, (c.le - c.ageF)).toFixed(1) + ' 年';
+
+    $('pct').innerHTML = c.pct.toFixed(1) + '<small>%</small>';
+    $('pct-note').textContent = '还剩 ' + (100 - c.pct).toFixed(1) + '%';
+
+    $('bar-in').style.width = c.pct.toFixed(3) + '%';
+    $('bar-mid').textContent = '已走完 ' + fmt(c.livedDays) + ' / ' + fmt(Math.round(c.le * YEAR_DAYS)) + ' 天';
+
+    /* 口径对比 */
+    var flatDays = Math.floor(c.flatRemainMs / DAY);
+    var nowDays = Math.max(0, c.leftDays);
+    $('cmp-flat-n').textContent = c.e0.toFixed(2) + ' 岁';
+    $('cmp-flat-u').textContent = '剩 ' + fmt(Math.max(0, flatDays)) + ' 天';
+    $('cmp-now-label').textContent = state.mode === 'custom'
+      ? '你自己设定的总寿命'
+      : (state.mode === 'flat' ? '未做年龄修正' : '按你 ' + c.age.y + ' 岁的现龄重算');
+    $('cmp-now-n').textContent = c.le.toFixed(2) + ' 岁';
+    $('cmp-now-u').textContent = '剩 ' + fmt(nowDays) + ' 天';
+
+    var gainDays = nowDays - Math.max(0, flatDays);
+    var gainYears = (c.le - c.e0);
+    if(state.mode === 'custom' || state.mode === 'flat'){
+      $('gain').innerHTML = '当前口径：<b>' + (state.mode === 'custom' ? '自定义 ' + c.le.toFixed(1) + ' 岁' : '未做年龄修正') + '</b>';
+    }else if(gainDays <= 1){
+      $('gain').innerHTML = '你刚来到这个世界，两个口径完全一致：<b>' + c.le.toFixed(2) + ' 岁</b>，往后只会越活越"赚"';
+    }else if(gainDays > 0){
+      $('gain').innerHTML = '因为你已经平安活到 ' + c.age.y + ' 岁，你的预期总寿命<b>上浮了 ' +
+        gainYears.toFixed(2) + ' 岁</b>，约等于多出 <b>' + fmt(gainDays) + ' 天</b>';
+    }else{
+      $('gain').innerHTML = '你已超出出生时口径的平均线，往后的每一天都是<b>赚来的</b>';
+    }
+
+    /* 倒计时 */
+    $('d').textContent = fmt(c.rd);
+    $('h').textContent = pad(c.rh);
+    $('m').textContent = pad(c.rm);
+    $('s').textContent = pad(c.rs);
+
+    if(c.remainMs > 0){
+      $('cd-label').textContent = '距预期生命终点还有';
+      $('cd-end').innerHTML = '按预计总寿命 ' + c.le.toFixed(1) + ' 岁计算，那一天大约在 <b>' +
+        c.end.getFullYear() + ' 年 ' + (c.end.getMonth()+1) + ' 月 ' + c.end.getDate() + ' 日</b>';
+      $('over').style.display = 'none';
+    }else{
+      $('cd-label').textContent = '你已经超出预设的寿命线';
+      $('cd-end').textContent = '';
+      $('over').style.display = 'block';
+      $('over').innerHTML = '按 ' + c.le.toFixed(1) + ' 岁的假设，你已「超额」活了 <b>' +
+        fmt(Math.floor(-c.remainMs / DAY)) + ' 天</b>。<br>往后的每一天，都是赚来的。';
+    }
+
+    /* 换算事实 */
+    var leftYears = Math.max(0, c.le - c.ageF);
+    var weekends = Math.floor(Math.max(0, c.leftDays) / 7 * 2);
+    var facts = [
+      ['还能过', fmt(Math.max(0, c.leftDays)) + ' 天'],
+      ['还能睡（按每天 8 小时）', fmt(Math.floor(Math.max(0, c.leftDays) * 8 / 24)) + ' 天'],
+      ['还能工作（按每天 8 小时、干到 60 岁）', fmt(workDaysLeft(c)) + ' 天'],
+      ['还能过多少个周末', fmt(weekends) + ' 天'],
+      ['还能看到几次春天', Math.floor(leftYears) + ' 次'],
+      ['还能过几个生日', Math.floor(leftYears) + ' 个'],
+      ['若父母年长 25 岁、你每年见他们 2 次', fmt(seeParents(c)) + ' 面']
+    ];
+    var html = '';
+    for(var i=0;i<facts.length;i++){
+      html += '<li><span class="fk">' + facts[i][0] + '</span><span class="fv">' + facts[i][1] + '</span></li>';
+    }
+    $('facts').innerHTML = html;
+
+    drawGrid(c);
+  }
+
+  function workDaysLeft(c){
+    var retire = new Date(c.b0.getFullYear()+60, c.b0.getMonth(), c.b0.getDate());
+    if(retire <= c.now) return 0;
+    var days = Math.floor((retire - c.now) / DAY);
+    return Math.floor(days * 5 / 7 * 8 / 24);
+  }
+
+  function seeParents(c){
+    var mine = c.le - c.ageF;
+    var theirs = c.le - (c.ageF + 25);
+    return Math.max(0, Math.floor(Math.min(mine, theirs) * 2));
+  }
+
+  function daysToBirthday(c){
+    var now = c.now;
+    var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    var next = new Date(now.getFullYear(), c.b0.getMonth(), c.b0.getDate());
+    if(next < today) next = new Date(now.getFullYear()+1, c.b0.getMonth(), c.b0.getDate());
+    return Math.round((next - today) / DAY);
+  }
+
+  function zodiacOf(d){
+    var m = d.getMonth() + 1, day = d.getDate();
+    var s = ['摩羯座','水瓶座','双鱼座','白羊座','金牛座','双子座','巨蟹座','狮子座','处女座','天秤座','天蝎座','射手座'];
+    var cut = [20,19,21,20,21,22,23,23,23,24,23,22];
+    var idx = (day < cut[m-1]) ? (m - 1) : m;
+    if(idx === 12) idx = 0;
+    return s[idx];
+  }
+
+  /* ---------- 人生周历 ---------- */
+  function drawGrid(c){
+    var cvs = $('grid');
+    var ctx = cvs.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var Wp = cvs.clientWidth || 320;
+    var cols = Math.max(1, Math.ceil(c.le));
+    var rows = 52;
+    var gap = 1;
+    var size = Math.max(2, (Wp - gap*(cols-1)) / cols);
+    var H = Math.round(rows * (size + gap) - gap);
+
+    cvs.style.height = H + 'px';
+    cvs.width = Math.round(Wp * dpr);
+    cvs.height = Math.round(H * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,Wp,H);
+
+    var passed = Math.floor(c.livedDays / 7);
+    var over = c.remainMs <= 0;
+    var total = cols * rows;
+
+    for(var i=0;i<total;i++){
+      var col = Math.floor(i / rows);
+      var row = i % rows;
+      var x = col * (size + gap);
+      var y = row * (size + gap);
+      if(i < passed){
+        var t = i / Math.max(1, total);
+        ctx.fillStyle = 'rgb(0,' + Math.round(114 + t*63) + ',' + Math.round(206 + t*49) + ')';
+      }else if(i === passed && !over){
+        ctx.fillStyle = '#00B1FF';
+        ctx.shadowColor = '#00B1FF';
+        ctx.shadowBlur = 6;
+      }else{
+        ctx.fillStyle = 'rgba(255,255,255,.10)';
+      }
+      ctx.fillRect(x, y, size, size);
+      ctx.shadowBlur = 0;
+    }
+    $('cell-total').textContent = fmt(total);
+  }
+
+  /* ---------- 文案 ---------- */
+  var QUOTES = [
+    '你银行账户里最确定的一笔钱，是今天。',
+    '所谓来日方长，其实<em>来日并不方长</em>。',
+    '时间不会等你准备好，它只是在走。',
+    '你现在读这句话的这一秒，已经<em>永远过去了</em>。',
+    '浪费时间不是错，错的是一直以为<em>还有时间</em>。',
+    '人生就是一场不断做减法的倒计时。',
+    '别把最想做的事，留到最没力气的年纪。',
+    '对父母来说，你剩下的见面次数，是<em>可以数完的</em>。',
+    '一天有 86400 秒，你今天花在在乎的人身上几秒？',
+    '真正贵的不是钱，是<em>不可再生的注意力</em>。'
+  ];
+  var qi = Math.floor(Math.random() * QUOTES.length);
+  function rotateQuote(){
+    qi = (qi + 1) % QUOTES.length;
+    $('quote').innerHTML = QUOTES[qi];
+  }
+
+  /* ---------- 事件 ---------- */
+  var mode = 'id';
+  document.querySelectorAll('.tab').forEach(function(t){
+    t.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('on'); });
+      t.classList.add('on');
+      mode = t.dataset.mode;
+      $('pane-id').style.display = mode === 'id' ? '' : 'none';
+      $('pane-bday').style.display = mode === 'bday' ? '' : 'none';
+      $('err').textContent = '';
+      $('hint').textContent = '';
+    });
+  });
+
+  $('mode').addEventListener('change', function(){
+    $('custom-wrap').style.display = this.value === 'custom' ? '' : 'none';
+    if(this.value === 'custom') $('custom-age').focus();
+  });
+
+  // 身份证实时识别
+  $('idnum').addEventListener('input', function(){
+    var v = this.value.trim();
+    if(v.length < 15){ $('hint').textContent = ''; return; }
+    var r = parseID(v);
+    if(r.err){ $('hint').textContent = ''; return; }
+    $('hint').textContent = '✓ 识别到：' + r.birth.getFullYear() + '-' +
+      pad(r.birth.getMonth()+1) + '-' + pad(r.birth.getDate()) + ' · ' +
+      (r.sex === 'M' ? '男' : '女') + ' · 将按' + (r.sex === 'M' ? '男性' : '女性') + '生命表计算';
+  });
+
+  $('go').addEventListener('click', function(){
+    var err = $('err');
+    err.textContent = '';
+    $('result').style.display = 'none';
+    if(state.timer){ clearInterval(state.timer); state.timer = null; }
+
+    if(mode === 'id'){
+      var r = parseID($('idnum').value);
+      if(r.err){ err.textContent = r.err; return; }
+      state.birth = r.birth;
+      state.sex = r.sex;                       // 身份证一定带性别
+    }else{
+      var v = $('bdate').value;
+      if(!v){ err.textContent = '请选择出生日期'; return; }
+      var p = v.split('-');
+      var b = mkDate(p[0], p[1], p[2]);
+      if(!b){ err.textContent = '这个日期看起来不对'; return; }
+      if(b > new Date()){ err.textContent = '出生日期不能晚于今天'; return; }
+      if(b.getFullYear() < 1900){ err.textContent = '请输入 1900 年以后出生的日期'; return; }
+      state.birth = b;
+      state.sex = $('sex').value;              // 可能为空 → 走全国平均
+    }
+
+    state.mode = $('mode').value;
+    if(state.mode === 'custom'){
+      var cv = parseFloat($('custom-age').value);
+      if(!cv || cv < 40 || cv > 150){ err.textContent = '自定义总寿命请填 40 ~ 150 之间的数字'; return; }
+      state.custom = cv;
+    }
+
+    $('result').style.display = 'block';
+    render();
+    if(state.timer) clearInterval(state.timer);
+    state.timer = setInterval(render, 1000);
+    rotateQuote();
+    window.scrollTo({top: $('result').offsetTop - 12, behavior:'smooth'});
+  });
+
+  $('reset').addEventListener('click', function(){
+    if(state.timer) clearInterval(state.timer);
+    $('result').style.display = 'none';
+    $('idnum').value = ''; $('bdate').value = ''; $('sex').value = '';
+    $('err').textContent = ''; $('hint').textContent = '';
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  $('copy').addEventListener('click', function(){
+    var c = calc();
+    var sexTxt = state.sex === 'M' ? '男' : (state.sex === 'F' ? '女' : '');
+    var txt =
+      '我已经活了 ' + fmt(c.livedDays) + ' 天（' + c.age.y + '岁' + c.age.m + '个月' + c.age.d + '天）。\n' +
+      (state.sex ? '按' + sexTxt + '性生命表、结合我现在的年龄算，' : '按全国平均算，') +
+      '我的预计总寿命是 ' + c.le.toFixed(1) + ' 岁，\n' +
+      '还剩大约 ' + fmt(Math.max(0, c.leftDays)) + ' 天。\n' +
+      '人生进度条已走完 ' + c.pct.toFixed(1) + '%。\n' +
+      '时间不多了，珍惜吧。';
+    var btn = $('copy');
+    function done(){
+      btn.textContent = '✅ 已复制，去发朋友圈吧';
+      setTimeout(function(){ btn.textContent = '📋 复制我的结果（可发朋友圈）'; }, 2000);
+    }
+    function fallback(){
+      var ta = document.createElement('textarea');
+      ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ btn.textContent = '复制失败，请手动选择'; }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    }else fallback();
+  });
+
+  window.addEventListener('resize', function(){
+    if($('result').style.display === 'block' && state.birth) drawGrid(calc());
+  });
+
+  /* ---------- 导出分享海报（纯前端、零依赖、离线） ---------- */
+  var posterCanvas = null;
+
+  function radialGlow(ctx, x, y, r, color){
+    var g = ctx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, color); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+  }
+  function roundRect(ctx, x, y, w, h, r){
+    r = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+  function wrapRich(chars, ctx, maxW){
+    var lines = [], cur = [];
+    for(var i = 0; i < chars.length; i++){
+      var test = cur.concat([chars[i]]);
+      var w = 0; for(var j = 0; j < test.length; j++) w += ctx.measureText(test[j].ch).width;
+      if(w > maxW && cur.length){ lines.push(cur); cur = [chars[i]]; }
+      else cur = test;
+    }
+    if(cur.length) lines.push(cur);
+    return lines;
+  }
+
+  function exportPoster(){
+    var c = calc();
+    var S = 2, W = 1080, H = 1920;
+    var cv = document.createElement('canvas');
+    cv.width = W * S; cv.height = H * S;
+    var ctx = cv.getContext('2d');
+    ctx.scale(S, S);
+    ctx.textBaseline = 'alphabetic';
+
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#071426'); bg.addColorStop(0.55, '#0C1E33'); bg.addColorStop(1, '#050F1C');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    radialGlow(ctx, 210, -40, 560, 'rgba(0,177,255,0.20)');
+    radialGlow(ctx, 980, 160, 520, 'rgba(0,114,206,0.18)');
+
+    var P = 64, cx = W / 2;
+    var fm = '-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
+
+    /* 顶部标识 */
+    try{ ctx.letterSpacing = '6px'; }catch(e){}
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#00B1FF';
+    ctx.font = '600 26px ' + fm;
+    ctx.fillText('L I F E   C O U N T D O W N', cx, 120);
+    try{ ctx.letterSpacing = '0px'; }catch(e){}
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '800 56px ' + fm;
+    ctx.fillText('我的人生余额', cx, 196);
+
+    ctx.fillStyle = '#9DB4CC';
+    ctx.font = '400 26px ' + fm;
+    var meta = (state.sex === 'M' ? '男' : (state.sex === 'F' ? '女' : '')) +
+               (state.sex ? ' · ' : '') +
+               '出生于 ' + c.b0.getFullYear() + ' 年 ' + (c.b0.getMonth() + 1) + ' 月 ' + c.b0.getDate() + ' 日';
+    ctx.fillText(meta, cx, 244);
+
+    /* 主视觉：剩余天数 */
+    ctx.fillStyle = '#9DB4CC';
+    ctx.font = '400 26px ' + fm;
+    ctx.fillText('距我的生命终点，大约还有', cx, 360);
+
+    var remainTxt = fmt(Math.max(0, c.leftDays));
+    var fs = 150;
+    ctx.font = '800 ' + fs + 'px ' + fm;
+    while(ctx.measureText(remainTxt).width > W - 2 * P && fs > 60){ fs -= 6; ctx.font = '800 ' + fs + 'px ' + fm; }
+    ctx.font = '800 ' + fs + 'px ' + fm;
+    var nw = ctx.measureText(remainTxt).width;
+    ctx.font = '700 44px ' + fm;
+    var uw = ctx.measureText('天').width;
+    var gap = 16, total = nw + gap + uw, sx = cx - total / 2;
+    var grad = ctx.createLinearGradient(0, 470 - fs, 0, 470);
+    grad.addColorStop(0, '#FFFFFF'); grad.addColorStop(1, '#00B1FF');
+    ctx.fillStyle = grad;
+    ctx.textAlign = 'left';
+    ctx.fillText(remainTxt, sx, 470);
+    ctx.fillStyle = '#00B1FF';
+    ctx.font = '700 44px ' + fm;
+    ctx.fillText('天', sx + nw + gap, 470);
+    ctx.textAlign = 'center';
+
+    ctx.fillStyle = '#9DB4CC';
+    ctx.font = '400 28px ' + fm;
+    ctx.fillText('≈ ' + Math.max(0, (c.le - c.ageF)).toFixed(1) + ' 年', cx, 540);
+
+    /* 三宫格关键指标 */
+    var boxY = 600, boxH = 150, gap2 = 20;
+    var bw = (W - 2 * P - gap2 * 2) / 3;
+    var stats = [
+      ['已经活了', fmt(c.livedDays) + ' 天'],
+      ['人生进度', c.pct.toFixed(1) + ' %'],
+      ['预计寿命', c.le.toFixed(1) + ' 岁']
+    ];
+    for(var i = 0; i < 3; i++){
+      var bx = P + i * (bw + gap2);
+      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      roundRect(ctx, bx, boxY, bw, boxH, 16); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
+      roundRect(ctx, bx, boxY, bw, boxH, 16); ctx.stroke();
+      ctx.fillStyle = '#9DB4CC'; ctx.font = '400 24px ' + fm; ctx.textAlign = 'center';
+      ctx.fillText(stats[i][0], bx + bw / 2, boxY + 45);
+      ctx.fillStyle = '#FFFFFF'; ctx.font = '800 38px ' + fm;
+      ctx.fillText(stats[i][1], bx + bw / 2, boxY + 98);
+    }
+
+    /* 进度条 */
+    var barY = 800, barH = 18, barX = P, barW = W - 2 * P;
+    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    roundRect(ctx, barX, barY, barW, barH, barH / 2); ctx.fill();
+    var fillW = Math.max(barH, barW * c.pct / 100);
+    var fg = ctx.createLinearGradient(barX, 0, barX + barW, 0);
+    fg.addColorStop(0, '#0072CE'); fg.addColorStop(1, '#00B1FF');
+    ctx.fillStyle = fg;
+    roundRect(ctx, barX, barY, fillW, barH, barH / 2); ctx.fill();
+    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm;
+    ctx.textAlign = 'left'; ctx.fillText('出生', barX, barY + barH + 30);
+    ctx.textAlign = 'right'; ctx.fillText('终点', barX + barW, barY + barH + 30);
+    ctx.textAlign = 'center'; ctx.fillStyle = '#9DB4CC';
+    ctx.fillText('已走完 ' + fmt(c.livedDays) + ' / ' + fmt(Math.round(c.le * YEAR_DAYS)) + ' 天', cx, barY + barH + 30);
+
+    /* 人生周历（缩小版） */
+    var cols = Math.max(1, Math.ceil(c.le));
+    var rows = 52;
+    var gridMaxH = 560;
+    var availW = W - 2 * P;
+    var sz = Math.min(availW / (cols + 0.12 * (cols - 1)), gridMaxH / rows);
+    sz = Math.max(3, sz);
+    var ggap = Math.max(1, sz * 0.12);
+    var gridW = cols * (sz + ggap) - ggap;
+    var gx = cx - gridW / 2;
+    var gy = 890;
+    var passed = Math.floor(c.livedDays / 7);
+    var over = c.remainMs <= 0;
+    var gt = cols * rows;
+    for(var gi = 0; gi < gt; gi++){
+      var col = Math.floor(gi / rows), row = gi % rows;
+      var x = gx + col * (sz + ggap), y = gy + row * (sz + ggap);
+      if(gi < passed){
+        var t = gi / Math.max(1, gt);
+        ctx.fillStyle = 'rgb(0,' + Math.round(114 + t * 63) + ',' + Math.round(206 + t * 49) + ')';
+      } else if(gi === passed && !over){
+        ctx.fillStyle = '#00B1FF';
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      }
+      ctx.fillRect(x, y, sz, sz);
+    }
+    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm; ctx.textAlign = 'center';
+    ctx.fillText('每一格 = 生命中的一周，共 ' + fmt(gt) + ' 格', cx, gy + gridMaxH + 34);
+
+    /* 金句（保留 <em> 高亮） */
+    var tmp = document.createElement('div');
+    tmp.innerHTML = $('quote').innerHTML;
+    var chars = [];
+    var nodes = tmp.childNodes;
+    for(var ni = 0; ni < nodes.length; ni++){
+      var em = (nodes[ni].nodeType === 1 && nodes[ni].tagName === 'EM');
+      var tx = nodes[ni].textContent || '';
+      for(var ti = 0; ti < tx.length; ti++) chars.push({ ch: tx[ti], em: em });
+    }
+    var qFont = '400 34px ' + fm;
+    ctx.font = qFont;
+    var qlines = wrapRich(chars, ctx, W - 2 * P);
+    var qY = 1640;
+    for(var ql = 0; ql < qlines.length; ql++){
+      var line = qlines[ql];
+      var lw = 0; for(var k = 0; k < line.length; k++) lw += ctx.measureText(line[k].ch).width;
+      var lx = cx - lw / 2;
+      ctx.textAlign = 'left';
+      for(var k = 0; k < line.length; k++){
+        ctx.fillStyle = line[k].em ? '#00B1FF' : '#FFFFFF';
+        ctx.fillText(line[k].ch, lx, qY);
+        lx += ctx.measureText(line[k].ch).width;
+      }
+      qY += 52;
+    }
+
+    /* 底部来源 */
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm;
+    ctx.fillText('数据来源：国家卫健委 2025 年公报 · 人均预期寿命 79.25 岁', cx, 1780);
+    ctx.fillStyle = '#4A6079'; ctx.font = '400 20px ' + fm;
+    ctx.fillText('生命倒计时 · 你还能活多少天（统计意义估算，非个人预测）', cx, 1820);
+
+    posterCanvas = cv;
+    $('poster-img').src = cv.toDataURL('image/png');
+    $('poster-overlay').classList.add('show');
+  }
+
+  $('poster').addEventListener('click', exportPoster);
+  $('poster-close').addEventListener('click', function(){ $('poster-overlay').classList.remove('show'); });
+  $('poster-overlay').addEventListener('click', function(e){ if(e.target === this) this.classList.remove('show'); });
+  $('poster-save').addEventListener('click', function(){
+    if(!posterCanvas) return;
+    posterCanvas.toBlob(function(blob){
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = '生命倒计时海报.png';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+    }, 'image/png');
+  });
+
+  setInterval(rotateQuote, 8000);
+  $('quote').innerHTML = QUOTES[qi];
+
+  ['idnum','custom-age'].forEach(function(id){
+    $(id).addEventListener('keydown', function(e){ if(e.key === 'Enter') $('go').click(); });
+  });
+})();
+</script>
+<a class="cc-tool-return" href="/tools">← cc的小工具</a></body>
+</html>

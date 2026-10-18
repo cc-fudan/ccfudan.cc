@@ -50,6 +50,7 @@ function siteTarget() {
           injectRoute({ pattern: '/works', entrypoint: 'src/sites/com/works.astro' });
           injectRoute({ pattern: '/credentials', entrypoint: 'src/sites/com/credentials.astro' });
         } else {
+          injectRoute({ pattern: '/tools', entrypoint: 'src/sites/cc/tools.astro' });
           injectRoute({ pattern: '/family', entrypoint: 'src/sites/cc/family.astro' });
           injectRoute({ pattern: '/notes', entrypoint: 'src/sites/cc/notes.astro' });
           injectRoute({ pattern: '/library', entrypoint: 'src/sites/cc/library.astro' });
@@ -62,6 +63,8 @@ function siteTarget() {
         // public/ 会被原样拷入两个产物，故对外站(.com) 构建完成后强制剥离
         // 儿童/家庭正脸照（/images/family 目录 + scene 合影），确保 ccfudan.com 永不发布。
         if (isCom) {
+          const toolsDir = path.join(outDir, 'tools');
+          if (fs.existsSync(toolsDir)) fs.rmSync(toolsDir, { recursive: true, force: true });
           const familyDir = path.join(outDir, 'images', 'family');
           if (fs.existsSync(familyDir)) fs.rmSync(familyDir, { recursive: true, force: true });
           for (const f of ['scene-1.jpg', 'scene-2.jpg', 'scene-3.jpg', 'scene-4.jpg']) {
