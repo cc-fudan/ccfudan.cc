@@ -60,9 +60,6 @@ async function noOverflow(page,label){
   await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'4');await noOverflow(p,'portable offline');
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,errors},null,2));
-  const previews=path.join(root,'tools/previews');fs.mkdirSync(previews,{recursive:true});
-  for(const file of ['tools-desktop.png','zhiguogong-desktop.png','zhiguogong-390.png'])fs.copyFileSync(path.join(shots,file),path.join(previews,file));
-  fs.copyFileSync(path.join(shots,'result.json'),path.join(previews,'verification.json'));
   console.log('TOOLS BROWSER PASS: source-built pages, 4 tools, cascading provinces/cities, profiles, majors, persistence, mobile layouts, standalone offline.');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);console.log('::error title=Tools browser verification::'+String(e.stack||e).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));server.close();process.exit(1);});
