@@ -7,7 +7,7 @@
   for(const e of catalog){const k=e.level+':'+e.name;if(!nameIndex.has(k))nameIndex.set(k,[]);nameIndex.get(k).push(e);}
   function records(value,level){const key=level>=3?'graduate':'bachelor';return nameIndex.get(key+':'+strip(value))||[];}
   function section(raw,level){
-    const re=/(大学本科|本科(?:生)?|硕士研究生|博士研究生|研究生|硕士|博士|大专|专科)(?:所学)?(?:专业)?\s*[:：]/g;
+    const re=/(大学本科|本科(?:生)?|硕士研究生|博士研究生|研究生|硕士|博士|大专|专科)(?:所学)?(?:专业)?(?:报考)?\s*[:：]/g;
     const labels=[...String(raw).matchAll(re)];
     if(!labels.length)return {text:String(raw),ambiguous:false};
     const want=level>=3?/研究生|硕士|博士/:level===1?/大专|专科/:/本科/;
@@ -21,7 +21,7 @@
     for(const c of text){if(c==='（'||c==='('){depth++;plain+=c;}else if(c==='）'||c===')'){depth=Math.max(0,depth-1);plain+=c;}else plain+=depth&&/[、,，;；]/.test(c)?' ':c;}
     return plain.split(/[、,，;；\n/]/).map(v=>strip(v).replace(/^[：:\s]+/,'').replace(/^[0-9A-Za-z]+/,'').replace(/[0-9A-Za-z]+$/,'').replace(/^(?:一级学科|专业类别|专业类|专业)[:：]/,'').replace(/等(?:专业)?$/,'')).filter(Boolean);
   }
-  function match(raw,value,level,explicitCode='',explicitLevel=''){
+  function match(raw,value,level,explicitCode='',explicitLevel='',explicitSource='',job={}){
     const original=String(value||'').trim(),v=strip(original),part=section(String(raw||''),level),text=part.text;
     if(!value)return {status:'review',text:'尚未填写专业'};
     if(part.ambiguous)return {status:'review',text:'岗位按学历分别列专业，但未识别出当前学历对应段落，请核对原文'};
@@ -29,9 +29,26 @@
     if(/排除|不含|不包括|除外|仅限.*方向|限.*方向/.test(text))return {status:'review',text:'专业原文包含排除项或方向限制，请逐项核对'};
     const list=records(value,level),tokens=tokenize(text),direction=original.replace(/\s/g,'')!==v;
     const actualLevel=explicitLevel===(level>=3?'graduate':'bachelor')?explicitLevel:(level>=3?'graduate':'bachelor');
-    const chosen=explicitCode?catalog.find(e=>e.code===explicitCode&&e.level===actualLevel):list.find(e=>e.kind==='major')||list[0];
+    const chosen=explicitCode?catalog.find(e=>e.code===explicitCode&&e.level===actualLevel&&(!explicitSource||e.source===explicitSource)):list.length===1?list[0]:null;
     const finish=reason=>({status:direction?'review':'pass',text:direction?'已识别主专业，培养方向仍需核对':reason});
+    const agency=root.AGENCY_MAJOR_CATALOG;
+    const scoped=agency?.year===2027&&level>=2&&/国家税务总局/.test(job['部门名称']||'');
+    if(scoped){
+      const groups=tokens.filter(t=>agency.categories[t]);
+      const names=new Set([v,agency.aliases[v]].filter(Boolean));
+      if(level>=3&&v==='会计')names.add('会计学');
+      const hits=groups.flatMap(g=>agency.categories[g].filter(e=>names.has(strip(e.name))).map(e=>({g,e})));
+      if(hits.length){
+        if(hits.some(h=>!h.e.review))return finish('税务系统2027专业参考目录：'+v+'属于“'+hits.find(h=>!h.e.review).g+'”');
+        return {status:'review',text:'税务系统2027目录列有该专业，但还需确认所学语种等附加条件'};
+      }
+      if(groups.length===tokens.length&&groups.length&&!tokens.includes(v))return {status:'review',text:'税务系统2027参考目录未直接列入该类别；相近专业须提交课程和专业说明，由招录机关审查'};
+    }
     if(tokens.includes(v)||strip(text)===v)return finish('专业名称与当前学历要求一致');
+    if(list.length>1&&!chosen){
+      const identities=new Set(list.map(e=>e.code+':'+e.category+':'+e.discipline));
+      if(identities.size>1)return {status:'review',text:'该名称对应多个专业代码或学位类别，请在“查专业”中选择与你学历一致的目录记录'};
+    }
     for(const e of (chosen?[chosen]:list)){
       if(e.kind==='major'&&e.category&&tokens.some(t=>t===e.category||t===e.category+'类'))return finish(`按${e.source==='graduate1997'?'历史研究生目录':'教育部目录'}归入“${e.category}”，目录版本及机关解释需复核`);
       if(e.discipline&&tokens.some(t=>t===e.discipline+'门类'||t===e.discipline+'学科门类'||t==='学科门类'+e.discipline))return finish(`专业属于${e.discipline}门类，按原文门类范围匹配`);

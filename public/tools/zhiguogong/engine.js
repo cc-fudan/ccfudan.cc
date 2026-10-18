@@ -34,7 +34,7 @@
     }
     return raw;
   }
-  function majorMatch(raw,value,level,p={}){return root.MajorMatcher.match(raw,value,level,p.majorCode,p.majorCatalogLevel);}
+  function majorMatch(raw,value,level,p={},j={}){return root.MajorMatcher.match(raw,value,level,p.majorCode,p.majorCatalogLevel,p.majorCatalogSource,j);}
   function evaluate(j,p,policy={}){
     const reasons=[];
     const add=(status,label,text)=>reasons.push({status,label,text});
@@ -47,7 +47,7 @@
       add(level>=min&&level<=max?'pass':'reject','学历',d);
     });
     if(j['学位']!=='无要求') check(p.degree,'学位',v=>add(v==='no'?'reject':'pass','学位',v==='no'?'岗位要求取得相应学位':j['学位']));
-    const mm=majorMatch(req,p.major,level,p);add(mm.status,'专业',mm.text);
+    const mm=majorMatch(req,p.major,level,p,j);add(mm.status,'专业',mm.text);
     check(p.politics,'政治面貌',v=>{
       const r=j['政治面貌'];add(r==='不限'||r===v||(v==='共青团员'&&r.includes('共青团员'))||(v==='中共党员'&&r.includes('中共党员'))?'pass':'reject','政治面貌',r);
     });

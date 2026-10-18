@@ -34,7 +34,9 @@ async function noOverflow(page,label){
   await page.selectOption('#province','湖北省');
   let city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('武汉市'));assert.ok(!city.includes('长沙市'));
   await page.selectOption('#citySelect','武汉市');
-  await page.selectOption('#province','湖南省');assert.equal(await page.locator('.city-chip').count(),0);city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('长沙市'));assert.ok(!city.includes('武汉市'));
+  await page.selectOption('#province','湖南省');assert.equal(await page.locator('.province-chip').count(),2);city=await page.locator('#citySelect option').allTextContents();assert.ok(city.includes('长沙市'));assert.ok(city.includes('武汉市'));
+  await page.selectOption('#citySelect','长沙市');assert.equal(await page.locator('#cityChips .city-chip').count(),2);
+  await page.locator('[data-province-remove="0"]').click();city=await page.locator('#citySelect option').allTextContents();assert.ok(!city.includes('武汉市'));assert.equal(await page.locator('#cityChips .city-chip').count(),1);
   await page.click('[data-preset="philosophy"]');assert.equal(await page.locator('#matchCount').textContent(),'4');
   await page.click('[data-status="match"]');assert.equal(await page.locator('.job-card').count(),4);
   await page.click('.job-card [data-action="favorite"]');

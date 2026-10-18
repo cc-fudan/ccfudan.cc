@@ -11,9 +11,16 @@ function locationInfo(location){
 const provinceCities=new Map();
 for(const j of jobs){const loc=locationInfo(j['工作地点']);if(!provinceCities.has(loc.province))provinceCities.set(loc.province,new Set());if(loc.city)provinceCities.get(loc.province).add(loc.city);}
 function selectedCities(){return state.cities.split(/[、，,;；\s]+/).filter(Boolean);}
+function selectedProvinces(){return state.province.split(/[、，,;；\s]+/).filter(Boolean);}
+function availableCities(){return [...new Set(selectedProvinces().flatMap(p=>[...provinceCities.get(p)||[]]))];}
 function syncCities(){
-  const available=state.province?[...provinceCities.get(state.province)||[]]:[],selected=selectedCities();
+  const available=availableCities(),selected=selectedCities();
+  $('#province').value='';
+  $('#province').options[0].textContent=state.province?'继续添加省份':'全国 / 添加省份（可多选）';
+  $('#provinceChips').replaceChildren();
+  selectedProvinces().forEach((p,i)=>{const b=document.createElement('button');b.type='button';b.className='province-chip city-chip';b.textContent=p+' ×';b.dataset.provinceRemove=i;b.setAttribute('aria-label','移除'+p);b.onclick=()=>{const next=selectedProvinces();next.splice(i,1);state.province=next.join('、');const valid=availableCities();state.cities=selectedCities().filter(c=>valid.includes(c)||valid.some(v=>v.replace(/市$/,'')===c)).join('、');page=1;save();syncCities();render();};$('#provinceChips').append(b);});
   $('#citySelect').innerHTML='<option value="">'+(state.province?'全省 / 请选择城市':'请先选择省份')+'</option>'+available.sort((a,b)=>a.localeCompare(b,'zh-CN')).map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+  $('#citySelect').options[0].textContent=state.province?'所选省份全域 / 添加城市':'请先选择省份';
   $('#citySelect').disabled=!state.province;
   $('#cityChips').innerHTML=selected.map((c,i)=>`<button type="button" class="city-chip" data-city-remove="${i}" aria-label="移除${esc(c)}">${esc(c)} ×</button>`).join('');
   $('#cities').value=state.cities;
@@ -22,13 +29,11 @@ function syncCities(){
 }
 const prevLoadForm=loadForm;
 loadForm=function(){prevLoadForm();syncCities();updateMajorHint();};
-$('#province').onchange=()=>{state.province=$('#province').value;state.cities='';page=1;save();syncCities();render();};
+$('#province').onchange=()=>{const p=$('#province').value;if(!p){state.province='';state.cities='';}else{const next=selectedProvinces();if(!next.includes(p))next.push(p);state.province=next.join('、');}page=1;save();syncCities();render();};
 $('#citySelect').onchange=()=>{const city=$('#citySelect').value;if(!city)return;const values=selectedCities();if(!values.includes(city))values.push(city);state.cities=values.join('、');page=1;save();syncCities();render();};
-const previousGetBase=getBase;
 getBase=function(){
-  // Exact city relation prevents 湖北省恩施州恩施市 from being confused with another city.
-  const selected=selectedCities();
-  return previousGetBase().filter(j=>!selected.length||selected.some(c=>{const loc=locationInfo(j['工作地点']);return c===loc.city||c===loc.city.replace(/市$/,'')||j['工作地点'].includes(c);}));
+  const provinces=selectedProvinces(),cities=selectedCities(),q=$('#search').value.trim().toLowerCase();
+  return jobs.filter(j=>{const loc=locationInfo(j['工作地点']);return (tab!=='saved'||state.favorites.includes(j.id))&&(!provinces.length||provinces.includes(loc.province))&&(!cities.length||cities.some(c=>c===loc.city||c===loc.city.replace(/市$/,'')))&&(!q||[j['部门名称'],j['用人司局'],j['招考职位'],j['职位代码'],j['部门代码']].join(' ').toLowerCase().includes(q));});
 };
 
 const degreeLevel=()=>['硕士研究生','博士研究生'].includes(state.profile.education)?'graduate':'bachelor';
@@ -87,10 +92,12 @@ const majorNames=[...new Set([...majorLists.bachelor,...majorLists.graduate].map
 $('#majors').innerHTML=majorNames.map(name=>`<option>${esc(name)}</option>`).join('');
 $('#catalogDescription').textContent=`内置 ${CATALOG.entries.filter(e=>e.source==='bachelor2026'&&e.kind==='major').length} 个本科专业、${CATALOG.entries.filter(e=>e.source==='graduate2022').length} 个研究生一级学科/类别、${CATALOG.entries.filter(e=>e.source==='graduate1997').length} 个历史研究生专业和${CATALOG.entries.filter(e=>e.source==='renames2025').length} 个专业领域；另保留职位表专业原文。`;
 $('#catalogSources').innerHTML=Object.values(CATALOG.sources).map(s=>`<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)} ↗</a></li>`).join('');
+{const s=window.AGENCY_MAJOR_CATALOG.source,a=document.createElement('a'),li=document.createElement('li');a.href=s.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='税务系统2027专业参考目录 · 仅用于税务岗位 ↗';li.append(a);$('#catalogSources').append(li);}
 $('#catalogStatus').textContent='专业库更新于 '+CATALOG.checkedAt+' · 目录版本各自保留';
 const oldProfileInput=$('#profileForm').oninput;
 $('#profileForm').addEventListener('input',()=>setTimeout(updateMajorHint,250));
 $$('[data-preset]').forEach(b=>{const old=b.onclick;b.onclick=()=>{old();syncCities();updateMajorHint();};});
 $('#profileToggle').onclick=()=>{const panel=$('.sidebar'),open=!panel.classList.contains('mobile-open');panel.classList.toggle('mobile-open',open);$('#profileToggle').setAttribute('aria-expanded',String(open));$('#profileToggle').textContent=open?'收起条件 ↑':'填写 / 修改我的条件 ↓';};
 $('#applyMobileProfile').onclick=()=>{$('.sidebar').classList.remove('mobile-open');$('#profileToggle').setAttribute('aria-expanded','false');$('#profileToggle').textContent='填写 / 修改我的条件 ↓';$('.results-panel').scrollIntoView({behavior:'smooth',block:'start'});};
-syncCities();updateMajorHint();
+syncCities();updateMajorHint();render();
+
