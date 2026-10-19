@@ -1,0 +1,41 @@
+name: Build commercial site artifact
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  commercial:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - run: npm run build:com
+      - name: Check commercial privacy and archive
+        run: |
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const page=fs.readFileSync('dist/writing/index.html','utf8');
+          assert.equal((page.match(/class="post"/g)||[]).length,18);
+          for(const file of ['family','tools','notes','library']) assert(!fs.existsSync('dist/'+file));
+          assert(!fs.existsSync('dist/images/family'));
+          assert.equal(fs.readFileSync('dist/CNAME','utf8').trim(),'ccfudan.com');
+          fs.writeFileSync('dist/release-source.txt',process.env.GITHUB_SHA+'\n');
+          JS
+      - name: Save built files to artifact branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd dist
+          touch .nojekyll
+          git init -b commercial-artifact
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add .
+          git commit -m "Commercial artifact from $GITHUB_SHA"
+          git -c http.extraheader="AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" push --force "https://github.com/$GITHUB_REPOSITORY.git" HEAD:refs/heads/commercial-artifact
