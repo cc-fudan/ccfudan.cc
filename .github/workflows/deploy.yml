@@ -42,7 +42,9 @@ jobs:
       - name: Verify tools on desktop and mobile
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/tools-browser/node_modules/playwright
-        run: node scripts/verify-tools.cjs
+        run: |
+          node scripts/verify-tools.cjs
+          node scripts/verify-shizhi.cjs
 
       - name: Save tools screenshots and verification
         if: always()
