@@ -27,7 +27,7 @@ async function noOverflow(page,label){
   const errors=[],page=await browser.newPage({viewport:{width:1440,height:1000}});
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(url+'/tools/',{waitUntil:'networkidle'});
-  assert.equal(await page.locator('.tool-card').count(),5);
+  assert.equal(await page.locator('.tool-card').count(),6);
   await page.screenshot({path:path.join(shots,'tools-desktop.png'),fullPage:true});
   await page.route('**/major-engine.js',route=>route.fulfill({contentType:'text/javascript',body:'throw new Error("stale unversioned engine was requested")'}));
   await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});
