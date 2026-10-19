@@ -1,0 +1,38 @@
+---
+import { WORKSHOP_TOOLS } from '../data/workshop';
+const recommended = ['知国公','砚田','人生计时器','周易问卦','趋势研究工作台','小宇宙','拾知'];
+const workflow = ['知国公','拾知','趋势研究工作台','砚田','人生计时器','周易问卦','小宇宙'];
+const ordered = [...WORKSHOP_TOOLS].sort((a,b)=>recommended.indexOf(a.name)-recommended.indexOf(b.name));
+---
+<section class="workshop-catalog" data-workshop-catalog aria-label="工具目录">
+<div class="workshop-sort"><label>浏览顺序 <select data-workshop-order><option value="recommended">推荐顺序 · 起步工具后置</option><option value="workflow">按使用流程 · 先选岗，再刷题</option></select></label><p data-order-description>先看已有主要功能的工具；拾知仍在搭建，放在最后。其余按实用工具、研究与互动体验分组。趋势研究与小宇宙的完成度待进一步验收，这不是质量评级。</p></div>
+<div class="workshop-grid">
+  {ordered.map((tool,index)=>(
+    <article class:list={['workshop-card',{'workshop-featured':tool.featured}]} data-recommended={recommended.indexOf(tool.name)} data-workflow={workflow.indexOf(tool.name)}>
+      <div class="workshop-top"><span class="workshop-icon">{tool.mark}</span><span>{tool.kind}</span><span class="workshop-index">0{index+1}</span></div>
+      <h3><a href={tool.href}>{tool.name}</a></h3>
+      {tool.name==='拾知' && <span class="workshop-stage">起步版 · 题目与答案待核验</span>}
+      <p>{tool.description}</p>
+      <div class="workshop-tags">{tool.tags.map(tag=><span>{tag}</span>)}</div>
+      <div class="workshop-actions"><a class="btn btn-primary" href={tool.href}>打开工具 <span aria-hidden="true">↗</span></a>{tool.download && <a class="workshop-download" href={tool.download} download>下载离线版 ↓</a>}</div>
+    </article>
+  ))}
+</div>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-workshop-catalog]').forEach((catalog)=>{
+    const select=catalog.querySelector<HTMLSelectElement>('[data-workshop-order]');
+    const grid=catalog.querySelector<HTMLElement>('.workshop-grid');
+    const description=catalog.querySelector<HTMLElement>('[data-order-description]');
+    if(!select || !grid || !description) return;
+    select.addEventListener('change',()=>{
+      const key=select.value==='workflow'?'workflow':'recommended';
+      [...grid.querySelectorAll<HTMLElement>('.workshop-card')].sort((a,b)=>Number(a.dataset[key])-Number(b.dataset[key])).forEach((card,index)=>{
+        grid.appendChild(card);
+        const number=card.querySelector('.workshop-index');
+        if(number) number.textContent=String(index+1).padStart(2,'0');
+      });
+      description.textContent=key==='workflow'?'备考先用知国公了解岗位和条件，再用拾知练习复盘（起步版）；再按研究、记录、时间观察、自省、互动体验排列，跨用途工具没有强制先后。':'先看已有主要功能的工具；拾知仍在搭建，放在最后。其余按实用工具、研究与互动体验分组。趋势研究与小宇宙的完成度待进一步验收，这不是质量评级。';
+    });
+  });
+</script>

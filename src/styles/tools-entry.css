@@ -1,4 +1,1 @@
-
-/* cc tools navigation entry: deliberately prominent, scoped to the .cc site. */
-.site-cc .header .nav a[href="/tools"]{background:#e5eadc;color:#36583c;border:1px solid #bfcfb4;border-radius:8px;padding:8px 13px;font-weight:700;min-height:44px;display:inline-flex;align-items:center;}
-@media(max-width:600px){.site-cc .header .nav{display:flex;flex-wrap:wrap;gap:5px 11px}.site-cc .header .nav a[href="/tools"]{padding:5px 10px;min-height:40px}.cc-tools-preview .btn{min-height:44px}}
+/* Workshop navigation uses the shared theme. */

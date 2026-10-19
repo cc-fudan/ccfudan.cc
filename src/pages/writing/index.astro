@@ -1,37 +1,30 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
+import { articleArchive } from '../../data/articleArchive';
 import { IS_COM } from '../../config/site';
 
-const posts = (await getCollection('writing'))
-  .filter((p) => {
-    const tags = p.data.tags || [];
-    // 双站隔离：对外站只列 com/both；对内站只列 cc/both（生活/港险文不进 .com）
-    return IS_COM
-      ? (tags.includes('com') || tags.includes('both'))
-      : (tags.includes('cc') || tags.includes('both'));
-  })
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = await articleArchive();
 ---
 
 <BaseLayout
-  title="文章观点 | cc · 程成"
-  description="站内全文文章观点：保险、职业、身份与佛学——先看几天文章，有了基础信任，我们再聊。"
+  title={IS_COM ? '文章观点 | cc · 程成' : '文章合集 | 3C得九'}
+  description={IS_COM ? '站内全文文章观点：保险、职业、身份与佛学。' : '程成的文章合集：生活、阅读与思考。'}
 >
   <section class="section">
     <div class="wrap">
-      <span class="eyebrow">站内全文 · 文章观点</span>
-      <h1 class="section-title">文章观点</h1>
+      <span class="eyebrow">WRITING & NOTES</span>
+      <h1 class="section-title">{IS_COM ? '文章观点' : '文章合集'}</h1>
       <p class="section-sub">
-        站内全文可直接阅读——不急着聊产品，先看几天文章，有了基础信任，我们再聊。
+        {IS_COM ? '站内全文可直接阅读——先看文章，了解我的思考方式。' : '记录生活，也记录想法如何慢慢变得清楚。'}
       </p>
-      <div class="posts">
+      <p class="archive-count">共 {posts.length} 篇 · 按发表时间排列 · 有站内全文时优先站内阅读</p>
+      <div class="posts article-archive">
         {posts.map((p) => (
-          <a class="post" href={`/writing/${p.slug}`}>
+          <a class="post" href={p.href} target={p.external ? '_blank' : undefined} rel={p.external ? 'noopener noreferrer' : undefined}>
             <div>
-              <div class="meta">{p.data.date.toISOString().slice(0, 10)} · {p.data.tags.join(' / ')} · 站内全文</div>
-              <h3>{p.data.title}</h3>
-              <p>{p.data.excerpt}</p>
+              <div class="meta">{p.date.toISOString().slice(0, 10)} · {p.account} · {p.external ? '公众号原文 ↗' : '站内全文'}</div>
+              <h3>{p.title}</h3>
+              <p>{p.excerpt}</p>
             </div>
             <div class="arrow">→</div>
           </a>

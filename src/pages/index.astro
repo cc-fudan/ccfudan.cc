@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import WorkshopGrid from '../components/WorkshopGrid.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import {
   IS_COM,
@@ -8,7 +9,6 @@ import {
   HOME_CARDS_COM,
   CC_TAGLINE,
   CC_HERO_SUB,
-  CC_ROOMS,
   CC_LIB_HINT,
   SITE_TARGET,
 } from '../config/site';
@@ -159,7 +159,7 @@ const ccLibCount = ccWorks.filter((w) => CC_LIB_HINT.test(w.data.title)).length;
   ) : (
     <BaseLayout
       title="3C得九 | 程成 · 格物致知 · 修身齐家"
-      description="cc 的对内站：书房、茶室、工作室、运动与客厅——一个人格物致知、修身齐家的私人角落。"
+      description="程成的个人空间：我的工匠坊、文章、个人介绍与家人照片。"
     >
       <!-- HERO：宣纸底 + 右全家福 -->
       <section class="hero hero-cc">
@@ -174,7 +174,7 @@ const ccLibCount = ccWorks.filter((w) => CC_LIB_HINT.test(w.data.title)).length;
               <div class="cta-row">
                 <a class="btn btn-light" href="/notes">翻翻人生随笔 →</a>
                 <a class="btn btn-outline" href="/family">吉光片羽</a>
-                <a class="btn btn-light" href="/tools">小工具 · 打开就用 ↗</a>
+                <a class="btn btn-light" href="#workshop">逛逛我的工匠坊 ↗</a>
               </div>
             </div>
             <figure class="hero-photo">
@@ -191,28 +191,11 @@ const ccLibCount = ccWorks.filter((w) => CC_LIB_HINT.test(w.data.title)).length;
         </div>
       </section>
 
-      <section class="section cc-tools-preview" style="padding:35px 0;background:#eef1e6;border-bottom:1px solid var(--border);">
-        <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
-          <div><span class="eyebrow" style="margin-bottom:6px;">cc 的器物间</span><h2 style="margin:0 0 7px;font-size:25px;">我鼓捣的小工具</h2><p style="margin:0;color:var(--muted);font-size:14px;">知国公选岗 · 砚田写作 · 周易问卦 · 人生计时器</p></div>
-          <a class="btn btn-primary" href="/tools">进去看看 ↗</a>
-        </div>
-      </section>
-
-      <!-- 户型图 / 房间 -->
-      <section class="section">
+      <section class="section workshop-section" id="workshop">
         <div class="wrap">
-          <span class="eyebrow">这间屋子</span>
-          <h2 class="section-title">五个房间</h2>
-          <p class="section-sub">不是户型图，是这一年的生活重心。点进去，看我在每个房间里做什么。</p>
-          <div class="rooms">
-            {CC_ROOMS.map((r) => (
-              <a class="room" href={r.href}>
-                <span class="room-name">{r.name}</span>
-                <span class="room-desc">{r.desc}</span>
-                <span class="room-arrow">→</span>
-              </a>
-            ))}
-          </div>
+          <div class="workshop-heading"><div><span class="eyebrow">BUILT BY CC</span><h2 class="section-title">我的工匠坊</h2></div><a class="workshop-more" href="/tools">全部工具 ↗</a></div>
+          <p class="section-sub">从自己的问题出发，把想法做成可以打开、使用、带走的小工具。</p>
+          <WorkshopGrid />
         </div>
       </section>
 
@@ -315,49 +298,6 @@ const ccLibCount = ccWorks.filter((w) => CC_LIB_HINT.test(w.data.title)).length;
     display: block;
   }
 
-  /* ── .cc：五个房间「户型图」 ── */
-  .rooms {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-    margin-top: 8px;
-  }
-  .room {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 22px 20px;
-    border-radius: 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    text-decoration: none;
-    color: var(--ink);
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-    position: relative;
-  }
-  .room:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(43, 38, 32, 0.08);
-    border-color: rgba(179, 67, 47, 0.34);
-  }
-  .room-name {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--ink);
-    letter-spacing: 0.06em;
-  }
-  .room-desc {
-    font-size: 0.92rem;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-  .room-arrow {
-    position: absolute;
-    right: 18px;
-    top: 18px;
-    color: var(--accent, #b3432f);
-    font-size: 1.1rem;
-  }
   .hero-cc .lead {
     font-size: 1.05rem;
     margin-top: 10px;

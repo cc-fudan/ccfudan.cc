@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import WechatContact from '../../components/WechatContact.astro';
 ---
 
 <BaseLayout title="联系预约 | cc · 程成" description="保障 / 法律 / 身份 / 职业与 AI 咨询，加微信 cc_fudan（备注「咨询」）。公众号 cc的保险笔记。">
@@ -26,10 +27,10 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
         </div>
       </div>
 
-      <div class="qr-wrap">
-        <img class="qr-img" src="/images/wechat-qr.png" alt="微信二维码：cc_fudan" width="240" />
-        <p class="qr-cap">微信扫一扫，添加 cc_fudan（备注「咨询」）</p>
-      </div>
+      <section id="wechat" class="wechat-section" aria-label="添加微信">
+        <h2>添加微信</h2>
+        <WechatContact showQr />
+      </section>
 
       <div style="margin-top:30px;">
         <a class="btn btn-primary" href="/writing">先读读我的文章 →</a>
@@ -37,3 +38,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </div>
   </section>
 </BaseLayout>
+<style>
+  .wechat-section { margin-top: 34px; scroll-margin-top: 170px; }
+</style>

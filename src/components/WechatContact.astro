@@ -1,0 +1,56 @@
+---
+interface Props { showQr?: boolean; }
+const { showQr = false } = Astro.props;
+---
+<div class="wechat-contact" data-wechat-contact>
+  <label class="wechat-label">
+    微信号
+    <input class="wechat-id" aria-label="微信号" type="text" value="cc_fudan" readonly />
+  </label>
+  <div class="wechat-actions">
+    <button class="btn btn-primary" type="button" data-copy-wechat>复制微信号</button>
+    {!showQr && <a class="btn btn-ghost" href="/contact#wechat">查看二维码</a>}
+  </div>
+  <p class="wechat-status" role="status" aria-live="polite" data-copy-status>复制后打开微信，点击「添加朋友」，搜索微信号；备注「咨询」。</p>
+  <noscript><p>可长按上方微信号手动复制，再到微信搜索添加。</p></noscript>
+  {showQr && <div class="qr-wrap">
+    <a href="/images/wechat-qr.png" aria-label="打开微信二维码原图">
+      <img class="qr-img" src="/images/wechat-qr.png" alt="程成的微信二维码，微信号 cc_fudan" width="928" height="1444" />
+    </a>
+    <p class="qr-cap">电脑访问可用微信扫一扫；手机访问可点开原图，长按保存后在微信扫一扫中从相册选择。</p>
+  </div>}
+</div>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-wechat-contact]').forEach((root) => {
+    const button = root.querySelector<HTMLButtonElement>('[data-copy-wechat]');
+    const input = root.querySelector<HTMLInputElement>('input');
+    const status = root.querySelector<HTMLElement>('[data-copy-status]');
+    if (!button || !input || !status) return;
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      try {
+        if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(input.value);
+        status.textContent = '已复制 cc_fudan。请打开微信 → 添加朋友 → 粘贴搜索，备注「咨询」。';
+      } catch {
+        input.focus();
+        input.select();
+        input.setSelectionRange(0, input.value.length);
+        status.textContent = '未能自动复制。微信号已选中，请长按复制，或手动输入 cc_fudan。';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>
+<style>
+  .wechat-contact { max-width: 540px; }
+  .wechat-label { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; font-weight: 600; }
+  .wechat-id { width: 180px; max-width: 100%; min-height: 44px; padding: 8px 12px; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+  .wechat-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+  .wechat-status { margin: 14px 0 0; font-size: 15px; line-height: 1.8; color: var(--ink-soft); }
+  .qr-wrap { align-items: flex-start; margin-top: 24px; }
+  .qr-img { width: 280px; max-width: 100%; height: auto; }
+  .qr-cap { line-height: 1.8; }
+  button:disabled { opacity: .7; cursor: wait; }
+</style>

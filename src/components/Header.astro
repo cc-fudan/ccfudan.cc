@@ -7,9 +7,9 @@ const path = Astro.url.pathname;
 <header class="header">
   <div class="wrap">
     <a class="logo" href="/">{SITE_NAME}<small>{SITE_ROLE}</small></a>
-    <nav class="nav">
+    <nav class="nav" aria-label="主导航">
       {links.map((l) => (
-        <a href={l.href} class={path === l.href ? 'active' : ''}>{l.label}</a>
+        <a href={l.href} class={path === l.href ? 'active' : ''} aria-current={path === l.href ? 'page' : undefined}>{l.label}</a>
       ))}
     </nav>
   </div>

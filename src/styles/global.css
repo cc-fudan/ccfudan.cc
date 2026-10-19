@@ -349,7 +349,9 @@ img { max-width: 100%; display: block; }
   .grid-3, .grid-2, .rules, .stats { grid-template-columns: 1fr; }
   .stats.cols-4 { grid-template-columns: repeat(2, 1fr); }
   .contact-grid { grid-template-columns: 1fr; }
-  .nav { display: none; }
+  .header .wrap { height: auto; min-height: 64px; flex-direction: column; align-items: flex-start; padding-top: 10px; }
+  .nav { display: flex; flex-wrap: wrap; gap: 0 16px; width: 100%; padding: 4px 0; }
+  .nav a { display: inline-flex; align-items: center; min-height: 44px; }
   .section { padding: 52px 0; }
   .post { flex-direction: column; align-items: flex-start; }
 }
@@ -680,3 +682,14 @@ img { max-width: 100%; display: block; }
 .like-btn.liked { background: var(--primary); color: #fff; border-color: var(--primary); cursor: default; }
 .like-btn.pop { animation: likepop 0.5s ease; }
 @keyframes likepop { 30% { transform: scale(1.2); } }
+
+/* 窄屏阅读与键盘操作：不以隐藏溢出来掩盖内容。 */
+.prose { overflow-wrap: anywhere; }
+.contact-card .v { min-width: 0; overflow-wrap: anywhere; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 480px) {
+  .wrap { padding-left: 18px; padding-right: 18px; }
+  .contact-card { padding: 20px; }
+  .contact-card .row { flex-direction: column; gap: 4px; }
+  .section-title { font-size: 26px; line-height: 1.45; }
+}

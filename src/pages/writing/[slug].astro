@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import WechatContact from '../../components/WechatContact.astro';
 import { getCollection } from 'astro:content';
 import { IS_COM } from '../../config/site';
 import fs from 'node:fs';
@@ -127,6 +128,7 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
         <div style="margin-top:36px;padding:20px;background:var(--accent-soft);border-radius:var(--radius);">
           <strong>想就这个话题聊聊？</strong> 加微信 <strong>cc_fudan</strong>（备注「保险咨询」），
           先看几天文章，有了基础信任，我们再细说。
+          <WechatContact />
         </div>
       )}
     </div>

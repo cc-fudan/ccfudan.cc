@@ -74,7 +74,7 @@ export const HOME_CARDS_COM: {
 /** .cc 站点一句话主张 */
 export const CC_TAGLINE = '格物致知 · 修身齐家';
 /** .cc 首页户型图 hero 副标 */
-export const CC_HERO_SUB = '一个人的书房、茶室、工作室、运动与客厅';
+export const CC_HERO_SUB = '认真生活，持续学习，把想法做成作品。';
 
 /**
  * .cc 首页「户型图」房间（P3-5：5 房，空房不画）。
@@ -135,19 +135,16 @@ export const NAV: { href: string; label: string }[] = IS_COM
       { href: '/', label: '首页' },
       { href: '/services', label: '服务' },
       { href: '/credentials', label: '资质案例' },
-      { href: '/works', label: '文章' },
+      { href: '/writing', label: '文章合集' },
       { href: '/about', label: '关于我' },
       { href: '/contact', label: '联系预约' },
-      { href: '/universe/', label: '小宇宙' },
     ]
   : [
       { href: '/', label: '首页' },
-      { href: '/tools', label: '小工具 ✦' },
-      { href: '/notes', label: '人生随笔' },
-      { href: '/library', label: '音书影路' },
-      { href: '/universe/', label: '小宇宙' },
+      { href: '/tools', label: '我的工匠坊' },
+      { href: '/writing', label: '文章合集' },
       { href: '/about', label: '关于我' },
-      { href: '/family', label: '家·吉光片羽' },
+      { href: '/family', label: '家人照片墙' },
     ];
 
 /**
