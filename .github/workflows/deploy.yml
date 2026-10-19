@@ -43,10 +43,7 @@ jobs:
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/tools-browser/node_modules/playwright
         run: |
-          node scripts/verify-tools.cjs
-          node scripts/verify-shizhi.cjs
-          node scripts/verify-trend.cjs
-          node scripts/verify-site.cjs
+          node scripts/run-verifiers.cjs
 
       - name: Save tools screenshots and verification
         if: always()
