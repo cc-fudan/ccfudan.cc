@@ -1,0 +1,13 @@
+# 许可证与第三方边界
+
+项目内可许可代码与文档采用MIT，见LICENSE。保留MIT版权和许可通知是分发义务，不能因界面不显示技术来源而删除。此许可不对权利归属作独立鉴定，也不覆盖未取得许可的材料。
+
+当前运行时使用Python标准库、浏览器原生HTML/CSS/JS/SVG及SQLite接口，未打包第三方前端组件、字体、CDN脚本、模型或行情SDK。Python、SQLite和浏览器本体不随发布包发行，应遵守各自许可证。测试脚本只用标准库。Windows启动器首先查找本机已有的Python，发布包不包含该运行时。
+
+可选在线行情请求访问腾讯财经公开端点web.ifzq.gtimg.cn。接口服务、品牌与行情不属于本项目；项目未取得或验证商业再分发许可。发行版不包含市场历史数据；默认后台联网刷新关闭，用户主动请求或配置后才联网。应核实服务条款，不应据此建立未获授权的公开行情服务。
+
+发布材料中没有随包发放外部出版物、OCR、原图或逐页笔记。通用方法转成程序不等于获得他人具体表达的授权。以后引入组件、原文、图像或数据，须登记其版本、来源、许可和必要通知；必要的第三方归属声明保留在本文件。
+
+开源方案检索只借鉴许可证与数据隔离安排，没有复制检索项目的实现代码。MIT官方文本：[OSI](https://opensource.org/license/mit)。
+
+1.4结构升级前核查了stock-pattern（GPL-3.0、Python3.8+、Pandas/绘图依赖、项目说明正在重构新扫描器）与TradingPatternScanner（CC BY-NC-SA 4.0，部分函数使用下一根shift），未复制或集成其代码。后者的非商业条款不适合本产品的许可目标，前者不能直接覆盖本项目的持久逐日演变契约。当前保持标准库运行，不需要模型、付费账号或新增联网依赖。上游最近提交日期未可靠取得，不宣称其维护活跃。核查链接：[stock-pattern](https://github.com/BennyThadikaran/stock-pattern)、[Scanner许可](https://github.com/white07S/TradingPatternScanner/blob/main/LICENSE.md)。

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const tools = [
+  { name:'趋势研究工作台', mark:'势', kind:'行情 · 研究', href:'/tools/trend-research/', download:'/tools/trend-research/trend-research-workbench-local.zip', downloadLabel:'下载本地开源版 ↓', description:'查看大盘与个股趋势、结构划线和条件路径，读完整盘面复盘。在线版展示带日期的研究快照；本地版支持刷新、记录与复盘。', tags:['均线与结构交叉','条件路径','带日期快照','开源本地版'] },
   { name:'拾知', mark:'拾', kind:'刷题 · 复盘', href:'/tools/shizhi/', download:'/tools/downloads/shizhi.zip', description:'从一组独立作答，到错题复盘与后续复刷。默认自带2017—2026年2,055道第三方国考回忆整理题。尚未成型，毛坯版；题目与答案仍待逐题核验。', tags:['搭框架','2,055 道回忆整理题','整组交卷','错题复刷'], featured:false },
   { name:'知国公', mark:'公', kind:'选岗 · 决策', href:'/tools/zhiguogong/', download:'/tools/downloads/zhiguogong.html', description:'知国考，也借一个国公的雅号。填入自己的条件，在全国岗位中找到候选，再核对专业原文与报名变化。', tags:['19,426 个岗位','省市联动','专业目录','离线版可下载'], featured:true },
   { name:'砚田', mark:'砚', kind:'写作 · 阅读', href:'/tools/yantian.html', download:'/tools/yantian.html', description:'一方随身的纸墨。写 Markdown、即时预览、整理草稿，把心里想的慢慢写清楚。', tags:['本地草稿','即时排版','导出分享'] },
@@ -14,9 +15,9 @@ const tools = [
     <article class:list={['tool-card',{featured:tool.featured}]}>
       <div class="tool-top"><span class="tool-mark">{tool.mark}</span><small>{tool.kind}</small>{tool.featured&&<b class="new">新作</b>}</div>
       <h2>{tool.name}{tool.name==='拾知'&&<span class="dev-status">搭框架</span>}</h2><p>{tool.description}</p><div class="tool-tags">{tool.tags.map(t=><span>{t}</span>)}</div>
-      <div class="tool-actions"><a class="btn btn-primary" href={tool.href}>打开{tool.name} ↗</a><a class="tool-download" href={tool.download} download>下载离线版 ↓</a></div>
+      <div class="tool-actions"><a class="btn btn-primary" href={tool.href}>打开{tool.name} ↗</a><a class="tool-download" href={tool.download} download>{tool.downloadLabel || '下载离线版 ↓'}</a></div>
     </article>
-  ))}</div><aside class="tools-note"><b>把工具带走，把选择留给自己。</b><p>第一次在线打开需要联网。下载的单文件版可离线使用；个人条件、草稿和收藏保存在自己的浏览器中，换设备前请在工具内导出备份。知国公的资格初筛及人数比较用于辅助核对，以招录机关解释为准。旧工具也会持续改进，复杂排版在电脑上操作更方便。</p></aside></div></section>
+  ))}</div><aside class="tools-note"><b>把工具带走，把选择留给自己。</b><p>趋势研究工作台在线版为发布时的研究快照，不是实时行情；日期在工具内显示。下载版需 Python 3.10+，刷新需要联网，完整记录只保存在本机。研究结果不构成投资建议，代码许可不授予行情再分发权。第一次在线打开需要联网。下载的单文件版可离线使用；个人条件、草稿和收藏保存在自己的浏览器中，换设备前请在工具内导出备份。知国公的资格初筛及人数比较用于辅助核对，以招录机关解释为准。旧工具也会持续改进，复杂排版在电脑上操作更方便。</p></aside></div></section>
 </BaseLayout>
 <style>
   .dev-status{display:inline-block;vertical-align:middle;margin-left:12px;font-size:11px;font-weight:500;color:#8a6635;background:#f3e8d3;border:1px solid #e5d3b2;padding:4px 9px;border-radius:5px;letter-spacing:0}
