@@ -1,0 +1,17 @@
+/* Personal brand trial: white jade, green jade, ink. */
+.site-cc{--bg:#F7F8F2;--surface:#FFFFFF;--accent-soft:#EAF2EC;--primary:#246B58;--primary-dark:#1C5546;--ink:#203C32;--ink-soft:#53665D;--muted:#53665D;--border:#D8E3D9;--control-border:#718178;--accent:#246B58}
+.site-cc body,.site-cc .hero-cc{background:#F7F8F2;background-image:none}
+.site-cc .header{background:#F7F8F2;backdrop-filter:none}
+.site-cc .hero-cc .wrap{padding-top:76px;padding-bottom:76px}
+.site-cc .hero-cc h1{font-weight:650;letter-spacing:-.035em}
+.site-cc .hero-photo{box-shadow:none;border-radius:16px}
+.site-cc .workshop-featured,.site-cc .workshop-sort{background:#EAF2EC;background-image:none}
+.site-cc .workshop-card{border-radius:16px;box-shadow:none;transition:border-color .16s ease}
+.site-cc .workshop-card:hover{transform:none;box-shadow:none;border-color:var(--control-border)}
+.site-cc .workshop-icon{background:#EAF2EC;border-color:#D8E3D9}
+.site-cc .footer{background:#EAF2EC}
+.site-cc :is(input,select,textarea){border-color:var(--control-border)}
+.site-cc :is(a,button,input,select,textarea):focus-visible{outline:2px solid #246B58;outline-offset:3px}
+.site-cc .article-image-unavailable{display:block;padding:14px 18px;margin:20px 0;background:#EAF2EC;border:1px solid #D8E3D9;border-radius:10px;font-size:14px;line-height:1.7;color:#53665D}
+.site-cc .article-image-summary{padding:16px 20px;border-left:3px solid #246B58;background:#EAF2EC;color:#53665D;font-size:14px;margin:24px 0}
+@media(max-width:820px){.site-cc .hero-cc .wrap{padding-top:44px;padding-bottom:44px}}

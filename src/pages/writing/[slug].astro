@@ -5,6 +5,7 @@ import { getCollection } from 'astro:content';
 import { IS_COM } from '../../config/site';
 import fs from 'node:fs';
 import path from 'node:path';
+import damagedArticleImages from '../../data/damagedArticleImages.json';
 
 export async function getStaticPaths() {
   // 微信原文富 HTML（含表格/原排版）构建期读取：
@@ -34,9 +35,19 @@ export async function getStaticPaths() {
   const ORIG_TOTAL = sorted.length;
   return filtered.map((post) => {
     let richHtml = null;
+    let unavailableImages = 0;
     const hp = path.join(HTML_DIR, post.slug + '.html');
     if (fs.existsSync(hp)) {
       richHtml = fs.readFileSync(hp, 'utf8');
+      if (!isCom) {
+        const damaged = new Set(damagedArticleImages);
+        richHtml = richHtml.replace(/<img\b[^>]*>/gi, (tag) => {
+          const src = tag.match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
+          if (!src || !damaged.has(src.split('?')[0])) return tag;
+          unavailableImages++;
+          return '<span class="article-image-unavailable" role="note">此处原配图暂缺，正在找回。正文继续保留。</span>';
+        });
+      }
       if (isCom) {
         // 铁律2：对外站「港险」统一改写「香港身份与跨境规划」
         richHtml = richHtml.replaceAll('港险', '香港身份与跨境规划');
@@ -47,12 +58,12 @@ export async function getStaticPaths() {
     }
     return {
       params: { slug: post.slug },
-      props: { post, richHtml, origIndex: orderMap.get(post.slug) || null, origTotal: ORIG_TOTAL },
+      props: { post, richHtml, unavailableImages, origIndex: orderMap.get(post.slug) || null, origTotal: ORIG_TOTAL },
     };
   });
 }
 
-const { post, richHtml, origIndex, origTotal } = Astro.props;
+const { post, richHtml, unavailableImages = 0, origIndex, origTotal } = Astro.props;
 const { Content } = await post.render();
 const backHref = IS_COM ? '/writing' : '/notes';
 const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
@@ -75,6 +86,7 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
       )}
       <p style="font-size:17px;color:var(--ink-soft);">{post.data.excerpt}</p>
       <hr style="border:none;border-top:1px solid var(--border);margin:24px 0;" />
+      {unavailableImages > 0 && <aside class="article-image-summary">这篇文章有 {unavailableImages} 张原配图尚待恢复，暂以文字标记。涉及图表或截图的内容目前无法完整核对。</aside>}
       {richHtml ? <div class="wx-article" set:html={richHtml} /> : <Content />}
       {origIndex && (
         <div class="post-stats" data-slug={post.slug}>
