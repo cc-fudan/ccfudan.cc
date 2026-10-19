@@ -33,7 +33,7 @@ $('#province').onchange=()=>{const p=$('#province').value;if(!p){state.province=
 $('#citySelect').onchange=()=>{const city=$('#citySelect').value;if(!city)return;const values=selectedCities();if(!values.includes(city))values.push(city);state.cities=values.join('、');page=1;save();syncCities();render();};
 getBase=function(){
   const provinces=selectedProvinces(),cities=selectedCities(),q=$('#search').value.trim().toLowerCase();
-  return jobs.filter(j=>{const loc=locationInfo(j['工作地点']);return (tab!=='saved'||state.favorites.includes(j.id))&&(!provinces.length||provinces.includes(loc.province))&&(!cities.length||cities.some(c=>c===loc.city||c===loc.city.replace(/市$/,'')))&&(!q||[j['部门名称'],j['用人司局'],j['招考职位'],j['职位代码'],j['部门代码']].join(' ').toLowerCase().includes(q));});
+  return jobs.filter(j=>{const loc=locationInfo(j['工作地点']);return (tab!=='saved'||state.favorites.includes(j.id))&&(!provinces.length||provinces.includes(loc.province))&&(!cities.length||cities.some(c=>c===loc.city||c===loc.city.replace(/市$/,'')))&&matchesJobSearch(j,q);});
 };
 
 const degreeLevel=()=>['硕士研究生','博士研究生'].includes(state.profile.education)?'graduate':'bachelor';

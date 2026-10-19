@@ -37,6 +37,17 @@
 @media(max-width:900px){.policy-columns{grid-template-columns:1fr;}.policy-callout{padding:17px;}.timeline-row{padding:15px;gap:12px;}.exam-card{padding:16px;}}
 @media(max-width:900px){.topbar nav{height:auto;min-height:47px;}}
 @media(max-width:480px){.topbar nav{flex-wrap:wrap;}.topbar nav .nav{padding:10px 9px;}.timeline-row{flex-direction:column;gap:8px;}.policy-heading .button{width:100%;}.score-inputs label{min-width:85px;}}
+
+/* Explicit nationwide job identity lookup, independent of profile filters. */
+.job-locator{padding:18px 20px;background:#edf4ef;border-bottom:1px solid #dce7df;border-radius:12px 12px 0 0}
+.job-locator form{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.job-locator label{flex:1 1 180px;min-width:0;font-size:13px}
+.job-locator input{display:block;width:100%;margin-top:6px;min-height:44px;font-variant-numeric:tabular-nums}
+.job-locator button{min-height:44px}
+.job-locator p{margin:12px 0 0;overflow-wrap:anywhere}
+.search-hint{padding:0 20px;margin:0 0 16px;color:#62736c;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.job-meta{overflow-wrap:anywhere}
+@media(max-width:600px){.job-locator{padding:15px 13px}.job-locator form{display:grid;grid-template-columns:1fr;gap:10px}.job-locator label{width:100%}.job-locator button{width:100%}.search-hint{padding:0 13px}}
 </style>
 </head>
 <body>
@@ -77,8 +88,8 @@
       <div class="stats-grid"><article class="stat"><span>本地职位库</span><strong id="totalCount">—</strong><small id="seatCount">加载中</small></article><article class="stat mint"><span>基础条件匹配</span><strong id="matchCount">—</strong><small>已填条件通过，仍需资格审核</small></article><article class="stat"><span>待补资料或机关解释</span><strong id="reviewCount">—</strong><small>不含工具尚未识别的岗位；候选不含规则缺口</small></article><article class="stat"><span>工具规则待完善</span><strong id="snapshotCount" hidden></strong><strong id="rulegapCount">—</strong><small>保留原文与未识别原因，单独展示</small></article></div>
       <div class="notice"><span class="notice-icon">i</span><div><b>先看资格，再看竞争。</b> 已核验2027公告与指南，新增“报考与备考”时间轴和岗位考试卡。专业目录按机关适用；出生年月未填时不据年龄排除。<button id="showPolicy" class="text-button">查看筛选边界 ↗</button></div></div>
       <section class="results-panel">
-        <div class="filter-top"><div class="searchbox"><span>⌕</span><input id="search" aria-label="搜索职位" placeholder="搜索单位、职位名称或职位代码"></div><button id="exportResults" class="button subtle">导出筛选结果 ↗</button></div>
-        <div class="filter-row"><div class="city-filter"><label>省份（可多选）<select id="province"><option value="">全国 / 添加省份</option></select></label><div id="provinceChips" class="city-chips"></div></div><div class="city-filter"><label>城市<select id="citySelect"><option value="">请先选择省份</option></select></label><div id="cityChips" class="city-chips"></div><input id="cities" type="hidden"><datalist id="cityList"></datalist></div><label>排序<select id="sort"><option value="match">匹配程度优先</option><option value="seats">招录人数从多到少</option><option value="ratio">有数据：竞争比从低到高</option></select></label></div>
+        <div class="job-locator"><form id="jobLocatorForm"><label>部门代码（单位代码）<input id="locateDepartment" inputmode="numeric" maxlength="6" placeholder="如 133123" list="departmentCodes" required></label><label>职位代码<input id="locatePosition" inputmode="numeric" maxlength="12" placeholder="如 300140123001" required></label><button class="button primary" type="submit">精准定位岗位</button></form><datalist id="departmentCodes"></datalist><p id="locatorMessage" class="small muted" role="status">双代码共同确定岗位。直接打开原文，不受地区和资格筛选影响；定位成功不代表符合报考条件。</p></div><div class="filter-top"><div class="searchbox"><span>⌕</span><input id="search" aria-label="搜索职位" placeholder="单位名称 + 职位代码，或双代码" aria-describedby="jobSearchHint"></div><button id="exportResults" class="button subtle">导出筛选结果 ↗</button></div>
+        <p id="jobSearchHint" class="search-hint" role="status"></p><div class="filter-row"><div class="city-filter"><label>省份（可多选）<select id="province"><option value="">全国 / 添加省份</option></select></label><div id="provinceChips" class="city-chips"></div></div><div class="city-filter"><label>城市<select id="citySelect"><option value="">请先选择省份</option></select></label><div id="cityChips" class="city-chips"></div><input id="cities" type="hidden"><datalist id="cityList"></datalist></div><label>排序<select id="sort"><option value="match">匹配程度优先</option><option value="seats">招录人数从多到少</option><option value="ratio">有数据：竞争比从低到高</option></select></label></div>
         <div class="results-bar"><div class="segments" aria-label="匹配状态"><button data-status="eligible" class="selected">候选岗位</button><button data-status="match">基础匹配</button><button data-status="review">全部待处理</button><button data-status="missing">缺个人资料</button><button data-status="policy">需机关解释</button><button data-status="rulegap">工具待完善</button><button data-status="reject">不符合</button><button data-status="all">全部</button></div><span id="resultCount" class="muted small"></span></div>
         <div id="results" aria-live="polite"></div>
         <div class="pagination"><span id="pageInfo"></span><div><button id="prev" class="button subtle">← 上一页</button><button id="next" class="button subtle">下一页 →</button></div></div>
@@ -730,6 +741,13 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const DB=window.JOB_DATA, E=window.Screening, KEY='zhigang-workbench-v2-'+window.WORKBENCH_EDITION;
 if(!DB||!E)throw Error('职位数据或筛选引擎未加载，请保持文件夹完整');
 const jobs=DB.jobs, byId=new Map(jobs.map(j=>[j.id,j])), ids=new Set(byId.keys());
+// Identifiers remain strings: department + position is the job identity.
+function searchTokens(value){return String(value).normalize('NFKC').toLowerCase().replace(/(?:部门|单位|招录机关|职位|岗位)代码\s*[:：]?/g,' ').split(/[\s/:：,，;；|·、+＋]+/).filter(Boolean);}
+function matchesJobSearch(j,value){
+  const terms=searchTokens(value),fields=['部门名称','用人司局','招考职位','工作地点'].map(k=>String(j[k]||'').normalize('NFKC').toLowerCase());
+  return terms.every(t=>/^\d{6}$/.test(t)?j['部门代码']===t:/^\d{12}$/.test(t)?j['职位代码']===t:/^\d{18}$/.test(t)?j['部门代码']+j['职位代码']===t:/^\d+$/.test(t)?false:fields.some(v=>v.includes(t)));
+}
+window.JobSearch={tokens:searchTokens,matches:matchesJobSearch};
 const allowedProfile=[...$('#profileForm').elements].filter(x=>x.name).map(x=>x.name);
 const blank=()=>({profile:{},favorites:[],snapshots:[],province:'',cities:'',metric:'approved',feedUrl:'',agePolicy:{}});
 function cleanState(raw){
@@ -770,7 +788,7 @@ function loadForm(){
 function evalAll(){evaluations=new Map(jobs.map(j=>[j.id,E.evaluate(j,state.profile,state.agePolicy)]));}
 function getBase(){
   const q=$('#search').value.trim().toLowerCase(),terms=state.cities.split(/[、，,;；\s]+/).filter(Boolean);
-  return jobs.filter(j=>(tab!=='saved'||state.favorites.includes(j.id))&&(!state.province||province(j['工作地点'])===state.province)&&(!terms.length||terms.some(t=>j['工作地点'].includes(t)))&&(!q||[j['部门名称'],j['用人司局'],j['招考职位'],j['职位代码'],j['部门代码']].join(' ').toLowerCase().includes(q)));
+  return jobs.filter(j=>(tab!=='saved'||state.favorites.includes(j.id))&&(!state.province||province(j['工作地点'])===state.province)&&(!terms.length||terms.some(t=>j['工作地点'].includes(t)))&&matchesJobSearch(j,q));
 }
 function render(){
   snapshotIndex=new Map();
@@ -796,12 +814,21 @@ function render(){
   $('#pageInfo').textContent=`第 ${page} / ${pages} 页`;$('#prev').disabled=page===1;$('#next').disabled=page===pages;
   $('#results').innerHTML=filtered.length?filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE).map(jobCard).join(''):`<div class="empty"><h3>${tab==='saved'?'这里还没有符合当前筛选的收藏':'当前条件下，没有找到职位'}</h3><p>试着清除城市限制、查看“缺个人资料”“工具待完善”或“全部”，了解被排除的原因。</p><button class="button subtle" data-action="relax">清除地区与搜索限制</button></div>`;
   $('#compareDock').hidden=!comparison.length;$('#compareText').textContent=`已选 ${comparison.length} / 3 个职位`;
+  renderSearchHint();
+}
+function renderSearchHint(){
+  const hint=$('#jobSearchHint');if(!hint)return;
+  const terms=searchTokens($('#search').value),code=terms.find(t=>/^\d{12}$/.test(t));
+  if(!terms.length){hint.textContent='可组合输入单位名称与职位代码，或粘贴“部门代码 / 职位代码”。数字代码完整匹配。';return;}
+  const nationwide=jobs.filter(j=>matchesJobSearch(j,$('#search').value));
+  const repeated=code?new Set(jobs.filter(j=>j['职位代码']===code).map(j=>j['部门代码'])).size:0;
+  hint.textContent=(repeated>1?`职位代码 ${code} 在全国 ${repeated} 个部门重复使用。`:'')+`本次搜索在全国岗位库匹配 ${nationwide.length} 个岗位；下方列表仍受地区、收藏与资格筛选影响。可用双代码直接定位查看。`;
 }
 function jobCard(j){
   const e=evaluations.get(j.id),s=latestFor(j),r=E.ratio(s,Number(j['招考人数'])),issues=e.reasons.filter(x=>x.status!=='pass').sort((a,b)=>(a.status==='reject'?0:1)-(b.status==='reject'?0:1));
   let countHTML='<strong>'+esc(j['招考人数'])+' <span class="small">人</span></strong><small>计划招录</small>';
   if(s)countHTML=`<strong>${r===null?'—':r.toFixed(1)+':1'}</strong><small>${metricNames[s.metric]} ${s.count} 人 / 招 ${j['招考人数']} 人</small><small>${stamp(s.asOf)}${stale(s)?' · 旧数据':''}</small>${s.count===0?'<span class="ratio-hint">零值不作为低竞争依据</span>':''}`;
-  return `<article class="job-card" data-id="${esc(j.id)}"><div><div class="job-tags"><span class="badge ${e.status}">${statusLabel(displayStatus(e))}</span><span class="small muted">${esc(j['工作地点'])}</span></div><button class="job-title" data-action="detail">${esc(j['用人司局'])}</button><p class="job-dept">${esc(j['招考职位'])}</p><div class="job-tags"><span class="chip">${esc(j['学历'])}</span><span class="chip">${j['政治面貌']==='不限'?'政治面貌不限':esc(j['政治面貌'])}</span><span class="chip">基层年限：${esc(j['基层工作最低年限'])}</span>${j['服务基层项目工作经历']!=='无限制'?'<span class="chip">专项身份限制</span>':''}</div><div class="job-meta">${esc(j['部门代码'])} · ${esc(j['职位代码'])}　招 ${esc(j['招考人数'])} 人</div><div class="job-reason">${issues.length?esc(issues.slice(0,2).map(x=>x.label+'：'+x.text).join('；')):'已填核心条件通过初筛 · 查看原文与年度资格要求'}</div></div><div class="job-right"><div>${countHTML}</div><div class="job-actions"><button data-action="favorite" class="icon-button ${state.favorites.includes(j.id)?'on':''}" aria-label="${state.favorites.includes(j.id)?'取消收藏':'收藏职位'}">${state.favorites.includes(j.id)?'★ 已收藏':'☆ 收藏'}</button><button data-action="compare" class="icon-button ${comparison.includes(j.id)?'on':''}">${comparison.includes(j.id)?'✓ 对比':'＋ 对比'}</button></div></div></article>`;
+  return `<article class="job-card" data-id="${esc(j.id)}"><div><div class="job-tags"><span class="badge ${e.status}">${statusLabel(displayStatus(e))}</span><span class="small muted">${esc(j['工作地点'])}</span></div><button class="job-title" data-action="detail">${esc(j['用人司局'])}</button><p class="job-dept">${esc(j['招考职位'])}</p><div class="job-tags"><span class="chip">${esc(j['学历'])}</span><span class="chip">${j['政治面貌']==='不限'?'政治面貌不限':esc(j['政治面貌'])}</span><span class="chip">基层年限：${esc(j['基层工作最低年限'])}</span>${j['服务基层项目工作经历']!=='无限制'?'<span class="chip">专项身份限制</span>':''}</div><div class="job-meta">${esc(j['部门名称'])}<br>部门代码 ${esc(j['部门代码'])} · 职位代码 ${esc(j['职位代码'])}　招 ${esc(j['招考人数'])} 人</div><div class="job-reason">${issues.length?esc(issues.slice(0,2).map(x=>x.label+'：'+x.text).join('；')):'已填核心条件通过初筛 · 查看原文与年度资格要求'}</div></div><div class="job-right"><div>${countHTML}</div><div class="job-actions"><button data-action="favorite" class="icon-button ${state.favorites.includes(j.id)?'on':''}" aria-label="${state.favorites.includes(j.id)?'取消收藏':'收藏职位'}">${state.favorites.includes(j.id)?'★ 已收藏':'☆ 收藏'}</button><button data-action="compare" class="icon-button ${comparison.includes(j.id)?'on':''}">${comparison.includes(j.id)?'✓ 对比':'＋ 对比'}</button></div></div></article>`;
 }
 function showDetail(id){
   const j=byId.get(id);if(!j)return;currentJob=id;const e=evaluations.get(id),s=latestFor(j);
@@ -820,7 +847,7 @@ function toggleFavorite(id){state.favorites=state.favorites.includes(id)?state.f
 function toggleCompare(id){if(comparison.includes(id))comparison=comparison.filter(x=>x!==id);else if(comparison.length<3)comparison.push(id);else{toast('一次最多对比3个职位，请先移除一个。');return;}render();}
 function showCompare(){
   const cols=comparison.map(id=>byId.get(id));
-  const rows=[['状态',j=>statusLabel(displayStatus(evaluations.get(j.id)))],['职位',j=>j['招考职位']],['职位代码',j=>j['部门代码']+' / '+j['职位代码']],['地点',j=>j['工作地点']],['招录人数',j=>j['招考人数']],['学历 / 学位',j=>j['学历']+' / '+j['学位']],['专业',j=>j['专业']],['考试方案 / 笔试权重',j=>{const x=window.ExamPolicy.exam(j);return x.type+'；'+x.track+'；'+(x.weights?x.weights.map((w,i)=>['行测','申论','专业/外语'][i]+(w*100)+'%').join(' / '):'权重待确认');}],['基层 / 专项',j=>j['基层工作最低年限']+' / '+j['服务基层项目工作经历']],['报名快照',j=>{const s=latestFor(j);return s?metricNames[s.metric]+' '+s.count+' 人；'+stamp(s.asOf)+'；'+s.source:'暂无数据';}],['备注原文',j=>j['备注']||'原表未填写'],['需处理的问题',j=>evaluations.get(j.id).reasons.filter(r=>r.status!=='pass').map(r=>r.label+'：'+r.text).join('；')||'仍需核验年度资格与专业目录']];
+  const rows=[['状态',j=>statusLabel(displayStatus(evaluations.get(j.id)))],['职位',j=>j['招考职位']],['部门代码 / 职位代码',j=>j['部门代码']+' / '+j['职位代码']],['地点',j=>j['工作地点']],['招录人数',j=>j['招考人数']],['学历 / 学位',j=>j['学历']+' / '+j['学位']],['专业',j=>j['专业']],['考试方案 / 笔试权重',j=>{const x=window.ExamPolicy.exam(j);return x.type+'；'+x.track+'；'+(x.weights?x.weights.map((w,i)=>['行测','申论','专业/外语'][i]+(w*100)+'%').join(' / '):'权重待确认');}],['基层 / 专项',j=>j['基层工作最低年限']+' / '+j['服务基层项目工作经历']],['报名快照',j=>{const s=latestFor(j);return s?metricNames[s.metric]+' '+s.count+' 人；'+stamp(s.asOf)+'；'+s.source:'暂无数据';}],['备注原文',j=>j['备注']||'原表未填写'],['需处理的问题',j=>evaluations.get(j.id).reasons.filter(r=>r.status!=='pass').map(r=>r.label+'：'+r.text).join('；')||'仍需核验年度资格与专业目录']];
   $('#compareBody').innerHTML=`<table><thead><tr><th>比较项目</th>${cols.map(j=>`<th>${esc(j['用人司局'])}</th>`).join('')}</tr></thead><tbody>${rows.map(([label,fn])=>`<tr><th>${label}</th>${cols.map(j=>`<td>${esc(fn(j))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   $('#compareDialog').showModal();
 }
@@ -857,6 +884,22 @@ $('#results').onclick=ev=>{const b=ev.target.closest('[data-action]');if(!b)retu
 $('#prev').onclick=()=>{page--;render();$('.results-panel').scrollIntoView({block:'start'});};$('#next').onclick=()=>{page++;render();$('.results-panel').scrollIntoView({block:'start'});};
 $('#compareOpen').onclick=showCompare;$('#compareClear').onclick=()=>{comparison=[];render();};
 $$('.close-dialog').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+const departmentNames=new Map(jobs.map(j=>[j['部门代码'],j['部门名称']]));
+$('#departmentCodes').innerHTML=[...departmentNames].sort(([a],[b])=>a.localeCompare(b)).map(([code,name])=>`<option value="${esc(code)}">${esc(name)}</option>`).join('');
+$('#jobLocatorForm').onsubmit=ev=>{
+  ev.preventDefault();
+  const dept=$('#locateDepartment').value.normalize('NFKC').trim(),position=$('#locatePosition').value.normalize('NFKC').trim(),message=$('#locatorMessage');
+  if(!/^\d{6}$/.test(dept)||!/^\d{12}$/.test(position)){message.textContent='请填写完整的6位部门代码和12位职位代码；代码中的前导0需保留。';return;}
+  const id=dept+':'+position,j=byId.get(id);
+  if(!j){message.textContent=`未找到 ${dept} / ${position}。请核对两个代码及招考年度；没有自动替换为其他单位的同码岗位。`;return;}
+  message.textContent=`已定位：${j['部门名称']} · ${j['用人司局']} · ${j['招考职位']}（${dept} / ${position}）。资格判断请看详情。`;
+  showDetail(id);
+};
+$('#search').addEventListener('input',()=>{
+  const terms=searchTokens($('#search').value),dept=terms.find(t=>/^\d{6}$/.test(t)),position=terms.find(t=>/^\d{12}$/.test(t)),joined=terms.find(t=>/^\d{18}$/.test(t));
+  $('#locateDepartment').value=dept||joined?.slice(0,6)||'';
+  $('#locatePosition').value=position||joined?.slice(6)||'';
+});
 $$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
 $('#showPolicy').onclick=()=>$('#policyDialog').showModal();
 $('#exportResults').onclick=()=>{
@@ -960,7 +1003,7 @@ function renderWatch(){
 function openBulk(){
   $('#bulkTime').value=nowLocal();$('#bulkSource').value='';$('#bulkError').textContent='';
   const saved=state.favorites.map(id=>byId.get(id));
-  $('#bulkRows').innerHTML=saved.length?`<table><thead><tr><th>岗位</th><th>上次通过 / 待审</th><th>本次审查通过</th><th>本次待审查</th></tr></thead><tbody>${saved.map(j=>{const o=observed(j);return `<tr data-bulk-id="${esc(j.id)}"><td class="watch-name">${esc(j['用人司局'])}<small>${esc(j['职位代码'])} · 招 ${esc(j['招考人数'])} 人</small></td><td>${o.approved?.count??'—'} / ${o.pending?.count??'—'}</td><td><input class="bulk-count" type="number" min="0" step="1" data-metric="approved" aria-label="${esc(j['用人司局'])}审查通过人数" placeholder="未提供"></td><td><input class="bulk-count" type="number" min="0" step="1" data-metric="pending" aria-label="${esc(j['用人司局'])}待审查人数" placeholder="未提供"></td></tr>`;}).join('')}</tbody></table>`:'<p>请先在职位探索中收藏岗位。</p>';
+  $('#bulkRows').innerHTML=saved.length?`<table><thead><tr><th>岗位</th><th>上次通过 / 待审</th><th>本次审查通过</th><th>本次待审查</th></tr></thead><tbody>${saved.map(j=>{const o=observed(j);return `<tr data-bulk-id="${esc(j.id)}"><td class="watch-name">${esc(j['用人司局'])}<small>${esc(j['部门代码'])} / ${esc(j['职位代码'])} · 招 ${esc(j['招考人数'])} 人</small></td><td>${o.approved?.count??'—'} / ${o.pending?.count??'—'}</td><td><input class="bulk-count" type="number" min="0" step="1" data-metric="approved" aria-label="${esc(j['用人司局'])}审查通过人数" placeholder="未提供"></td><td><input class="bulk-count" type="number" min="0" step="1" data-metric="pending" aria-label="${esc(j['用人司局'])}待审查人数" placeholder="未提供"></td></tr>`;}).join('')}</tbody></table>`:'<p>请先在职位探索中收藏岗位。</p>';
   $('#bulkDialog').showModal();
 }
 $('#openBulk').onclick=openBulk;
@@ -1034,7 +1077,7 @@ $('#province').onchange=()=>{const p=$('#province').value;if(!p){state.province=
 $('#citySelect').onchange=()=>{const city=$('#citySelect').value;if(!city)return;const values=selectedCities();if(!values.includes(city))values.push(city);state.cities=values.join('、');page=1;save();syncCities();render();};
 getBase=function(){
   const provinces=selectedProvinces(),cities=selectedCities(),q=$('#search').value.trim().toLowerCase();
-  return jobs.filter(j=>{const loc=locationInfo(j['工作地点']);return (tab!=='saved'||state.favorites.includes(j.id))&&(!provinces.length||provinces.includes(loc.province))&&(!cities.length||cities.some(c=>c===loc.city||c===loc.city.replace(/市$/,'')))&&(!q||[j['部门名称'],j['用人司局'],j['招考职位'],j['职位代码'],j['部门代码']].join(' ').toLowerCase().includes(q));});
+  return jobs.filter(j=>{const loc=locationInfo(j['工作地点']);return (tab!=='saved'||state.favorites.includes(j.id))&&(!provinces.length||provinces.includes(loc.province))&&(!cities.length||cities.some(c=>c===loc.city||c===loc.city.replace(/市$/,'')))&&matchesJobSearch(j,q);});
 };
 
 const degreeLevel=()=>['硕士研究生','博士研究生'].includes(state.profile.education)?'graduate':'bachelor';

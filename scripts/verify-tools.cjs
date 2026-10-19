@@ -35,6 +35,19 @@ async function noOverflow(page,label){
   assert.ok(assetSources.length>0&&assetSources.every(src=>/\.[0-9a-f]{12}\.js$/.test(src)));
   assert.ok(await page.evaluate(()=>!!window.WORKBENCH_RULE_VERSION));
   await page.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
+  const searchChecks=await page.evaluate(()=>{
+   const js=window.JOB_DATA.jobs,S=window.JobSearch;
+   return {pair:js.filter(j=>S.matches(j,'133123 / 300140123001')).map(j=>j.id),reverse:js.filter(j=>S.matches(j,'300140123001 133123')).map(j=>j.id),name:js.filter(j=>S.matches(j,'广东监管局 300140123001')).map(j=>j.id),wrong:js.filter(j=>S.matches(j,'999999 / 300140123001')).length};
+  });
+  assert.deepEqual(searchChecks,{pair:['133123:300140123001'],reverse:['133123:300140123001'],name:['133123:300140123001'],wrong:0});
+  await page.fill('#search','300110001001');await page.waitForFunction(()=>document.querySelector('#jobSearchHint').textContent.includes('重复使用'));
+  await page.selectOption('#province','湖北省');
+  await page.fill('#search','133123 / 300140123001');await page.waitForFunction(()=>document.querySelector('#locateDepartment').value==='133123');
+  await page.click('#jobLocatorForm button');assert.ok(await page.locator('#detailDialog').isVisible());assert.ok((await page.locator('#detailBody').textContent()).includes('部门代码 133123'));
+  assert.ok((await page.locator('#provinceChips').textContent()).includes('湖北省'));
+  await page.click('#detailDialog .close-dialog');await page.fill('#locateDepartment','999999');await page.click('#jobLocatorForm button');
+  assert.ok((await page.locator('#locatorMessage').textContent()).includes('未找到'));assert.ok(!await page.locator('#detailDialog').isVisible());
+  await page.fill('#search','');await page.locator('[data-province-remove="0"]').click();
   const majorRegression=await page.evaluate(()=>{
    const j=window.JOB_DATA.jobs.find(x=>x.id==='130121:300110001001');
    const evaluate=p=>window.Screening.evaluate(j,p);
@@ -105,6 +118,7 @@ async function noOverflow(page,label){
   for(const width of [320,375,390,430,768]){
    await page.setViewportSize({width,height:844});
    await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await noOverflow(page,'zhiguogong '+width);
+   await page.fill('#locateDepartment','133123');await page.fill('#locatePosition','300140123001');await page.click('#jobLocatorForm button');assert.ok(await page.locator('#detailDialog').isVisible());await page.click('#detailDialog .close-dialog');
    await page.click('[data-tab="policy"]');assert.ok(await page.locator('#policyView').isVisible());await noOverflow(page,'policy '+width);
    await page.screenshot({path:path.join(shots,'policy-'+width+'.png'),fullPage:false});
    await page.click('[data-tab="discover"]');
@@ -123,7 +137,7 @@ async function noOverflow(page,label){
   await p.goto('file://'+path.join(root,'tools/downloads/zhiguogong.html'),{waitUntil:'load'});await p.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
   await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'5');await noOverflow(p,'portable offline');
   await p.click('#applyMobileProfile');await p.click('[data-tab="policy"]');assert.equal(await p.locator('.timeline-row').count(),9);await noOverflow(p,'portable policy offline');
-  await p.click('[data-tab="discover"]');await p.evaluate(()=>showDetail('133123:300140123001'));
+  await p.click('[data-tab="discover"]');await p.fill('#locateDepartment','133123');await p.fill('#locatePosition','300140123001');await p.click('#jobLocatorForm button');
   await p.fill('[name="score0"]','60');await p.fill('[name="score1"]','70');await p.fill('[name="score2"]','80');await p.click('#examScoreForm button');
   assert.ok((await p.locator('#examScoreResult').textContent()).includes('72.50'));await noOverflow(p,'portable exam offline');
   assert.deepEqual(errors,[]);

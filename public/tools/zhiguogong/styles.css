@@ -32,3 +32,14 @@
 @media(max-width:900px){.policy-columns{grid-template-columns:1fr;}.policy-callout{padding:17px;}.timeline-row{padding:15px;gap:12px;}.exam-card{padding:16px;}}
 @media(max-width:900px){.topbar nav{height:auto;min-height:47px;}}
 @media(max-width:480px){.topbar nav{flex-wrap:wrap;}.topbar nav .nav{padding:10px 9px;}.timeline-row{flex-direction:column;gap:8px;}.policy-heading .button{width:100%;}.score-inputs label{min-width:85px;}}
+
+/* Explicit nationwide job identity lookup, independent of profile filters. */
+.job-locator{padding:18px 20px;background:#edf4ef;border-bottom:1px solid #dce7df;border-radius:12px 12px 0 0}
+.job-locator form{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.job-locator label{flex:1 1 180px;min-width:0;font-size:13px}
+.job-locator input{display:block;width:100%;margin-top:6px;min-height:44px;font-variant-numeric:tabular-nums}
+.job-locator button{min-height:44px}
+.job-locator p{margin:12px 0 0;overflow-wrap:anywhere}
+.search-hint{padding:0 20px;margin:0 0 16px;color:#62736c;font-size:12px;line-height:1.8;overflow-wrap:anywhere}
+.job-meta{overflow-wrap:anywhere}
+@media(max-width:600px){.job-locator{padding:15px 13px}.job-locator form{display:grid;grid-template-columns:1fr;gap:10px}.job-locator label{width:100%}.job-locator button{width:100%}.search-hint{padding:0 13px}}
