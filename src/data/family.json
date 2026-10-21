@@ -1,52 +1,171 @@
 [
   {
-    "src": "/images/family/family-01.jpg",
-    "title": "一家三口的第一张正式合影",
+    "src": "/images/family/manyue/manyue-01.jpg",
+    "title": "马里奥开局",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "九儿满月前后，在家里的走廊记录下这一刻。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-02.jpg",
-    "title": "靠在一起",
+    "src": "/images/family/manyue/manyue-02.jpg",
+    "title": "躺赢的马力欧",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "珊珊靠过来，九儿还在适应被抱在怀里。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-03.jpg",
-    "title": "爸爸的凝视",
+    "src": "/images/family/manyue/manyue-03.jpg",
+    "title": "本期身份：马力欧",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "他看她的眼神，比任何话术都真实。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-04.jpg",
-    "title": "妈妈亲亲小脚丫",
+    "src": "/images/family/manyue/manyue-04.jpg",
+    "title": "墨镜和砖块都想要",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "新生儿的小脚，是家里最柔软的开关。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-05.jpg",
-    "title": "肩膀上的依靠",
+    "src": "/images/family/manyue/manyue-05.jpg",
+    "title": "趴着也不摘墨镜",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "趴在他肩上，世界就小了很多。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-06.jpg",
-    "title": "被注视的幸福",
+    "src": "/images/family/manyue/manyue-06.jpg",
+    "title": "小书生开卷",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "两个人的目光都落在同一个人身上。"
+    "stage": "出生后"
   },
   {
-    "src": "/images/family/family-07.jpg",
-    "title": "妈妈的怀抱",
+    "src": "/images/family/manyue/manyue-07.jpg",
+    "title": "读书嘛，难免哭一场",
     "date": "2026-07-21",
-    "stage": "出生后",
-    "desc": "这是九儿最熟悉的位置。"
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-08.jpg",
+    "title": "先生的戒尺",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-09.jpg",
+    "title": "握笔的姿势还在学",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-10.jpg",
+    "title": "书案上打瞌睡",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-11.jpg",
+    "title": "先睡为敬",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-12.jpg",
+    "title": "好运连连",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-13.jpg",
+    "title": "花馍与红灯笼",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-14.jpg",
+    "title": "拿着红包的小寿星",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-15.jpg",
+    "title": "满月标配：红鸡蛋",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-16.jpg",
+    "title": "寿星本星",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-17.jpg",
+    "title": "花馍端上来喽",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-18.jpg",
+    "title": "红彤彤的一天",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-19.jpg",
+    "title": "平安喜乐",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-20.jpg",
+    "title": "一家三口，白墙为证",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-21.jpg",
+    "title": "低头亲一亲",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-22.jpg",
+    "title": "爸爸的手臂是摇篮",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-23.jpg",
+    "title": "都笑了",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-24.jpg",
+    "title": "被妈妈的吻突袭",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-25.jpg",
+    "title": "一家三口，正式合影",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-26.jpg",
+    "title": "看这个小哭包",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-27.jpg",
+    "title": "互相看看，就懂了",
+    "date": "2026-07-21",
+    "stage": "出生后"
+  },
+  {
+    "src": "/images/family/manyue/manyue-28.jpg",
+    "title": "长辈怀里的九儿",
+    "date": "2026-07-21",
+    "stage": "出生后"
   },
   {
     "src": "/images/family/baiyan/baiyan-01.jpg",
