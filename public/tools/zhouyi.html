@@ -3868,7 +3868,7 @@ window.ICHING_BAI = {"100000":{"j_bai":"剥卦：有所往则不利。《象辞�
     return new Promise(function (resolve) {
       try {
         if (typeof QRious === "undefined") { resolve(null); return; }
-        var q = new QRious({ value: text, size: 360, level: "M", foreground: "#3a3733", background: "#f6efdf" });
+        var q = new QRious({ value: text, size: 360, level: "M", foreground: "#203C32", background: "#FFFFFF" });
         resolve(q.toDataURL());
       } catch (e) { resolve(null); }
     });
