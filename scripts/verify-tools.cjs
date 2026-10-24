@@ -139,6 +139,7 @@ async function noOverflow(page,label){
   assert.deepEqual(jadePixel,[247,248,242,255]);
   fs.writeFileSync(path.join(shots,'zhouyi-poster.png'),Buffer.from((await page.locator('#share-canvas').evaluate(c=>c.toDataURL('image/png'))).split(',')[1],'base64'));
   await page.goto(url+'/tools/countdown.html',{waitUntil:'networkidle'});
+  await page.click('[data-mode="bday"]');await page.fill('#bdate','1990-01-01');await page.click('#go');
   await page.click('#poster');await page.waitForFunction(()=>document.querySelector('#poster-img').src.startsWith('data:image/png'));
   const posterData=await page.locator('#poster-img').getAttribute('src');
   fs.writeFileSync(path.join(shots,'countdown-poster.png'),Buffer.from(posterData.split(',')[1],'base64'));
