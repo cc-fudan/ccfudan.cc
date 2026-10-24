@@ -6,12 +6,12 @@
 <title>人生计时器 · 珍惜眼前的时间</title>
 <style>
   :root{
-    --blue:#00B1FF;
-    --blue-deep:#0072CE;
+    --blue:#246B58;
+    --blue-deep:#246B58;
     --bg:#071426;
     --bg2:#0C1E33;
     --card:rgba(255,255,255,.045);
-    --line:rgba(255,255,255,.10);
+    --line:#D8E3D9;
     --txt:#EAF4FF;
     --txt2:#9DB4CC;
     --txt3:#6A829B;
@@ -219,6 +219,11 @@ body[data-cc-tool="shizhi"] :is(.sidebar,.topbar){background:#edf3ef;border-colo
 body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
 .hero,.hero-copy,.hero-orbit,.workshop-featured{background-image:none!important}
 .cc-workshop-return{box-shadow:none;border-radius:10px}
+</style><style id="cc-jade-exports">/* Export dialogs belong to the same white jade system. */
+#poster-img,#share-canvas{background:#F7F8F2;border:1px solid #D8E3D9;box-shadow:0 12px 36px #203C3218}
+#poster-overlay{background:rgba(32,60,50,.64)}
+body[data-cc-tool="zhouyi"]{--zhu:#246B58;--gold:#53665D}
+body[data-cc-tool="zhouyi"] :is(.modal,.share-box,.share-panel){background:#F7F8F2;color:#203C32;font-family:var(--cc-font)}
 </style></head>
 <body data-cc-tool="countdown">
 <a class="cc-workshop-return" href="/tools">← 我的工匠坊</a>
@@ -357,9 +362,9 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
       <div class="card-title">第四步 · 你的人生周历</div>
       <canvas id="grid"></canvas>
       <div class="legend">
-        <span><i style="background:linear-gradient(90deg,#0072CE,#00B1FF)"></i>已度过</span>
-        <span><i style="background:#00B1FF;box-shadow:0 0 8px #00B1FF"></i>本周</span>
-        <span><i style="background:rgba(255,255,255,.10)"></i>未来的格子</span>
+        <span><i style="background:linear-gradient(90deg,#246B58,#246B58)"></i>已度过</span>
+        <span><i style="background:#246B58;box-shadow:0 0 8px #246B58"></i>本周</span>
+        <span><i style="background:#D8E3D9"></i>未来的格子</span>
       </div>
       <p style="font-size:12px;color:var(--txt3);margin:14px 0 0;text-align:center;">
         每一格 = 你生命中的一周，每行 = 一年，共 <span id="cell-total">—</span> 格
@@ -675,13 +680,13 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
       var y = row * (size + gap);
       if(i < passed){
         var t = i / Math.max(1, total);
-        ctx.fillStyle = 'rgb(0,' + Math.round(114 + t*63) + ',' + Math.round(206 + t*49) + ')';
+        ctx.fillStyle = '#246B58';
       }else if(i === passed && !over){
-        ctx.fillStyle = '#00B1FF';
-        ctx.shadowColor = '#00B1FF';
+        ctx.fillStyle = '#246B58';
+        ctx.shadowColor = '#246B58';
         ctx.shadowBlur = 6;
       }else{
-        ctx.fillStyle = 'rgba(255,255,255,.10)';
+        ctx.fillStyle = '#D8E3D9';
       }
       ctx.fillRect(x, y, size, size);
       ctx.shadowBlur = 0;
@@ -855,10 +860,8 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
     ctx.textBaseline = 'alphabetic';
 
     var bg = ctx.createLinearGradient(0, 0, 0, H);
-    bg.addColorStop(0, '#071426'); bg.addColorStop(0.55, '#0C1E33'); bg.addColorStop(1, '#050F1C');
+    bg.addColorStop(0, '#F7F8F2'); bg.addColorStop(0.55, '#F7F8F2'); bg.addColorStop(1, '#F7F8F2');
     ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-    radialGlow(ctx, 210, -40, 560, 'rgba(0,177,255,0.20)');
-    radialGlow(ctx, 980, 160, 520, 'rgba(0,114,206,0.18)');
 
     var P = 64, cx = W / 2;
     var fm = '-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif';
@@ -866,16 +869,16 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
     /* 顶部标识 */
     try{ ctx.letterSpacing = '6px'; }catch(e){}
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#00B1FF';
+    ctx.fillStyle = '#246B58';
     ctx.font = '600 26px ' + fm;
     ctx.fillText('L I F E   C O U N T D O W N', cx, 120);
     try{ ctx.letterSpacing = '0px'; }catch(e){}
 
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = '#203C32';
     ctx.font = '800 56px ' + fm;
     ctx.fillText('我的人生余额', cx, 196);
 
-    ctx.fillStyle = '#9DB4CC';
+    ctx.fillStyle = '#53665D';
     ctx.font = '400 26px ' + fm;
     var meta = (state.sex === 'M' ? '男' : (state.sex === 'F' ? '女' : '')) +
                (state.sex ? ' · ' : '') +
@@ -883,7 +886,7 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
     ctx.fillText(meta, cx, 244);
 
     /* 主视觉：剩余天数 */
-    ctx.fillStyle = '#9DB4CC';
+    ctx.fillStyle = '#53665D';
     ctx.font = '400 26px ' + fm;
     ctx.fillText('距我的生命终点，大约还有', cx, 360);
 
@@ -897,16 +900,16 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
     var uw = ctx.measureText('天').width;
     var gap = 16, total = nw + gap + uw, sx = cx - total / 2;
     var grad = ctx.createLinearGradient(0, 470 - fs, 0, 470);
-    grad.addColorStop(0, '#FFFFFF'); grad.addColorStop(1, '#00B1FF');
+    grad.addColorStop(0, '#246B58'); grad.addColorStop(1, '#246B58');
     ctx.fillStyle = grad;
     ctx.textAlign = 'left';
     ctx.fillText(remainTxt, sx, 470);
-    ctx.fillStyle = '#00B1FF';
+    ctx.fillStyle = '#246B58';
     ctx.font = '700 44px ' + fm;
     ctx.fillText('天', sx + nw + gap, 470);
     ctx.textAlign = 'center';
 
-    ctx.fillStyle = '#9DB4CC';
+    ctx.fillStyle = '#53665D';
     ctx.font = '400 28px ' + fm;
     ctx.fillText('≈ ' + Math.max(0, (c.le - c.ageF)).toFixed(1) + ' 年', cx, 540);
 
@@ -920,29 +923,29 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
     ];
     for(var i = 0; i < 3; i++){
       var bx = P + i * (bw + gap2);
-      ctx.fillStyle = 'rgba(255,255,255,0.05)';
+      ctx.fillStyle = '#FFFFFF';
       roundRect(ctx, bx, boxY, bw, boxH, 16); ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.10)'; ctx.lineWidth = 1;
+      ctx.strokeStyle = '#D8E3D9'; ctx.lineWidth = 1;
       roundRect(ctx, bx, boxY, bw, boxH, 16); ctx.stroke();
-      ctx.fillStyle = '#9DB4CC'; ctx.font = '400 24px ' + fm; ctx.textAlign = 'center';
+      ctx.fillStyle = '#53665D'; ctx.font = '400 24px ' + fm; ctx.textAlign = 'center';
       ctx.fillText(stats[i][0], bx + bw / 2, boxY + 45);
-      ctx.fillStyle = '#FFFFFF'; ctx.font = '800 38px ' + fm;
+      ctx.fillStyle = '#203C32'; ctx.font = '800 38px ' + fm;
       ctx.fillText(stats[i][1], bx + bw / 2, boxY + 98);
     }
 
     /* 进度条 */
     var barY = 800, barH = 18, barX = P, barW = W - 2 * P;
-    ctx.fillStyle = 'rgba(255,255,255,0.10)';
+    ctx.fillStyle = '#D8E3D9';
     roundRect(ctx, barX, barY, barW, barH, barH / 2); ctx.fill();
     var fillW = Math.max(barH, barW * c.pct / 100);
     var fg = ctx.createLinearGradient(barX, 0, barX + barW, 0);
-    fg.addColorStop(0, '#0072CE'); fg.addColorStop(1, '#00B1FF');
+    fg.addColorStop(0, '#246B58'); fg.addColorStop(1, '#246B58');
     ctx.fillStyle = fg;
     roundRect(ctx, barX, barY, fillW, barH, barH / 2); ctx.fill();
-    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm;
+    ctx.fillStyle = '#53665D'; ctx.font = '400 22px ' + fm;
     ctx.textAlign = 'left'; ctx.fillText('出生', barX, barY + barH + 30);
     ctx.textAlign = 'right'; ctx.fillText('终点', barX + barW, barY + barH + 30);
-    ctx.textAlign = 'center'; ctx.fillStyle = '#9DB4CC';
+    ctx.textAlign = 'center'; ctx.fillStyle = '#53665D';
     ctx.fillText('已走完 ' + fmt(c.livedDays) + ' / ' + fmt(Math.round(c.le * YEAR_DAYS)) + ' 天', cx, barY + barH + 30);
 
     /* 人生周历（缩小版） */
@@ -964,15 +967,15 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
       var x = gx + col * (sz + ggap), y = gy + row * (sz + ggap);
       if(gi < passed){
         var t = gi / Math.max(1, gt);
-        ctx.fillStyle = 'rgb(0,' + Math.round(114 + t * 63) + ',' + Math.round(206 + t * 49) + ')';
+        ctx.fillStyle = '#246B58';
       } else if(gi === passed && !over){
-        ctx.fillStyle = '#00B1FF';
+        ctx.fillStyle = '#246B58';
       } else {
-        ctx.fillStyle = 'rgba(255,255,255,0.10)';
+        ctx.fillStyle = '#D8E3D9';
       }
       ctx.fillRect(x, y, sz, sz);
     }
-    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm; ctx.textAlign = 'center';
+    ctx.fillStyle = '#53665D'; ctx.font = '400 22px ' + fm; ctx.textAlign = 'center';
     ctx.fillText('每一格 = 生命中的一周，共 ' + fmt(gt) + ' 格', cx, gy + gridMaxH + 34);
 
     /* 金句（保留 <em> 高亮） */
@@ -995,7 +998,7 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
       var lx = cx - lw / 2;
       ctx.textAlign = 'left';
       for(var k = 0; k < line.length; k++){
-        ctx.fillStyle = line[k].em ? '#00B1FF' : '#FFFFFF';
+        ctx.fillStyle = line[k].em ? '#246B58' : '#203C32';
         ctx.fillText(line[k].ch, lx, qY);
         lx += ctx.measureText(line[k].ch).width;
       }
@@ -1004,9 +1007,9 @@ body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
 
     /* 底部来源 */
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#6A829B'; ctx.font = '400 22px ' + fm;
+    ctx.fillStyle = '#53665D'; ctx.font = '400 22px ' + fm;
     ctx.fillText('数据来源：国家卫健委 2025 年公报 · 人均预期寿命 79.25 岁', cx, 1780);
-    ctx.fillStyle = '#4A6079'; ctx.font = '400 20px ' + fm;
+    ctx.fillStyle = '#53665D'; ctx.font = '400 20px ' + fm;
     ctx.fillText('生命倒计时 · 你还能活多少天（统计意义估算，非个人预测）', cx, 1820);
 
     posterCanvas = cv;

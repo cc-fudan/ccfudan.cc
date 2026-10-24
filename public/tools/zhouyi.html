@@ -340,6 +340,11 @@ body[data-cc-tool="shizhi"] :is(.sidebar,.topbar){background:#edf3ef;border-colo
 body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
 .hero,.hero-copy,.hero-orbit,.workshop-featured{background-image:none!important}
 .cc-workshop-return{box-shadow:none;border-radius:10px}
+</style><style id="cc-jade-exports">/* Export dialogs belong to the same white jade system. */
+#poster-img,#share-canvas{background:#F7F8F2;border:1px solid #D8E3D9;box-shadow:0 12px 36px #203C3218}
+#poster-overlay{background:rgba(32,60,50,.64)}
+body[data-cc-tool="zhouyi"]{--zhu:#246B58;--gold:#53665D}
+body[data-cc-tool="zhouyi"] :is(.modal,.share-box,.share-panel){background:#F7F8F2;color:#203C32;font-family:var(--cc-font)}
 </style></head>
 <body data-cc-tool="zhouyi">
 <a class="cc-workshop-return" href="/tools">← 我的工匠坊</a>
@@ -3903,17 +3908,14 @@ window.ICHING_BAI = {"100000":{"j_bai":"剥卦：有所往则不利。《象辞�
     cv.width = W * dpr; cv.height = H * dpr;
     var c = cv.getContext("2d");
     c.scale(dpr, dpr);
-    var KAI = '"Kaiti SC","STKaiti","KaiTi","Noto Serif SC","Noto Serif CJK SC","Songti SC",serif';
-    var INK = "#3a3733", GRAY = "#7a7266", ZHU = "#b1372c", GOLD = "#9c7a3c";
+    var KAI = '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+    var INK = "#203C32", GRAY = "#53665D", ZHU = "#246B58", GOLD = "#246B58";
 
     /* 底 + 晕 */
-    c.fillStyle = "#f6efdf"; c.fillRect(0, 0, W, H);
-    var g = c.createRadialGradient(W / 2, H * 0.32, 60, W / 2, H * 0.5, H * 0.75);
-    g.addColorStop(0, "rgba(255,252,244,.95)"); g.addColorStop(1, "rgba(231,216,186,.6)");
-    c.fillStyle = g; c.fillRect(0, 0, W, H);
-    /* 双框 */
-    c.strokeStyle = INK; c.lineWidth = 3; c.strokeRect(22, 22, W - 44, H - 44);
-    c.strokeStyle = GOLD; c.lineWidth = 1; c.strokeRect(34, 34, W - 68, H - 68);
+    c.fillStyle = "#F7F8F2"; c.fillRect(0, 0, W, H);
+    /* White jade: solid paper, quiet single border. */
+    c.strokeStyle = "#D8E3D9"; c.lineWidth = 1;
+    rr2(c, 24, 24, W - 48, H - 48, 20); c.stroke();
     /* 印 */
     c.fillStyle = ZHU; rr2(c, W / 2 - 26, 56, 52, 52, 8); c.fill();
     c.fillStyle = "#fff"; c.textAlign = "center"; c.textBaseline = "middle";
@@ -4000,7 +4002,7 @@ window.ICHING_BAI = {"100000":{"j_bai":"剥卦：有所往则不利。《象辞�
     function plate(x) {
       c.fillStyle = "#ffffff";
       rr2(c, x - 8, bandTop - 8, qs + 16, qs + 16, 8); c.fill();
-      c.strokeStyle = "rgba(156,122,60,.55)"; c.lineWidth = 1;
+      c.strokeStyle = "#D8E3D9"; c.lineWidth = 1;
       rr2(c, x - 8, bandTop - 8, qs + 16, qs + 16, 8); c.stroke();
     }
 

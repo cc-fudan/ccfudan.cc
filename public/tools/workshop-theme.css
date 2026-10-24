@@ -36,3 +36,9 @@ body[data-cc-tool="shizhi"] :is(.sidebar,.topbar){background:#edf3ef;border-colo
 body{background:#F7F8F2!important}input,select,textarea{border-color:#718178}
 .hero,.hero-copy,.hero-orbit,.workshop-featured{background-image:none!important}
 .cc-workshop-return{box-shadow:none;border-radius:10px}
+
+/* Export dialogs belong to the same white jade system. */
+#poster-img,#share-canvas{background:#F7F8F2;border:1px solid #D8E3D9;box-shadow:0 12px 36px #203C3218}
+#poster-overlay{background:rgba(32,60,50,.64)}
+body[data-cc-tool="zhouyi"]{--zhu:#246B58;--gold:#53665D}
+body[data-cc-tool="zhouyi"] :is(.modal,.share-box,.share-panel){background:#F7F8F2;color:#203C32;font-family:var(--cc-font)}

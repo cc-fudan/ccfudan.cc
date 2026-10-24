@@ -132,6 +132,18 @@ async function noOverflow(page,label){
    await page.goto(url+'/tools/'+file,{waitUntil:'networkidle'});assert.equal(await page.locator('.cc-tool-return').count(),1);await noOverflow(page,file);
    await page.screenshot({path:path.join(shots,file.replace('.html','')+'-mobile.png'),fullPage:false});
   }
+  // Exported pixels must follow the brand, not just the surrounding page CSS.
+  await page.goto(url+'/tools/zhouyi.html#debug',{waitUntil:'networkidle'});
+  await page.evaluate(async()=>{await window.__yj.run([9,9,7,8,8,8], '眼前这件事该不该做？');await window.__yj.share();});
+  const jadePixel=await page.locator('#share-canvas').evaluate(c=>Array.from(c.getContext('2d').getImageData(0,0,1,1).data));
+  assert.deepEqual(jadePixel,[247,248,242,255]);
+  fs.writeFileSync(path.join(shots,'zhouyi-poster.png'),Buffer.from((await page.locator('#share-canvas').evaluate(c=>c.toDataURL('image/png'))).split(',')[1],'base64'));
+  await page.goto(url+'/tools/countdown.html',{waitUntil:'networkidle'});
+  await page.click('#poster');await page.waitForFunction(()=>document.querySelector('#poster-img').src.startsWith('data:image/png'));
+  const posterData=await page.locator('#poster-img').getAttribute('src');
+  fs.writeFileSync(path.join(shots,'countdown-poster.png'),Buffer.from(posterData.split(',')[1],'base64'));
+  const bg=await page.evaluate(async()=>{const im=document.querySelector('#poster-img');await im.decode();const c=document.createElement('canvas');c.width=1;c.height=1;const ctx=c.getContext('2d');ctx.drawImage(im,0,0);return Array.from(ctx.getImageData(0,0,1,1).data);});
+  assert.deepEqual(bg,[247,248,242,255]);
   const offline=await browser.newContext({viewport:{width:390,height:844}});
   await offline.setOffline(true);const p=await offline.newPage();p.on('pageerror',e=>errors.push(e.message));
   await p.goto('file://'+path.join(root,'tools/downloads/zhiguogong.html'),{waitUntil:'load'});await p.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
