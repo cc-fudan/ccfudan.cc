@@ -9,12 +9,18 @@ function score(a){return pill(a.passed+' / '+a.total);}
 function toast(s){$('#toast').textContent=s;$('#toast').classList.add('visible');setTimeout(()=>$('#toast').classList.remove('visible'),2500);}
 let S,detail,selected='hk01810',chartRange=120;
 const detailHTML=d=>researchDetailHTML(d),drawChart=()=>drawResearchChart();
-function show(id){if(!S.details[id])return;selected=id;detail=S.details[id];activeStructure='';activeResearchLine='';$('#symbol').value=id;$('#analysis-content').innerHTML=detailHTML(detail);drawChart();history.replaceState(null,'','#'+id);}
-async function init(){S=await(await fetch('snapshot.json')).json();$('#freshness').textContent='完整日线截至 '+S.through+' · 采集与生成 '+S.generated_at+' · 共 '+S.symbols.length+' 个标的';
+const detailCache=new Map();
+async function show(id){
+ if(!S.details[id])return;selected=id;activeStructure='';activeResearchLine='';$('#symbol').value=id;history.replaceState(null,'','#'+id);
+ $('#analysis-content').innerHTML='<div class="loading">正在加载 '+esc(S.details[id].analysis.name)+' 的分析…</div>';
+ try{let d=detailCache.get(S.detail_files[id]);if(!d){const r=await fetch(S.detail_files[id]);if(!r.ok)throw Error('报告请求失败');d=await r.json();detailCache.set(S.detail_files[id],d);}
+ if(selected!==id||workspacePage!=='analysis')return;detail=d;$('#analysis-content').innerHTML=detailHTML(detail);drawChart();
+ }catch(e){if(selected===id)$('#analysis-content').innerHTML=empty('加载失败',e.message+'，请点击刷新数据重试');}
+}
+async function readCatalog(){const r=await fetch('catalog.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('数据索引请求失败');const next=await r.json();S=next;$('#freshness').textContent='数据截至 '+S.through;}
+async function init(){await readCatalog();
  const options=rows=>rows.map(s=>'<option value="'+esc(s.id)+'">'+esc(s.name)+' · '+esc(s.id)+' · '+esc(s.state)+'</option>').join('');
  $('#symbol').innerHTML=options(S.symbols);$('#symbol').addEventListener('change',e=>show(e.target.value));
  $('#search').addEventListener('input',e=>{const key=e.target.value.trim().toLowerCase();$('#symbol').innerHTML=options(S.symbols.filter(s=>(s.name+s.id).toLowerCase().includes(key)));});
- $('#markets').innerHTML=S.symbols.filter(s=>s.kind==='index').map(s=>button('<strong>'+esc(s.name)+'</strong><p>'+f(s.close)+' · '+esc(s.date)+'</p><small>'+esc(S.details[s.id].research.regime)+'</small>','symbol',s.id,'market-select')).join('');
  document.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const id=b.dataset.id;switch(b.dataset.action){case'symbol':show(id);break;case'structure-select':selectStructure(id);break;case'research-line':focusResearchLine(id);break;case'research-layer':toggleResearchLayer(id);break;case'range':chartRange=Number(id);$('#analysis-content').innerHTML=detailHTML(detail);drawChart();break;}});
- show(S.details[location.hash.slice(1)]?location.hash.slice(1):selected);
 }
