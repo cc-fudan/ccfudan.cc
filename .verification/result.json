@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "routes": [
+    "/",
+    "/services/",
+    "/credentials/",
+    "/about/",
+    "/contact/",
+    "/writing/",
+    "/works/"
+  ],
+  "viewports": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "articles": 18,
+  "wechatCopy": true,
+  "wechatFallback": true,
+  "errors": []
+}
