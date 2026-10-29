@@ -30,7 +30,7 @@ async function noOverflow(page,label){
   assert.equal(await page.locator('.workshop-card').count(),7);
   await page.screenshot({path:path.join(shots,'tools-desktop.png'),fullPage:true});
   await page.route('**/major-engine.js',route=>route.fulfill({contentType:'text/javascript',body:'throw new Error("stale unversioned engine was requested")'}));
-  await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});
+  await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await page.click('.nav[data-tab="discover"]');
   const assetSources=await page.locator('script[src]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('src')));
   assert.ok(assetSources.length>0&&assetSources.every(src=>/\.[0-9a-f]{12}\.js$/.test(src)));
   assert.ok(await page.evaluate(()=>!!window.WORKBENCH_RULE_VERSION));
@@ -111,13 +111,13 @@ async function noOverflow(page,label){
   assert.equal(await page.locator('[name="bachelorMajor"]').evaluate(e=>e.closest('details')),null);
   await page.click('[data-status="match"]');assert.equal(await page.locator('.job-card').count(),5);
   await page.click('.job-card [data-action="favorite"]');
-  await page.reload({waitUntil:'networkidle'});assert.equal(await page.locator('#savedCount').textContent(),'1');
+  await page.reload({waitUntil:'networkidle'});await page.click('.nav[data-tab="discover"]');assert.equal(await page.locator('#savedCount').textContent(),'1');
   await page.click('#browseMajor');await page.fill('#majorSearch','电子');assert.ok(await page.locator('.major-choice').count()>5);
   await page.click('#majorDialog .close-dialog');
   await page.screenshot({path:path.join(shots,'zhiguogong-desktop.png'),fullPage:false});
   for(const width of [320,375,390,430,768]){
    await page.setViewportSize({width,height:844});
-   await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await noOverflow(page,'zhiguogong '+width);
+   await page.goto(url+'/tools/zhiguogong/',{waitUntil:'networkidle'});await page.click('.nav[data-tab="discover"]');await noOverflow(page,'zhiguogong '+width);
    await page.fill('#locateDepartment','133123');await page.fill('#locatePosition','300140123001');await page.click('#jobLocatorForm button');assert.ok(await page.locator('#detailDialog').isVisible());await page.click('#detailDialog .close-dialog');
    await page.click('[data-tab="policy"]');assert.ok(await page.locator('#policyView').isVisible());await noOverflow(page,'policy '+width);
    await page.screenshot({path:path.join(shots,'policy-'+width+'.png'),fullPage:false});
@@ -148,13 +148,15 @@ async function noOverflow(page,label){
   const offline=await browser.newContext({viewport:{width:390,height:844}});
   await offline.setOffline(true);const p=await offline.newPage();p.on('pageerror',e=>errors.push(e.message));
   await p.goto('file://'+path.join(root,'tools/downloads/zhiguogong.html'),{waitUntil:'load'});await p.waitForFunction(()=>document.querySelector('#totalCount').textContent==='19,426');
-  await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'5');await noOverflow(p,'portable offline');
+  await p.click('.nav[data-tab="discover"]');await p.click('#profileToggle');await p.click('[data-preset="philosophy"]');assert.equal(await p.locator('#matchCount').textContent(),'5');await noOverflow(p,'portable offline');
   await p.click('#applyMobileProfile');await p.click('[data-tab="policy"]');assert.equal(await p.locator('.timeline-row').count(),9);await noOverflow(p,'portable policy offline');
   await p.click('[data-tab="discover"]');await p.fill('#locateDepartment','133123');await p.fill('#locatePosition','300140123001');await p.click('#jobLocatorForm button');
   await p.fill('[name="score0"]','60');await p.fill('[name="score1"]','70');await p.fill('[name="score2"]','80');await p.click('#examScoreForm button');
   assert.ok((await p.locator('#examScoreResult').textContent()).includes('72.50'));await noOverflow(p,'portable exam offline');
+  await offline.close();
+  const journey=await require('./verify-journey.cjs').verifyJourney(page,url,shots);
   assert.deepEqual(errors,[]);
-  fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,policy:true,calendarEvents:9,examScore:72.5,ruleVersion:await p.evaluate(()=>window.WORKBENCH_RULE_VERSION||null),errors},null,2));
+  fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,policy:true,calendarEvents:9,examScore:72.5,journey,errors},null,2));
   console.log('TOOLS BROWSER PASS: source-built pages, 4 tools, cascading provinces/cities, profiles, majors, persistence, mobile layouts, standalone offline.');
  }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);console.log('::error title=Tools browser verification::'+String(e.stack||e).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));server.close();process.exit(1);});

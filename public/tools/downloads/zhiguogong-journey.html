@@ -1,0 +1,413 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"><title>知国公 · 招录全流程工作台</title><style>body{margin:0;background:#f5f7f1;padding:10px 30px}body>header{max-width:1240px;margin:12px auto 0;font:16px/1.6 'Microsoft YaHei',sans-serif;color:#256b50}body>header b{font-size:23px;letter-spacing:2px}body>header span{font-size:11px;color:#87967c;margin-left:12px}@media(max-width:600px){body{padding:0 13px}}@media print{body>header{display:none}}
+/* Scoped to the flow workspace, sharing the existing white-jade palette. */
+.journey{--j-ink:#243b36;--j-muted:#77877d;--j-green:#256b50;--j-line:#dfe7df;--j-paper:#f5f7f1;color:var(--j-ink);font:14px/1.7 Inter,"Segoe UI","Microsoft YaHei",sans-serif;overflow-wrap:anywhere}.journey *, .journey *::before,.journey *::after{box-sizing:border-box}.journey [hidden]{display:none!important}.journey button,.journey input,.journey textarea,.journey select{font:inherit}.journey button{cursor:pointer}.journey a{color:var(--j-green);text-underline-offset:4px}.journey h1,.journey h2,.journey h3,.journey p{margin:0}.journey h1{font-size:34px;line-height:1.45;letter-spacing:-1px;font-weight:600}.journey h2{font-size:17px;font-weight:600}.journey h3{font-size:15px;font-weight:600}.journey p{margin-top:10px}.journey .j-muted,.journey small{color:var(--j-muted)}.j-shell{max-width:1240px;margin:auto}.j-icon{width:19px;height:19px;vertical-align:middle;flex:none;display:inline-block}.j-header{display:flex;justify-content:space-between;gap:15px;padding:18px 0;align-items:center;border-bottom:1px solid var(--j-line)}.j-wordmark{display:flex;gap:9px;align-items:center}.j-wordmark>b{font-size:18px}.j-wordmark>span{font-size:12px;color:var(--j-muted);margin-left:8px}.j-date{color:var(--j-muted);font-size:12px}.j-mainnav,.j-subnav{display:flex;gap:8px;overflow:auto;scrollbar-width:thin;padding:16px 0}.j-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px;flex:none;border:1px solid #dbe4db;background:white;border-radius:8px;padding:8px 13px;font-size:12px;color:#476653;text-decoration:none;line-height:1.5}.j-btn:hover{border-color:#91ab96;background:#f0f6ee}.j-btn.primary{background:#286a50;color:#fff;border-color:#286a50}.j-btn.primary:hover{background:#1d5740}.j-btn.danger{color:#a5493f}.j-btn.selected{background:#e7eee2;color:#23563d;border-color:#c7d7c4;font-weight:600}.journey button:focus-visible,.journey a:focus-visible,.journey summary:focus-visible{outline:3px solid #8ebda2;outline-offset:3px}.j-mainnav .j-btn{border:0;background:none;white-space:nowrap;font-size:13px}.j-mainnav .j-btn.selected{background:#e8eee4}.j-kicker{font-size:10px;letter-spacing:2px;color:#819781;margin-bottom:8px}.j-hero{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;padding:38px 0 32px;align-items:center}.j-hero h1{font-size:38px}.j-hero h1 span{color:#55906b}.j-hero>div>p,.j-pagehead>p{color:var(--j-muted)}.j-hero-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}.j-hero-note{background:linear-gradient(135deg,#e7eddd,#f3f5eb);border:1px solid #d8e2ce;border-radius:16px;padding:24px;position:relative}.j-hero-note>span{font-size:11px;color:#778a65;letter-spacing:1px}.j-hero-note>strong{display:block;font-size:21px;margin-top:9px;font-weight:500}.j-hero-note p{font-size:12px;color:#718064;margin:7px 0 15px}.j-hero-note .j-btn{background:transparent}.j-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:26px}.j-metrics>div{position:relative;border:1px solid var(--j-line);border-radius:11px;background:#fff;padding:20px 22px}.j-metrics .j-icon{position:absolute;right:20px;top:24px;color:#879c86}.j-metrics strong{display:block;font-size:31px;font-weight:500;line-height:1.2}.j-metrics span{font-size:12px;color:var(--j-muted);display:block;margin-top:8px}.j-columns{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px}.j-panel{background:white;border:1px solid var(--j-line);border-radius:12px;padding:23px;margin-bottom:22px;min-width:0}.j-sectionhead{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 19px}.j-sectionhead h2{display:flex;align-items:center;gap:9px}.j-taskrow{display:flex;gap:12px;padding:17px 0;align-items:center;border-bottom:1px solid #edf0e9}.j-taskrow:last-child{border-bottom:0}.j-status-dot{color:#a6b59e;align-self:flex-start;padding-top:3px}.j-status-dot.complete{color:var(--j-green)}.j-tasktext{flex:1;min-width:0}.j-tasktext>strong{font-size:14px;display:block}.j-tasktext>small{display:block;font-size:11px;margin:4px 0 8px}.j-tasktext>div{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.j-tag{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10px;line-height:1.8;background:#f1f3ee;color:#768178;white-space:normal}.j-tag.green{background:#e7f2e6;color:#43734c}.j-tag.amber{background:#faf1dc;color:#9b7629}.j-tag.red{background:#faeae4;color:#a95040}.j-tag.blue{background:#edf1f5;color:#536d83}.j-time{font-size:11px;color:#7b897e}.j-tips{padding-left:22px;margin:0;color:#64805b}.j-tips li{padding:8px 0 12px}.j-tips b{color:var(--j-ink);font-weight:500}.j-tips p{font-size:12px;color:#85907f;margin-top:4px}.j-soft{padding:14px;background:#f5f7ef;border-radius:7px;font-size:12px;color:#7e8a73;margin-top:12px}.j-examgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.j-examcard{padding:22px;border:1px solid var(--j-line);background:#fff;border-radius:12px}.j-cardhead,.j-cardfoot{display:flex;justify-content:space-between;gap:12px}.j-cardtitle{border:0;background:none;padding:15px 0 0;text-align:left;color:var(--j-ink);font-size:17px;line-height:1.65;width:100%;font-weight:500}.j-cardtitle:hover{color:var(--j-green)}.j-examcard>p{font-size:11px;color:#8a9482;margin:7px 0 18px}.j-progress{height:4px;border-radius:10px;background:#eef1e8;overflow:hidden}.j-progress>span{display:block;height:100%;background:#769568}.j-cardfoot{font-size:10px;margin-top:11px;color:#7f8d74}.j-cardfoot small{flex:none}.j-empty{padding:30px 12px;text-align:center;color:#8a9681}.j-empty h3{color:#4c6853;margin:12px 0}.j-empty p{font-size:12px;line-height:1.9;margin-bottom:20px}.j-empty-icon{display:grid;place-items:center;margin:auto;background:#f0f5e9;border-radius:16px;width:54px;height:54px}.j-empty-icon svg{height:28px;width:28px}.j-pagehead{padding:24px 0}.j-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:20px;flex-wrap:wrap}.j-toolbar>div,.j-actions{display:flex;gap:8px;flex-wrap:wrap}.j-toolbar p{margin:0;font-size:12px}.j-detail-top{display:flex;justify-content:space-between;padding-top:14px;gap:10px}.j-detail-top>div{display:flex;gap:8px}.j-subnav{border-bottom:1px solid var(--j-line);margin-bottom:22px;padding-top:0}.j-subnav .j-btn{white-space:nowrap}.j-flow{display:grid;grid-template-columns:196px minmax(0,1fr);gap:24px;align-items:start}.j-stages{display:flex;flex-direction:column;gap:6px;position:sticky;top:12px}.j-stages .j-btn{justify-content:flex-start;border:0;background:transparent;gap:10px;padding:12px}.j-stages .j-btn.selected{background:#e8eee2}.j-stages small{margin-left:auto}.j-stages span{font-size:11px;color:#8a9b7f}.j-number{font-size:12px;color:#9da98e}.j-flowtask{padding:20px 0;border-top:1px solid #e9eee5}.j-flowtask>p{font-size:12px;color:#849079}.j-flowline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.j-flowline .j-tag{margin-top:6px}.j-flowmeta{display:flex;gap:16px;flex-wrap:wrap;color:#6d816a;font-size:11px;margin-top:10px}.j-flowmeta span{display:flex;gap:5px;align-items:center}.j-flowmeta svg{height:14px;width:14px}.j-source{display:flex;gap:12px;font-size:10px;flex-wrap:wrap;color:#92a087;margin-top:12px}.j-tasknote{padding:9px 12px;background:#f7f8f3;border-left:2px solid #c1d0b8;white-space:pre-wrap}.j-callout{background:#f0f4e9;color:#708062;border:1px solid #dfe7d3;padding:14px 18px;border-radius:8px;margin:0 0 20px;font-size:12px}.j-callout.danger{background:#fff1ea;color:#a45e47;border-color:#eed7c8}.j-callout p{margin:6px 0}.j-material{display:flex;gap:14px;align-items:center;padding:18px 0;border-bottom:1px solid #edf0e9}.j-material>div{flex:1;min-width:0}.j-material small{display:block;font-size:11px;margin-top:5px}.j-study-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 22px}.j-study-stats>div{border:1px solid var(--j-line);border-radius:8px;padding:18px;background:#f9faf6}.j-study-stats b{font-size:25px;font-weight:500;display:block}.j-study-stats span{font-size:11px;color:#86927e}.j-errorcard,.j-log{padding:18px 0;border-bottom:1px solid #edf0e9}.j-errorcard small{margin-left:7px}.j-errorcard h3{margin-top:10px}.j-errorcard p,.j-log p{font-size:12px;white-space:pre-wrap}.j-errorcard>div{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}.j-log .j-btn{padding:4px 8px;min-height:30px;margin-top:8px;font-size:10px}.j-sourcegrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}.j-sourcegrid h2{margin:12px 0}.j-sourcegrid p{color:#829077;font-size:12px;margin-bottom:14px}.j-sourceaction{margin-top:16px}.j-whitespace{white-space:pre-wrap}.j-footer{border-top:1px solid var(--j-line);padding:24px 0;margin-top:30px;display:flex;justify-content:space-between;gap:15px;font-size:11px;color:#88967f}.j-footer span{color:#9ba58f}.j-dialog{width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 40px);padding:26px;border:1px solid #d5dfce;border-radius:14px;box-shadow:0 30px 90px #10291830;background:#fafbf7;overflow:auto}.j-dialog::backdrop{background:#1a302855;backdrop-filter:blur(3px)}.j-dialog-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;margin-bottom:16px}.j-dialog-head>.j-btn{font-size:22px;min-width:42px}.j-form{display:flex;flex-direction:column;gap:14px}.j-form label{margin:0;font-size:12px;color:#65785f;display:block}.j-form input,.j-form select,.j-form textarea{display:block;margin-top:5px;width:100%;min-width:0;background:white;border:1px solid #d9e2d2;border-radius:7px;color:#263e30;padding:10px;min-height:43px;font-size:14px}.j-form textarea{min-height:90px;resize:vertical}.j-form input:focus,.j-form select:focus,.j-form textarea:focus{outline:2px solid #b6d2aa}.j-form details>summary{cursor:pointer;color:#567349;font-size:12px}.j-form details label{margin-top:12px}.j-form>.j-btn{align-self:flex-end;min-width:130px}.j-formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.j-form .j-muted{font-size:11px;margin:0}.j-error{color:#aa4b3e;font-size:12px;margin-top:12px!important}.j-toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#203e30;color:#fff;max-width:calc(100vw - 28px);width:max-content;border-radius:10px;padding:13px 18px;font:13px/1.65 "Microsoft YaHei",sans-serif;z-index:100002;box-shadow:0 6px 30px #17332625}.journey-open .sidebar{display:none!important}.journey-open .layout{display:block}.journey-open #main{padding:8px 38px 30px}.journey-open #compareDock{display:none!important}.topbar nav{gap:14px;overflow-x:auto}.topbar .nav{white-space:nowrap;flex:none}
+@media(min-width:1400px){.journey-open #main{padding-left:60px;padding-right:60px}}
+@media(max-width:850px){.j-columns{grid-template-columns:1fr}.j-hero{gap:20px}.j-hero h1{font-size:29px}.j-flow{grid-template-columns:1fr}.j-stages{flex-direction:row;overflow:auto;position:static;padding-bottom:7px}.j-stages .j-btn{white-space:nowrap}.j-stages small{margin-left:4px}.j-wordmark>span{display:none}.j-panel{padding:18px}}
+@media(max-width:600px){.journey-open #main{padding:0 14px 24px}.j-header{padding:16px 0}.j-date{font-size:10px}.j-wordmark>b{font-size:16px}.j-mainnav{gap:3px;padding:12px 0}.j-mainnav .j-btn{font-size:12px;min-height:44px;padding:8px 10px}.j-mainnav svg{width:16px;height:16px}.j-hero{grid-template-columns:1fr;padding:22px 0;gap:22px}.j-hero h1{font-size:30px}.j-hero>div>p{font-size:12px}.j-hero-note{padding:19px}.j-hero-note>strong{font-size:18px}.j-hero-actions{margin-top:18px}.j-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}.j-metrics>div{padding:17px}.j-metrics strong{font-size:28px}.j-metrics .j-icon{right:14px;top:19px;width:17px}.j-panel{padding:17px 14px;margin-bottom:16px}.j-columns{gap:0}.j-sectionhead{gap:8px;margin-bottom:14px}.j-sectionhead h2{font-size:15px}.j-sectionhead .j-btn{font-size:11px;padding:7px 9px}.j-examgrid,.j-sourcegrid{grid-template-columns:1fr;gap:12px}.j-examcard{padding:18px}.j-taskrow{flex-wrap:wrap;gap:8px;padding:14px 0}.j-tasktext{flex-basis:calc(100% - 36px)}.j-taskrow>.j-btn{margin-left:27px;min-height:38px}.j-taskrow .j-tasktext strong{font-size:13px}.j-btn{min-height:44px}.j-footer{flex-direction:column;gap:6px}.j-pagehead{padding:20px 0}.journey h1{font-size:25px;letter-spacing:-.5px}.j-pagehead>p{font-size:12px}.j-study-stats{grid-template-columns:1fr 1fr;gap:9px}.j-study-stats>div{padding:14px}.j-flowline .j-btn{font-size:11px;padding:7px 10px}.j-material{flex-wrap:wrap;gap:8px}.j-material>div{flex-basis:100%}.j-dialog{padding:19px 15px;max-height:calc(100dvh - 24px)}.j-formgrid{grid-template-columns:1fr}.j-form input,.j-form select,.j-form textarea{font-size:16px}.j-dialog-head{gap:8px}.j-detail-top .j-btn{font-size:11px;padding:7px 10px}.j-subnav{gap:5px}.j-subnav .j-btn{font-size:12px;padding:8px 11px}.j-pills{flex-wrap:wrap}.j-toolbar>.j-pills .j-btn{font-size:11px}.j-toast{bottom:15px;font-size:12px}}
+.journey *{letter-spacing:0}.journey h1{letter-spacing:0}.j-hero-note,.j-metrics>div,.j-panel,.j-examcard,.j-empty-icon{border-radius:8px}.j-panel{border:0;border-top:1px solid var(--j-line);border-radius:0;background:transparent;padding-left:0;padding-right:0}.j-hero-note{border:0;border-left:3px solid #96ad80;border-radius:0;background:#eef3e7}.j-metrics>div:nth-child(2){background:#eef3f7}.j-metrics>div:nth-child(3){background:#fbf0e8}.j-metrics>div:nth-child(4){background:#f3eff5}.j-metrics>div:nth-child(2) .j-icon{color:#6c87a0}.j-metrics>div:nth-child(3) .j-icon{color:#b48963}.j-metrics>div:nth-child(4) .j-icon{color:#967e9f}
+@media print{.topbar,.sidebar,.j-header,.j-mainnav,.j-subnav,.j-stages,.j-btn,.j-toast,.j-detail-top,#compareDock{display:none!important}.journey-open #main{padding:0}.journey .j-flow,.journey .j-columns,.journey .j-sourcegrid,.journey .j-examgrid{display:block}.j-panel,.j-examcard{break-inside:avoid;border-color:#bbb}.journey h1{font-size:22px}.j-hero{display:block}.j-hero-note{margin-top:15px}.j-panel{margin-bottom:12px}.j-footer{margin-top:12px}}
+</style></head><body><header><b>知国公</b><span>招录全流程工作台 · 单文件离线版</span></header><main id="journeyRoot"></main><script>/* Annual facts are versioned independently of applicant profiles and job data. */
+(function(root){
+ 'use strict';
+ const sources={
+  announcement:{title:'2027年度招考公告（税务官网转载）',url:'https://shanghai.chinatax.gov.cn/tax/xxgk/rsxx/202610/t481763.html'},
+  guide:{title:'2027年度报考指南（税务官网转载）',url:'https://shanghai.chinatax.gov.cn/tax/xxgk/rsxx/202610/t481764.html'},
+  csrc:{title:'2027年度证监会招考公告与大纲附件',url:'https://www.csrc.gov.cn/csrc/c100083/c7664528/content.shtml'}
+ };
+ const events=[
+  ['identity','注册与实名认证','2026-10-14T08:00:00+08:00','2026-10-23T18:00:00+08:00','比提交报名提前一天截止。未完成认证将无法提交申请。'],
+  ['apply','提交报考申请','2026-10-15T08:00:00+08:00','2026-10-24T18:00:00+08:00','每次只能报1个职位；审核通过后不能改报。'],
+  ['review','资格审查','2026-10-15T08:00:00+08:00','2026-10-26T18:00:00+08:00','报名截止后，即使未审查或未通过，也不能改报。'],
+  ['number','查询报名序号','2026-10-28T08:00:00+08:00',null,'通过审核后查询，用于确认报名和打印准考证。'],
+  ['pay','报名确认与缴费','2026-11-01T00:00:00+08:00','2026-11-07T00:00:00+08:00','官方截止写法为11月6日24:00；逾期视为放弃。'],
+  ['ticket','打印准考证','2026-11-23T00:00:00+08:00','2026-11-29T15:00:00+08:00','确认报名成功后打印，考试携带准考证和报名身份证件。'],
+  ['special','专业科目笔试 / 外语水平测试','2026-11-28T14:00:00+08:00','2026-11-28T16:00:00+08:00','仅适用证监会、金融监管、公安人民警察及8个非通用语职位。'],
+  ['aptitude','行政职业能力测验','2026-11-29T09:00:00+08:00','2026-11-29T11:00:00+08:00','所有岗位；客观题，120分钟，满分100分。'],
+  ['essay','申论','2026-11-29T14:00:00+08:00','2026-11-29T17:00:00+08:00','所有岗位；主观题，180分钟，满分100分。']
+ ].map(([id,title,start,end,note])=>({id,title,start,end,note}));
+ const topics={
+  '财金':['经济学、货币金融、投资与公司金融','证券市场、证券监管、投资者保护','期货、期权、套期保值与套利；相关经济金融政策'],
+  '法律':['证券、基金、期货及衍生品、私募基金监管','公司、合伙、破产、民商法及其他金融法律','行政、刑事、诉讼等法律与习近平法治思想'],
+  '会计':['会计准则与会计实务','审计、职业道德与内部控制','非经常性损益、净资产收益率、每股收益'],
+  '计算机':['计算机体系结构、操作系统、网络与安全','数据结构与算法、数据库与数据治理','软件工程、项目管理、人工智能等新技术']
+ };
+ function phase(e,now=Date.now()){
+  const n=Number(now);if(n<Date.parse(e.start))return '未开始';
+  return !e.end?'已开放':n>=Date.parse(e.end)?'已结束':'进行中';
+ }
+ function exam(j){
+  const dept=String(j['部门名称']||''),title=String(j['招考职位']||''),raw=String(j['备注']||''),type=j['考试类别']||'原表未填写';
+  const csrc=/证券监督管理|证监会/.test(dept),nfra=/金融监督管理|金融监管/.test(dept);
+  // Authority + job wording determine the examination; applicant major never does.
+  const attribute=String(j['职位属性']||'');
+  const police=/公安机关人民警察/.test(attribute);
+  const language=/非通用语/.test(attribute)&&/日语|法语|俄语|西班牙语|阿拉伯语|德语|朝鲜语|韩语|葡萄牙语/.test(attribute);
+  const publicOnly=/笔试只测查(?:行政职业能力测验|行测)和申论/.test(raw);
+  const uncertainPolice=/(?:公安|移民管理|边检)/.test(dept)&&!police;
+  const uncertainLanguage=/非通用语/.test(attribute)&&!language||/中央党史和文献研究院|外交部|公安部|商务部|文化和旅游部/.test(dept)&&/(?:日语|法语|俄语|西班牙语|阿拉伯语|德语|朝鲜语|韩语|葡萄牙语)/.test(title+' '+raw)&&!language;
+  let category='',track='普通公共科目',weights=[.5,.5],certain=true;
+  if(publicOnly){track='仅公共科目（按岗位备注）';weights=null;certain=false;}
+  else if(csrc){category=title.match(/(财金|法律|会计|计算机)类/)?.[1]||'';track='证监会'+(category||'（类别待确认）');weights=[.25,.25,.5];}
+  else if(nfra){category=title.match(/(财经|综合|法律|财会|计算机)类/)?.[1]||'';track='金融监管'+(category||'（类别待确认）');weights=[.25,.25,.5];}
+  else if(language){track='8个非通用语';weights=[.25,.25,.5];}
+  else if(police){track='公安机关人民警察';weights=[.4,.3,.3];}
+  else if(uncertainPolice||uncertainLanguage){track='考试方案需核对';weights=null;certain=false;}
+  return {type,track,category,csrc,weights,certain,publicOnly,special:weights?.length===3,topics:csrc&&topics[category]||[],interviewTest:j['是否在面试阶段组织专业能力测试']||j['是否组织专业能力测试']||'查看职位表及面试公告'};
+ }
+ function score(weights,values){
+  if(!Array.isArray(weights)||!weights.length)throw Error('请先确认岗位考试方案');
+  if(values.length!==weights.length||values.some(v=>String(v).trim()===''||!Number.isFinite(Number(v))||Number(v)<0||Number(v)>100))throw Error('请填写各科0–100分的有效成绩，空白不能按0分计算');
+  return weights.reduce((sum,w,i)=>sum+w*Number(values[i]),0);
+ }
+ function age(p,j,year){
+  if(Number(year)!==2027)return null;
+  if(/公安|移民管理|边检|监狱|戒毒/.test(String(j['部门名称']))||/人民警察|特警|狱医|法医/.test(String(j['招考职位'])))return {status:'review',label:'年度年龄',text:'人民警察存在按机关层级及岗位区分的年龄规定；工具尚未结构化该岗位层级，请查看2027指南第13问',reviewKind:'rulegap',source:sources.guide.url};
+  const fresh=p.graduate==='current'&&['硕士研究生','博士研究生'].includes(p.education),min=fresh?'1982-10':'1987-10',max='2008-10';
+  if(p.birthMonth){
+   if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(p.birthMonth))return {status:'review',label:'年度年龄',text:'出生年月格式应为YYYY-MM',reviewKind:'missing'};
+   return {status:p.birthMonth>=min&&p.birthMonth<=max?'pass':'reject',label:'年度年龄',text:`按2027公告出生区间 ${min} 至 ${max} 核对${fresh?'（2027应届硕博放宽）':''}；岗位另有规定时须同时满足`,source:sources.announcement.url};
+  }
+  return {status:'review',label:'年度年龄',text:'请补充出生年月；周岁数字不能准确替代公告规定的出生区间',reviewKind:'missing',source:sources.announcement.url};
+ }
+ function ics(selected=events){
+  const escape=s=>String(s).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+  const utc=s=>new Date(s).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Zhiguogong//2027 Exam Calendar//ZH','CALSCALE:GREGORIAN'];
+  for(const e of selected){
+   // Deadline reminders are short events, not week-long appointments.
+   const deadline=e.end&&!['special','aptitude','essay'].includes(e.id),start=deadline?e.end:e.start,end=deadline?new Date(Date.parse(start)+15*60000).toISOString():e.end||new Date(Date.parse(start)+15*60000).toISOString();
+   lines.push('BEGIN:VEVENT','UID:2027-'+e.id+'@zhiguogong.ccfudan.cc','DTSTAMP:20261018T000000Z','DTSTART:'+utc(start),'DTEND:'+utc(end),'SUMMARY:'+escape('国考2027 · '+e.title+(deadline?'截止':'')),'DESCRIPTION:'+escape(e.note+'\n北京时间；请自行确认日历提醒设置。\n'+sources.announcement.url),'BEGIN:VALARM','TRIGGER:-PT24H','ACTION:DISPLAY','DESCRIPTION:国考时间提醒','END:VALARM','END:VEVENT');
+  }
+  const encoder=new TextEncoder();
+  return lines.concat('END:VCALENDAR','').map(line=>{
+   let result='',part='',bytes=0;
+   for(const char of line){const size=encoder.encode(char).length;if(bytes+size>75){result+=part+'\r\n';part=' ';bytes=1;}part+=char;bytes+=size;}
+   return result+part;
+  }).join('\r\n');
+ }
+ root.ExamPolicy={year:2027,verifiedAt:'2026-10-18',sources,events,topics,phase,exam,score,age,ics};
+})(typeof window==='undefined'?globalThis:window);
+</script><script>/* ISC License
+
+Copyright (c) 2026 Lucide Icons and Contributors
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+---
+
+The following Lucide icons are derived from the Feather project:
+
+airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
+
+The MIT License (MIT) (for the icons listed above)
+
+Copyright (c) 2013-present Cole Bemis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ */
+window.JOURNEY_ICONS={"compass":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z\"></path>","layout-dashboard":"<rect width=\"7\" height=\"9\" x=\"3\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"14\" y=\"3\" rx=\"1\"></rect><rect width=\"7\" height=\"9\" x=\"14\" y=\"12\" rx=\"1\"></rect><rect width=\"7\" height=\"5\" x=\"3\" y=\"16\" rx=\"1\"></rect>","layers":"<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"></path><path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\"></path><path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\"></path>","calendar":"<path d=\"M8 2v4\"></path><path d=\"M16 2v4\"></path><rect width=\"18\" height=\"18\" x=\"3\" y=\"4\" rx=\"2\"></rect><path d=\"M3 10h18\"></path>","circle-alert":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"12\"></line><line x1=\"12\" x2=\"12.01\" y1=\"16\" y2=\"16\"></line>","notebook-pen":"<path d=\"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4\"></path><path d=\"M2 6h4\"></path><path d=\"M2 10h4\"></path><path d=\"M2 14h4\"></path><path d=\"M2 18h4\"></path><path d=\"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z\"></path>","list-checks":"<path d=\"M13 5h8\"></path><path d=\"M13 12h8\"></path><path d=\"M13 19h8\"></path><path d=\"m3 17 2 2 4-4\"></path><path d=\"m3 7 2 2 4-4\"></path>","sparkles":"<path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\"></path><path d=\"M20 2v4\"></path><path d=\"M22 4h-4\"></path><circle cx=\"4\" cy=\"20\" r=\"2\"></circle>","check":"<path d=\"M20 6 9 17l-5-5\"></path>","circle":"<circle cx=\"12\" cy=\"12\" r=\"10\"></circle>","arrow-up-right":"<path d=\"M7 7h10v10\"></path><path d=\"M7 17 17 7\"></path>","map-pin":"<path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"></path><circle cx=\"12\" cy=\"10\" r=\"3\"></circle>","download":"<path d=\"M12 15V3\"></path><path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"></path><path d=\"m7 10 5 5 5-5\"></path>","printer":"<path d=\"M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2\"></path><path d=\"M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6\"></path><rect x=\"6\" y=\"14\" width=\"12\" height=\"8\" rx=\"1\"></rect>","shield-check":"<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"></path><path d=\"m9 12 2 2 4-4\"></path>","radar":"<path d=\"M19.07 4.93A10 10 0 0 0 6.99 3.34\"></path><path d=\"M4 6h.01\"></path><path d=\"M2.29 9.62A10 10 0 1 0 21.31 8.35\"></path><path d=\"M16.24 7.76A6 6 0 1 0 8.23 16.67\"></path><path d=\"M12 18h.01\"></path><path d=\"M17.99 11.66A6 6 0 0 1 15.77 16.67\"></path><circle cx=\"12\" cy=\"12\" r=\"2\"></circle><path d=\"m13.41 10.59 5.66-5.66\"></path>","folder-lock":"<rect width=\"8\" height=\"5\" x=\"14\" y=\"17\" rx=\"1\"></rect><path d=\"M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5\"></path><path d=\"M20 17v-2a2 2 0 1 0-4 0v2\"></path>","plus":"<path d=\"M5 12h14\"></path><path d=\"M12 5v14\"></path>"};</script><script>/* Recruitment dates and personal completion are separate facts. */
+(function (root) {
+  'use strict';
+  const VERSION = 1, KEY = 'zhiguogong-journey-v1';
+  const stages = ['关注选岗', '报名审核', '确认缴费', '笔试准备', '成绩调剂', '面试复审', '体检考察', '录用报到'];
+  const states = {todo:'未办理', doing:'办理中', done:'已完成', blocked:'需处理', skipped:'不适用'};
+  const proof = {builtin:'已核验内置来源', confirmed:'本人已核对', pending:'待核对'};
+  const materialNames = ['身份证有效期与原件', '学历、学位及认证材料', '证件照片', '报名登记表 / 推荐表', '工作经历证明', '岗位要求的资格证书', '准考证与考试文具', '资格复审所需补充材料', '面试通知与确认材料', '档案、考察与报到材料'];
+  const definitions = [
+    ['notice',0,'阅读公告与岗位条件','核对年度、地区、招录批次、专业、身份、年龄与补充说明。'],
+    ['choose',0,'确定报考岗位','用部门代码与职位代码共同核对岗位。收藏不等于正式报名。'],
+    ['identity',1,'注册与实名认证','按本场报名系统要求完成注册认证，核对个人信息。'],
+    ['apply',1,'提交报考申请','完成提交后保存回执；提交成功与资格审核通过分别记录。'],
+    ['review',1,'查询资格审查结果','主动查看审核结论和退回原因；需要补正时记录处理结果。'],
+    ['number',1,'保存报名序号','在官方系统查询并妥善保存；此处只记录是否办妥。','opening'],
+    ['pay',2,'报名确认与缴费','核对照片、考区、费用及支付成功状态；减免手续按公告办理。'],
+    ['attendance',2,'确认参加笔试（如要求）','部分招录另有参加笔试确认，查公告后设定时间或标为不适用。'],
+    ['ticket',3,'下载打印准考证','核对所有科目的日期、考点、证件要求，准备纸质备份。'],
+    ['travel',3,'安排考点交通住宿','以准考证考区与考点为准；工作城市不一定是考试城市。'],
+    ['special',3,'专业科目 / 外语笔试','仅适用需要该科目的岗位；核对大纲、考点与允许携带的物品。','exam'],
+    ['aptitude',3,'行政职业能力测验','以本场准考证时刻为准，预留入场与安检时间。','exam'],
+    ['essay',3,'申论','核对试卷类别、作答时间与考点。','exam'],
+    ['score',4,'查询成绩与进面名单','记录成绩、最低合格要求和进面名单；分数不能代替官方结果。'],
+    ['transfer',4,'核对调剂 / 补录机会','核对适用条件、职位、单独申请期限；不适用可跳过。'],
+    ['interviewConfirm',5,'面试确认','查看招录机关通知，按期限确认参加并提交要求材料。'],
+    ['qualification',5,'资格复审','逐项准备原件、复印件和证明材料；审核要求以机关通知为准。'],
+    ['interview',5,'面试 / 专业能力测试','核对面试形式、时间、地点及是否另有专业能力测试。','exam'],
+    ['fitness',6,'体能测评（如适用）','适用岗位依通知参加；普通岗位经核对可标为不适用。','exam'],
+    ['medical',6,'体检','按指定机构和通知参加，结果及复检安排以招录机关为准。','exam'],
+    ['inspection',6,'考察与档案核实','按通知配合提供真实材料，确认档案所在地及联系人。'],
+    ['publicity',7,'拟录用公示','核对本人名单、公示期和机关通知；公示不等于完成报到。'],
+    ['record',7,'录用手续与报到','按正式通知完成相关手续，记录报到时间与地点。'],
+    ['retrospect',7,'完成本场复盘','记录时间管理、知识薄弱点与下一次考试的调整。']
+  ];
+  function uid(){return root.crypto?.randomUUID?.() || 'j'+Date.now().toString(36)+Math.random().toString(36).slice(2);}
+  function blank(){return {schema:VERSION,exams:[],logs:[],errors:[],updatedAt:new Date().toISOString()};}
+  function str(v,max=2000){return typeof v==='string'?v.slice(0,max):'';}
+  function url(v){try {const u=new URL(v);return ['https:','http:'].includes(u.protocol)&&!u.username&&!u.password?u.href:'';}catch{return '';}}
+  function date(v){if(!/^\d{4}-\d\d-\d\d$/.test(v||''))return '';const d=new Date(v+'T00:00:00Z');return Number.isFinite(+d)&&d.toISOString().slice(0,10)===v?v:'';}
+  function time(v){if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d$/.test(v||''))return '';return date(v.slice(0,10))&&+v.slice(11,13)<24&&+v.slice(14,16)<60?v:'';}
+  function ms(v){return time(v)?Date.parse(v+':00+08:00'):NaN;}
+  function today(now=Date.now()){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(now));}
+  function addDays(v,n){const d=new Date(v+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10);}
+  function fmt(v){return v? v.replace('T',' ').replace(/-/g,'/') : '时间待公布';}
+  function validDates(start,end){return (!start||!!time(start))&&(!end||!!time(end))&&(!start||!end||ms(end)>=ms(start));}
+  function stageTasks(){return definitions.map(([id,stage,title,hint,kind])=>({id,stage,title,hint,kind:kind||'deadline',status:'todo',start:'',end:'',source:'',proof:'pending',note:'',place:'',completedAt:''}));}
+  function createExam(input,policy){
+    const e={id:uid(),title:str(input.title,180),year:str(input.year,4),type:input.type||'省考',region:str(input.region,80),batch:str(input.batch||'统一招录',80),departmentCode:str(input.departmentCode,40),positionCode:str(input.positionCode,40),position:str(input.position,200),lifecycle:'active',source:url(input.source),note:'',tasks:stageTasks(),materials:materialNames.map((name,i)=>({id:'m'+i,name,status:'todo',note:''})),sources:[],scores:{aptitude:'',essay:'',special:'',interview:'',result:'待公布',note:''},createdAt:new Date().toISOString()};
+    if(input.template==='national2027'&&policy){
+      e.type='国考';e.year='2027';e.source=policy.sources.announcement.url;
+      for(const event of policy.events){const t=e.tasks.find(t=>t.id===event.id);if(t)Object.assign(t,{start:event.start.slice(0,16),end:event.end?.slice(0,16)||'',source:e.source,proof:'builtin',note:event.note});}
+      e.tasks.find(t=>t.id==='score').note='公告预计2027年1月公布；精确时间另行通知。';
+      e.tasks.find(t=>t.id==='special').proof='pending';
+      e.tasks.find(t=>t.id==='special').note='先核对本岗位是否需要专业 / 外语考试。未确认前不导出此项日历。';
+      e.tasks.find(t=>t.id==='attendance').status='skipped';
+      e.sources.push({id:uid(),title:'2027国考招考公告',url:e.source,checked:'2026-10-29',note:'仅内置公告明确的报名与笔试时间；后续机关安排另行录入。'});
+    }
+    return e;
+  }
+  function fromJob(j,policy){
+    const e=createExam({title:(j['用人司局']||j['部门名称'])+' · '+j['招考职位'],year:'2027',type:'国考',region:j['工作地点'],batch:'统一招录',departmentCode:j['部门代码'],positionCode:j['职位代码'],position:j['招考职位'],template:'national2027'},policy);
+    const track=policy?.exam(j);if(track?.certain&&!track.special)e.tasks.find(t=>t.id==='special').status='skipped';
+    if(track?.certain&&track.special){e.tasks.find(t=>t.id==='special').proof='builtin';e.tasks.find(t=>t.id==='special').note='依据岗位考试方案：'+track.track+'。请另核对准考证与考点。';}
+    e.tasks.find(t=>t.id==='choose').status='done';e.tasks.find(t=>t.id==='choose').completedAt=new Date().toISOString();
+    e.note='来源：本地2027职位库，未逐岗与官网比对。加入考程不代表正式报名或审核通过。';
+    return e;
+  }
+  function identity(e){return [e.year,e.type,e.type==='国考'?'全国':e.region,e.batch,e.departmentCode,e.positionCode].join('|');}
+  function complete(t){return ['done','skipped'].includes(t.status);}
+  function trusted(t){return t.proof!=='pending'&&!!url(t.source);}
+  function due(t){return t.kind==='exam'?t.start:t.end||t.start;}
+  function taskState(t,now=Date.now()){
+    if(complete(t))return {label:states[t.status],tone:t.status==='done'?'green':'muted',rank:9};
+    if(t.status==='blocked')return {label:'需处理',tone:'red',rank:0};
+    if(!trusted(t)||!due(t))return {label:due(t)?'日期待核对':states[t.status],tone:'muted',rank:5};
+    const left=ms(due(t))-now;
+    if(t.kind==='opening'&&!t.end&&left<0)return {label:'已开放 · 待办理',tone:'blue',rank:4};
+    if(left<0)return {label:'已过期 · 核对办理情况',tone:'red',rank:1};
+    if(t.start&&now<ms(t.start)&&t.kind!=='exam')return {label:'尚未开始',tone:'blue',rank:4};
+    if(left<=864e5)return {label:'24小时内',tone:'red',rank:2};
+    if(left<=7*864e5)return {label:'7天内',tone:'amber',rank:3};
+    return {label:t.status==='doing'?'办理中':'待办理',tone:'blue',rank:4};
+  }
+  function tasks(data){return data.exams.filter(e=>e.lifecycle==='active').flatMap(exam=>exam.tasks.map(task=>({exam,task})));}
+  function upcoming(data,now=Date.now()){return tasks(data).filter(x=>!complete(x.task)).sort((a,b)=>taskState(a.task,now).rank-taskState(b.task,now).rank||(ms(due(a.task))||Infinity)-(ms(due(b.task))||Infinity)||a.task.stage-b.task.stage);}
+  function progress(e){const active=e.tasks.filter(t=>t.status!=='skipped');return {done:active.filter(t=>t.status==='done').length,total:active.length};}
+  function conflicts(data){
+    const events=tasks(data).filter(x=>x.task.kind==='exam'&&x.task.status!=='skipped'&&trusted(x.task)&&time(x.task.start)&&time(x.task.end));
+    const found=[];for(let i=0;i<events.length;i++)for(let k=i+1;k<events.length;k++){
+      const a=events[i],b=events[k];if(a.exam.id!==b.exam.id&&ms(a.task.start)<ms(b.task.end)&&ms(b.task.start)<ms(a.task.end))found.push({a,b});
+    }return found;
+  }
+  function clean(raw){
+    if(!raw||raw.schema!==VERSION||!Array.isArray(raw.exams)||!Array.isArray(raw.logs)||!Array.isArray(raw.errors))throw Error('不是兼容的知国公考程备份（schema 1）');
+    if(raw.exams.length>100||raw.logs.length>5000||raw.errors.length>3000)throw Error('数据条数超出限制');
+    const out=blank(),ids=new Set();
+    const requiredId=v=>{if(typeof v!=='string'||!/^[\w:-]{1,100}$/.test(v))throw Error('记录标识无效');return v;};
+    for(const item of raw.exams){
+      const id=requiredId(item.id);if(ids.has(id))throw Error('考试记录标识重复');ids.add(id);
+      if(!str(item.title,180)||!/^20\d\d$/.test(item.year)||!['国考','省考','市级独立招录','其他公务员招录'].includes(item.type))throw Error('考试名称、年度或类型无效');
+      if(!Array.isArray(item.tasks)||item.tasks.length>100||!Array.isArray(item.materials)||item.materials.length>100||!Array.isArray(item.sources)||item.sources.length>100)throw Error('流程、材料或来源数据无效');
+      const e={id,title:str(item.title,180),year:item.year,type:item.type,region:str(item.region,80),batch:str(item.batch,80),departmentCode:str(item.departmentCode,40),positionCode:str(item.positionCode,40),position:str(item.position,200),lifecycle:['active','archived'].includes(item.lifecycle)?item.lifecycle:'active',source:url(item.source),note:str(item.note),createdAt:str(item.createdAt,40),tasks:[],materials:[],sources:[],scores:{}};
+      const tids=new Set();for(const t of item.tasks){
+        requiredId(t.id);if(tids.has(t.id))throw Error('同场流程标识重复');tids.add(t.id);
+        if(!Number.isInteger(t.stage)||t.stage<0||t.stage>=stages.length||!Object.hasOwn(states,t.status)||!str(t.title,180)||!validDates(t.start,t.end))throw Error('流程状态或时间无效');
+        let reliability=Object.hasOwn(proof,t.proof)?t.proof:'pending';
+        if(reliability==='builtin'){
+          const event=root.ExamPolicy?.events.find(x=>x.id===t.id);
+          if(!(item.type==='国考'&&item.year==='2027'&&event&&t.source===root.ExamPolicy.sources.announcement.url&&t.start===event.start.slice(0,16)&&(t.end||'')===(event.end?.slice(0,16)||'')))reliability='pending';
+        }
+        e.tasks.push({id:t.id,stage:t.stage,title:str(t.title,180),hint:str(t.hint),kind:['exam','opening'].includes(t.kind)?t.kind:'deadline',status:t.status,start:t.start||'',end:t.end||'',source:url(t.source),proof:reliability,note:str(t.note),place:str(t.place,300),completedAt:str(t.completedAt,40)});
+      }
+      const mids=new Set();for(const m of item.materials){requiredId(m.id);if(mids.has(m.id))throw Error('材料标识重复');mids.add(m.id);e.materials.push({id:m.id,name:str(m.name,180),status:['todo','ready','submitted','na'].includes(m.status)?m.status:'todo',note:str(m.note)});}
+      for(const s of item.sources)e.sources.push({id:requiredId(s.id),title:str(s.title,180),url:url(s.url),checked:date(s.checked),note:str(s.note)});
+      for(const k of ['aptitude','essay','special','interview']){const v=item.scores?.[k];e.scores[k]=v===''||v===undefined?'':Number.isFinite(Number(v))&&Number(v)>=0&&Number(v)<=100?String(v):'';}
+      e.scores.result=str(item.scores?.result,100)||'待公布';e.scores.note=str(item.scores?.note);out.exams.push(e);
+    }
+    const lids=new Set();for(const l of raw.logs){requiredId(l.id);if(lids.has(l.id)||!ids.has(l.examId)||!date(l.date))throw Error('学习记录引用或日期无效');lids.add(l.id);const minutes=Number(l.minutes),count=Number(l.count),correct=Number(l.correct);if(!Number.isFinite(minutes)||minutes<0||minutes>1440||!Number.isInteger(count)||count<0||count>5000||!Number.isInteger(correct)||correct<0||correct>count)throw Error('学习题数或用时无效');out.logs.push({id:l.id,examId:l.examId,date:l.date,subject:str(l.subject,60),minutes,count,correct,note:str(l.note)});}
+    const errids=new Set();for(const e of raw.errors){requiredId(e.id);if(errids.has(e.id)||!ids.has(e.examId)||!date(e.next)||!date(e.date))throw Error('错题记录引用或日期无效');errids.add(e.id);out.errors.push({id:e.id,examId:e.examId,date:e.date,subject:str(e.subject,60),title:str(e.title,300),note:str(e.note),round:Number.isInteger(e.round)?Math.max(0,Math.min(3,e.round)):0,next:e.next,mastered:e.mastered===true});}
+    return out;
+  }
+  function review(error,remembered,todayDate=today()){
+    error.round=remembered?Math.min(3,error.round+1):0;error.mastered=error.round===3;
+    error.next=addDays(todayDate,[1,3,7,7][error.round]);
+  }
+  function ics(data){
+    const escape=v=>String(v).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
+    const utc=v=>new Date(ms(v)).toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+    const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Zhiguogong//Journey//ZH','CALSCALE:GREGORIAN'];
+    let count=0;
+    for(const {exam:e,task:t} of tasks(data)){
+      if(complete(t)||!trusted(t)||!due(t))continue;count++;
+      const start=due(t),end=t.kind==='exam'&&t.end?t.end:'';
+      lines.push('BEGIN:VEVENT','UID:'+e.id+'-'+t.id+'@zhiguogong.ccfudan.cc','DTSTAMP:'+stamp,'DTSTART:'+utc(start));
+      if(end)lines.push('DTEND:'+utc(end));else lines.push('DURATION:PT15M');
+      lines.push('SUMMARY:'+escape(e.title+' · '+t.title+(t.end&&t.kind!=='exam'?'截止':'')),'DESCRIPTION:'+escape(t.note+'\n'+t.source+'\n北京时间；如公告变化请重新导入并检查日历重复事件。'),'LOCATION:'+escape(t.place),'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY','DESCRIPTION:考试事项提醒','END:VALARM','BEGIN:VALARM','TRIGGER:-PT2H','ACTION:DISPLAY','DESCRIPTION:考试事项提醒','END:VALARM','END:VEVENT');
+    }
+    lines.push('END:VCALENDAR','');
+    const enc=new TextEncoder();const content=lines.map(line=>{let out='',part='',bytes=0;for(const ch of line){const n=enc.encode(ch).length;if(bytes+n>75){out+=part+'\r\n';part=' ';bytes=1;}part+=ch;bytes+=n;}return out+part;}).join('\r\n');
+    return {content,count};
+  }
+  root.JourneyCore={VERSION,KEY,stages,states,proof,materialNames,uid,blank,url,date,time,ms,today,addDays,fmt,validDates,createExam,fromJob,identity,complete,trusted,due,taskState,tasks,upcoming,progress,conflicts,clean,review,ics};
+})(typeof window==='undefined'?globalThis:window);
+</script><script>(function(root){
+  'use strict';
+  const C=root.JourneyCore, h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const icon=(name)=>'<svg class="j-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(root.JOURNEY_ICONS?.[name]||'')+'</svg>';
+  const button=(action,text,extra='',cls='')=>`<button type="button" class="j-btn ${cls}" data-j-action="${action}" ${extra}>${text}</button>`;
+  const options=(items,value)=>Object.entries(items).map(([v,label])=>`<option value="${h(v)}" ${v===value?'selected':''}>${h(label)}</option>`).join('');
+  const a=(url,text)=>C.url(url)?`<a href="${h(C.url(url))}" target="_blank" rel="noopener noreferrer">${h(text)} ↗</a>`:'<span class="j-muted">未附来源链接</span>';
+  const sources=[
+    ['全国','国家公务员局','https://www.scs.gov.cn/','国考及招录专题入口'],
+    ['湖南','湖南省人社厅','https://rst.hunan.gov.cn/','从官方通知进入公务员招录专题'],
+    ['湖北','湖北省人事考试院','https://www.hbsrsksy.cn/','公务员考试通知及报名入口'],
+    ['广东','广东组织工作网','https://www.gdzz.gov.cn/','广东省统一招录公告'],
+    ['广州','广州市人社局','https://rsj.gz.gov.cn/ywzt/rszdgg/gwykl/','省考广州职位与机关公告；独立招录须另见公告'],
+    ['深圳','深圳市考试院','https://hrss.sz.gov.cn/szksy/ztzl/gwyks/','省考深圳职位及单独招录公告']
+  ];
+  function mount(host,adapter={}){
+    let data=C.blank(),activeId='',page='overview',pane='tasks',filter='all',stage=-1,storageError='',pendingImport=null;
+    try{const raw=localStorage.getItem(C.KEY);if(raw)data=C.clean(JSON.parse(raw));}catch{storageError='本机存储暂不可读或旧记录损坏。已保留原始存储，请导出或检查后再恢复；当前修改不会自动覆盖它。';}
+    host.classList.add('journey');
+    const modal=document.createElement('dialog');modal.className='journey j-dialog';modal.id='journeyDialog';document.body.append(modal);
+    const file=document.createElement('input');file.type='file';file.accept='.json';file.hidden=true;file.id='journeyImportFile';host.after(file);
+    const status=document.createElement('div');status.id='journeyToast';status.className='j-toast';status.setAttribute('role','status');status.hidden=true;document.body.append(status);
+    let toastTimer;function notify(text){status.textContent=text;status.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>status.hidden=true,7000);}
+    function save(){data.updatedAt=new Date().toISOString();if(storageError){notify('自动保存未启用，请导出考程备份，避免关闭后丢失。');return;}try{localStorage.setItem(C.KEY,JSON.stringify(data));}catch{storageError='本机保存失败。当前记录仅在本页内存中，请立即导出备份。';notify(storageError);}}
+    function download(name,body,type='application/json'){const u=URL.createObjectURL(new Blob([body],{type})),el=document.createElement('a');el.href=u;el.download=name;el.click();setTimeout(()=>URL.revokeObjectURL(u),2000);}
+    function current(){return data.exams.find(e=>e.id===activeId);}
+    function badge(t){const s=C.taskState(t);return `<span class="j-tag ${s.tone}">${h(s.label)}</span>`;}
+    function open(title,body,submit){modal.innerHTML=`<header class="j-dialog-head"><div><div class="j-kicker">知国公 · 我的考程</div><h2>${h(title)}</h2></div>${button('close','×','aria-label="关闭对话框"')}</header>${body}<p class="j-error" id="journeyFormError" role="alert"></p>`;modal.showModal();const form=modal.querySelector('form');if(form)form.addEventListener('submit',ev=>{ev.preventDefault();try{submit(Object.fromEntries(new FormData(form)),form);}catch(err){modal.querySelector('#journeyFormError').textContent=err.message;}});}
+    function close(){modal.close();}
+    const active=()=>data.exams.filter(e=>e.lifecycle==='active');
+    function metrics(){const all=C.tasks(data),soon=all.filter(x=>!C.complete(x.task)&&C.trusted(x.task)&&C.due(x.task)&&C.ms(C.due(x.task))>=Date.now()&&C.ms(C.due(x.task))-Date.now()<=7*864e5),attention=all.filter(x=>C.taskState(x.task).rank<=1),uncertain=all.filter(x=>!C.complete(x.task)&&C.due(x.task)&&!C.trusted(x.task));return `<div class="j-metrics">${[[active().length,'正在跟进','layers'],[soon.length,'七天内事项','calendar'],[attention.length,'需要处理','circle-alert'],[data.errors.filter(e=>!e.mastered&&e.next<=C.today()).length,'到期错题','notebook-pen']].map(([n,label,i])=>`<div>${icon(i)}<strong>${n}</strong><span>${label}</span></div>`).join('')}</div>${uncertain.length?`<div class="j-callout">有 ${uncertain.length} 项日期尚未核对，未计入已核实截止提醒。请进入考试档案补齐依据。</div>`:''}`;}
+    function taskRow(e,t){return `<article class="j-taskrow"><div class="j-status-dot ${C.complete(t)?'complete':''}">${C.complete(t)?icon('check'):icon(t.kind==='exam'?'calendar':'circle')}</div><div class="j-tasktext"><strong>${h(t.title)}</strong><small>${h(e.title)}</small><div>${badge(t)} <span class="j-time">${h(C.fmt(C.due(t)))}</span></div></div>${button('edit-task','查看 / 办理',`data-exam="${h(e.id)}" data-task="${h(t.id)}"`)}</article>`;}
+    function examCard(e){const p=C.progress(e),next=e.tasks.find(t=>!C.complete(t));return `<article class="j-examcard"><div class="j-cardhead"><span class="j-tag ${e.lifecycle==='active'?'green':'muted'}">${h(e.year)} ${h(e.type)}</span><small>${h(e.region||'地区未填')}</small></div><button class="j-cardtitle" data-j-action="open-exam" data-exam="${h(e.id)}">${h(e.title)} ${icon('arrow-up-right')}</button><p>${h(e.departmentCode&&e.positionCode?e.departmentCode+' / '+e.positionCode:e.batch||'尚未选定岗位')}</p><div class="j-progress" aria-label="流程完成 ${p.done} / ${p.total}"><span style="width:${p.total?p.done/p.total*100:0}%"></span></div><div class="j-cardfoot"><small>已办妥 ${p.done} / ${p.total}</small><span>${next?'下一步：'+h(next.title):'流程已逐项记录'}</span></div></article>`;}
+    function overview(){
+      const todo=C.upcoming(data),clashes=C.conflicts(data),next=todo[0];
+      return `<section class="j-hero"><div><div class="j-kicker">ONE JOURNEY, EVERY STEP</div><h1>从报名，到下一站<span>。</span></h1><p>把每场考试、每个截止时间、每次进步，放在同一张桌上。</p><div class="j-hero-actions">${button('create',icon('plus')+' 添加一场考试','','primary')}${button('calendar',icon('calendar')+' 导出日历提醒')}</div></div><div class="j-hero-note"><span>下一步 · ${next?'需要你确认':'从这里开始'}</span><strong>${next?h(next.task.title):'建立你的第一份考程'}</strong><p>${next?h(next.exam.title):'已报名、正在选岗或等待公告，都可以加入。'}</p>${next?button('edit-task','查看办理事项 →',`data-exam="${h(next.exam.id)}" data-task="${h(next.task.id)}"`):button('create','创建考程 →')}</div></section>${metrics()}
+      ${clashes.length?`<section class="j-callout danger"><b>发现 ${clashes.length} 组考试时间重叠</b>${clashes.slice(0,5).map(c=>`<p>${h(c.a.exam.title)} · ${h(c.a.task.title)} 与 ${h(c.b.exam.title)} · ${h(c.b.task.title)}。请核对考点与最新通知后取舍。</p>`).join('')}</section>`:''}
+      <div class="j-columns"><section class="j-panel"><div class="j-sectionhead"><h2>${icon('list-checks')}行动清单</h2>${button('go-agenda','查看全部 →')}</div>${todo.length?todo.slice(0,5).map(x=>taskRow(x.exam,x.task)).join(''):`<div class="j-empty"><div class="j-empty-icon">${icon('compass')}</div><h3>每一步，都有着落</h3><p>新建考程后，报名、缴费、准考证和后续流程会出现在这里。<br>先记录真实进度，工作台再帮你排下一步。</p>${button('create','新建考试档案','','primary')}</div>`}</section><aside class="j-panel"><div class="j-sectionhead"><h2>使用小贴士</h2>${icon('sparkles')}</div><ol class="j-tips"><li><b>先把考试加进来</b><p>国考可使用已核验时间模板；省市考按公告补日期。</p></li><li><b>办完一项，再确认一项</b><p>提交、审核、缴费分别确认；日期过去不会自动打勾。</p></li><li><b>把提醒带到系统日历</b><p>导入 .ics 后检查提醒权限。网页关闭后不主动推送。</p></li></ol><div class="j-soft">数据保存在此浏览器，可导出备份带到另一台设备。分享工具文件不包含你的填报记录。</div></aside></div><div class="j-sectionhead"><h2>我的考试 <span class="j-muted">${data.exams.length}</span></h2>${button('go-exams','管理全部 →')}</div><div class="j-examgrid">${active().slice(0,4).map(examCard).join('')||'<p class="j-muted">暂未添加。也可以从职位详情中加入考程。</p>'}</div>`;
+    }
+    function exams(){const list=data.exams.filter(e=>filter==='all'||e.lifecycle===filter);return `<div class="j-pagehead"><div class="j-kicker">MY APPLICATIONS</div><h1>每场考试，一份档案。</h1><p>年份、招录批次和岗位分开保存。一个完整考程，从关注到报到。</p></div><div class="j-toolbar"><div class="j-pills">${[['all','全部'],['active','正在跟进'],['archived','已归档']].map(([v,label])=>button('exam-filter',label,`data-value="${v}" aria-pressed="${filter===v}"`,filter===v?'selected':'')).join('')}</div>${button('create','＋ 添加考试','','primary')}</div><div class="j-examgrid">${list.map(examCard).join('')||'<div class="j-empty">暂无考试档案。点击“添加考试”开始。</div>'}</div>`;}
+    function agenda(){const list=C.upcoming(data).filter(x=>filter==='all'||filter==='known'&&C.trusted(x.task)&&C.due(x.task)||filter==='unknown'&&(!C.trusted(x.task)||!C.due(x.task)));return `<div class="j-pagehead"><div class="j-kicker">DEADLINES & ACTIONS · 北京时间</div><h1>重要节点，提前一步。</h1><p>先处理异常与逾期事项，再看临近截止。未知日期保留为空。</p></div><div class="j-toolbar"><div class="j-pills">${[['all','全部待办'],['known','已核对日期'],['unknown','待补日期 / 依据']].map(([v,label])=>button('agenda-filter',label,`data-value="${v}" aria-pressed="${filter===v}"`,filter===v?'selected':'')).join('')}</div>${button('calendar','导出已核对的日历')}</div><section class="j-panel">${list.map(x=>taskRow(x.exam,x.task)).join('')||'<div class="j-empty">当前没有符合此筛选的待办。</div>'}</section>`;}
+    function detail(){const e=current();if(!e){page='exams';return exams();}const p=C.progress(e);return `<div class="j-detail-top">${button('go-exams','← 我的考试')}<div>${button('edit-exam','编辑档案')}${button('archive',e.lifecycle==='active'?'归档':'恢复跟进')}</div></div><div class="j-pagehead"><div class="j-kicker">${h(e.year)} / ${h(e.type)} / ${h(e.region)}</div><h1>${h(e.title)}</h1><p>${h(e.departmentCode&&e.positionCode?'部门 '+e.departmentCode+' · 职位 '+e.positionCode:e.batch)} · 已办妥 ${p.done} / ${p.total}</p>${e.note?'<p class="j-muted">'+h(e.note)+'</p>':''}</div><nav class="j-subnav" aria-label="考试档案">${[['tasks','流程清单'],['materials','材料准备'],['study','备考与错题'],['scores','成绩与复盘'],['sources','公告与依据']].map(([v,label])=>button('pane',label,`data-value="${v}" aria-pressed="${pane===v}"`,pane===v?'selected':'')).join('')}</nav>${({tasks:renderTasks,materials:renderMaterials,study:renderStudy,scores:renderScores,sources:renderSources}[pane]||renderTasks)(e)}`;}
+    function renderTasks(e){return `<div class="j-flow"><aside class="j-stages">${button('stage','全部流程',`data-value="-1"`,stage===-1?'selected':'')}${C.stages.map((label,i)=>{const ts=e.tasks.filter(t=>t.stage===i);return button('stage',`<span>${String(i+1).padStart(2,'0')}</span>${label}<small>${ts.filter(C.complete).length}/${ts.length}</small>`,`data-value="${i}"`,stage===i?'selected':'');}).join('')}</aside><div>${C.stages.map((label,i)=>stage!==-1&&stage!==i?'':`<section class="j-panel j-stagepanel"><div class="j-sectionhead"><h2><span class="j-number">${String(i+1).padStart(2,'0')}</span>${label}</h2>${button('new-task','＋ 自定义事项',`data-stage="${i}"`)}</div>${e.tasks.filter(t=>t.stage===i).map(t=>`<article class="j-flowtask"><div class="j-flowline"><div><h3>${h(t.title)}</h3>${badge(t)}</div>${button('edit-task','编辑 / 办理',`data-exam="${h(e.id)}" data-task="${h(t.id)}"`)}</div><p>${h(t.hint)}</p><div class="j-flowmeta"><span>${icon('calendar')}${h(t.start?C.fmt(t.start)+(t.end?' → '+C.fmt(t.end):' 起'):t.end?'截止 '+C.fmt(t.end):'时间待公布')}</span>${t.place?'<span>'+icon('map-pin')+h(t.place)+'</span>':''}</div>${t.note?'<p class="j-tasknote">'+h(t.note)+'</p>':''}<div class="j-source">${a(t.source,'查看时间依据')}<span>${h(C.proof[t.proof])}</span>${t.completedAt?'<span>个人记录：'+h(t.completedAt.slice(0,10))+'</span>':''}</div></article>`).join('')}</section>`).join('')}</div></div>`;}
+    function renderMaterials(e){return `<div class="j-callout">以下是准备建议，不是本岗位完整必交清单。请用本场公告和资格复审通知逐项确认。这里只保存准备状态和备注，不保存证件照片或号码。</div><section class="j-panel"><div class="j-sectionhead"><h2>材料清单</h2>${button('material-new','＋ 添加材料')}</div>${e.materials.map(m=>`<div class="j-material"><div><b>${h(m.name)}</b><small>${h(m.note||'可记录证明开具进度、材料保存位置等')}</small></div><span class="j-tag ${m.status==='todo'?'amber':'green'}">${h({todo:'未准备',ready:'已备齐',submitted:'已提交',na:'不适用'}[m.status])}</span>${button('material-edit','编辑',`data-id="${h(m.id)}"`)}</div>`).join('')}</section>`;}
+    function renderStudy(e){const logs=data.logs.filter(l=>l.examId===e.id),errors=data.errors.filter(l=>l.examId===e.id&&!l.mastered).sort((a,b)=>a.next.localeCompare(b.next)),minutes=logs.reduce((n,l)=>n+l.minutes,0),count=logs.reduce((n,l)=>n+l.count,0),correct=logs.reduce((n,l)=>n+l.correct,0);return `<div class="j-toolbar"><p class="j-muted">刷题 → 记录错因 → 到期重做。1 / 3 / 7 天复习是学习安排，可重新开始。</p><div>${button('log-new','＋ 学习记录','','primary')}${button('error-new','＋ 错题卡')}</div></div><div class="j-study-stats"><div><b>${(minutes/60).toFixed(1)}</b><span>累计净学习小时</span></div><div><b>${count}</b><span>累计练习题数</span></div><div><b>${count?Math.round(correct/count*100)+'%':'—'}</b><span>记录题目正确率</span></div><div><b>${errors.filter(x=>x.next<=C.today()).length}</b><span>今天应重做</span></div></div><div class="j-columns"><section class="j-panel"><div class="j-sectionhead"><h2>错题复盘</h2></div>${errors.map(x=>`<article class="j-errorcard"><span class="j-tag ${x.next<=C.today()?'amber':'muted'}">${x.next<=C.today()?'到期复习':'下次 '+h(x.next)}</span><small>${h(x.subject)} · 第 ${x.round+1} 次复习</small><h3>${h(x.title)}</h3><p>${h(x.note)}</p><div>${button('review-ok','闭卷做对了',`data-id="${h(x.id)}"`)}${button('review-again','仍错 / 猜对',`data-id="${h(x.id)}"`)}</div></article>`).join('')||'<div class="j-empty">没有待复习错题。把做错、猜对、超时的题记下来，写清错因与下次如何识别。</div>'}<p class="j-muted">已完成三轮：${data.errors.filter(x=>x.examId===e.id&&x.mastered).length} 张；可在学习记录中继续检验迁移。</p></section><section class="j-panel"><h2>学习记录</h2>${logs.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0,30).map(l=>`<article class="j-log"><b>${h(l.date)} · ${h(l.subject)}</b><p>${l.minutes} 分钟 · ${l.correct} / ${l.count} 题答对</p><p>${h(l.note)}</p>${button('log-delete','删除误记',`data-id="${h(l.id)}"`)}</article>`).join('')||'<div class="j-empty">先记一次真实练习，再根据错因调整时间。正确率不是预测考试分数。</div>'}</section></div>`;}
+    function renderScores(e){return `<section class="j-panel"><div class="j-sectionhead"><h2>记录成绩和官方结果</h2>${button('score-edit','填写 / 修改','','primary')}</div><div class="j-study-stats">${[['aptitude','行测'],['essay','申论'],['special','专业科目'],['interview','面试']].map(([key,label])=>`<div><b>${h(e.scores[key]||'—')}</b><span>${label}</span></div>`).join('')}</div><p><b>本人记录的结果：</b>${h(e.scores.result)}</p><p class="j-whitespace">${h(e.scores.note||'记录成绩来源、进面情况、复盘和下一次调整。未填成绩不按零分处理。')}</p><div class="j-soft">单科分数按百分制记录；各场合成权重和合格要求不同，请以对应公告核算。本站不把竞争比换算成录取概率，也不会因分数自动标记录用。</div></section>`;}
+    function renderSources(e){return `<div class="j-toolbar"><p>把公告与自己的处理结果留在一起，方便追溯。</p>${button('source-new','＋ 保存公告','','primary')}</div>${e.source?'<section class="j-panel">档案主来源：'+a(e.source,'打开公告')+'</section>':''}${e.sources.map(s=>`<article class="j-panel"><div class="j-sectionhead"><h2>${h(s.title)}</h2>${button('source-edit','编辑',`data-id="${h(s.id)}"`)}</div>${a(s.url,'打开原文')}<p class="j-muted">本人核对日期：${h(s.checked||'尚未核对')}</p><p class="j-whitespace">${h(s.note)}</p></article>`).join('')||'<div class="j-empty">暂无公告记录。保存原文链接、核对日期及与你有关的条款，再更新对应流程时间。</div>'}`;}
+    function watch(){return `<div class="j-pagehead"><div class="j-kicker">OFFICIAL NOTICES</div><h1>关注公告，掌握节奏。</h1><p>湖南、湖北、广东及广州、深圳官方入口。网页不自动登录或抓取个人报名系统。</p></div><div class="j-callout">这里提供关注入口与记录工具，未接入自动公告推送。没有核验的新一轮报名日期保持为空；往年月份只能帮助安排关注。</div><div class="j-sourcegrid">${sources.map(([area,name,url,note])=>`<article class="j-panel"><span class="j-tag green">${area}</span><h2>${name}</h2><p>${note}</p>${a(url,'前往官方入口')}<div class="j-sourceaction">${button('watch-add','建立关注考程',`data-area="${area}"`)}</div></article>`).join('')}</div><section class="j-panel"><h2>拿到新公告后，花两分钟更新</h2><ol class="j-tips"><li>在考试档案中保存公告链接与原文要点，记录本人核对日期。</li><li>分别填写报名、审查、缴费、参加确认、准考证与考试时间。原文“24:00”按次日 00:00 录入。</li><li>只将核对过的准确时间加入日历；后续调整时重新导出并核对旧事件。</li></ol></section>`;}
+    function settings(){return `<div class="j-pagehead"><div class="j-kicker">LOCAL FIRST</div><h1>数据随你走。</h1><p>无需账号，也不调用模型。设备之间通过备份迁移，日历负责系统提醒。</p></div><div class="j-sourcegrid"><section class="j-panel"><h2>${icon('download')}备份与恢复</h2><p>备份包含全部考试、材料状态、学习与错题、个人成绩。恢复前预览，并选择追加或覆盖。</p><div class="j-actions">${button('backup','导出考程备份','','primary')}${button('import','导入考程备份')}</div><p class="j-muted">考程备份与原有选岗条件备份相互独立；迁移整套工具时两份都要保存。</p></section><section class="j-panel"><h2>${icon('calendar')}系统日历提醒</h2><p>只导出当前跟进、未办妥且有核对依据的精确日期。默认提前 1 天、2 小时提醒，是否通知取决于系统日历设置。</p>${button('calendar','导出 .ics 日历')}</section><section class="j-panel"><h2>${icon('printer')}打印 / 保存 PDF</h2><p>可打印当前考试档案。浏览器打印窗口选择“另存为 PDF”。</p>${button('print','打印当前页面')}<p class="j-muted">请先打开需要打印的流程、材料或复盘页面。</p></section><section class="j-panel"><h2>${icon('shield-check')}本机保存与清理</h2><p>不会自动同步到云端。清理浏览器数据或换浏览器可能丢失记录，建议定期导出备份。</p>${button('clear','清空本机考程记录','','danger')}</section></div><details class="j-panel"><summary>版本、来源与开源许可</summary><p>招录工作台 v1 · 2026-10-29。流程为通用办理清单，具体规则以本场公告为准。</p><p>${a(root.ExamPolicy?.sources?.announcement?.url,'2027国考公告')} · ${a(root.ExamPolicy?.sources?.csrc?.url,'2027证监会公告')}</p><p>Lucide 图标采用 ISC 许可；部分 Feather 派生图标为 MIT。完整声明随离线文件内嵌保存。</p></details>`;}
+    function render(){
+      host.innerHTML=`<div class="j-shell"><header class="j-header"><div class="j-wordmark">${icon('compass')}<b>我的考程</b><span>国考 · 省考 · 市级招录</span></div><span class="j-date">${h(C.today())} · 北京时间</span></header><nav class="j-mainnav" aria-label="考程导航">${[['overview','layout-dashboard','总览'],['exams','layers','我的考试'],['agenda','calendar','节点日历'],['watch','radar','招考关注'],['settings','folder-lock','备份与提醒']].map(([v,i,label])=>button('page',icon(i)+label,`data-value="${v}" aria-pressed="${page===v||page==='detail'&&v==='exams'}"`,page===v||page==='detail'&&v==='exams'?'selected':'')).join('')}</nav>${storageError?'<div class="j-callout danger">'+h(storageError)+button('backup','导出当前记录')+'</div>':''}<div class="j-content">${({overview,exams,agenda,detail,watch,settings}[page]||overview)()}</div><footer class="j-footer">知国公 · 把每一步走稳。<span>本地记录与提醒助手 · 最终安排以招录机关公告为准</span></footer></div>`;
+    }
+    function createDialog(seed={},editing=false){const e=editing?current():seed;open(editing?'编辑考试档案':'添加一场考试',`<form id="journeyExamForm" class="j-form"><label>考试名称<input name="title" required maxlength="180" placeholder="例如：2027 湖北省考 · 武汉岗位" value="${h(e.title||'')}"></label><div class="j-formgrid"><label>考试年度<input name="year" pattern="20[0-9]{2}" required value="${h(e.year||String(new Date().getFullYear()+1))}" inputmode="numeric"></label><label>招录类型<select name="type">${options({'国考':'国考','省考':'省考','市级独立招录':'市级独立招录','其他公务员招录':'其他公务员招录'},e.type||'省考')}</select></label><label>地区<input name="region" maxlength="80" value="${h(e.region||'')}" placeholder="例如：湖北 / 武汉"></label><label>招录批次<input name="batch" maxlength="80" value="${h(e.batch||'统一招录')}"></label></div>${editing?'':`<label>流程时间模板<select name="template"><option value="blank">通用流程 · 时间待公布 / 自行核对填写</option><option value="national2027" ${e.template==='national2027'?'selected':''}>2027 国考 · 已核验报名与笔试时间</option></select></label><p class="j-muted">国考模板专业笔试需按岗位确认；省市考不套用国考时间。创建档案不会标记已报名。</p>`}<label>官方公告链接（可稍后补充）<input type="url" name="source" value="${h(e.source||'')}" placeholder="https://..."></label><details><summary>已选定岗位？填写双代码</summary><div class="j-formgrid"><label>部门 / 单位代码<input name="departmentCode" maxlength="40" value="${h(e.departmentCode||'')}"></label><label>职位代码<input name="positionCode" maxlength="40" value="${h(e.positionCode||'')}"></label></div><label>职位名称<input name="position" maxlength="200" value="${h(e.position||'')}"></label></details>${editing?`<label>档案备注<textarea name="note" maxlength="2000">${h(e.note)}</textarea></label>`:''}<button type="submit" class="j-btn primary">${editing?'保存档案':'创建考程'}</button></form>`,v=>{
+        if(v.template==='national2027'&&(v.type!=='国考'||v.year!=='2027'))throw Error('2027国考时间模板只适用于 2027 年度国考，请修改类型 / 年度或选择通用流程。');
+        if(!/^20\d{2}$/.test(v.year)||!v.title.trim())throw Error('请填写名称和有效年度');
+        if(v.source&&!C.url(v.source))throw Error('来源需要有效的 http / https 链接');
+        if(Boolean(v.departmentCode)!==Boolean(v.positionCode))throw Error('部门与职位代码需要成对填写');
+        if(editing){if((v.year!==e.year||v.type!==e.type||v.batch!==e.batch)&&!confirm('变更年度、类型或批次不会调整已有日期。建议为新一轮另建考程；仍修改当前档案？'))return;Object.assign(e,v);}
+        else{const n=C.createExam(v,root.ExamPolicy);if(data.exams.some(x=>C.identity(x)===C.identity(n)&&n.departmentCode))throw Error('该年度、批次及双代码已存在，请打开原档案');data.exams.push(n);activeId=n.id;}
+        page='detail';pane='tasks';stage=-1;save();close();render();notify(editing?'档案已更新':'已建立考程，请逐项记录真实办理状态');
+      });}
+    function taskDialog(examId,taskId,newStage){const e=data.exams.find(e=>e.id===examId);if(!e)return;const fresh=!taskId,t=fresh?{id:C.uid(),title:'',hint:'自定义办理事项',stage:newStage,kind:'deadline',status:'todo',start:'',end:'',source:'',proof:'pending',note:'',place:'',completedAt:''}:e.tasks.find(x=>x.id===taskId);if(!t)return;
+      open(fresh?'添加流程事项':t.title,`<form id="journeyTaskForm" class="j-form"><p class="j-muted">${h(e.title)}<br>${h(t.hint)}</p>${fresh?'<label>事项名称<input name="title" required maxlength="180"></label>':''}<div class="j-formgrid"><label>个人办理状态<select name="status">${options(C.states,t.status)}</select></label><label>事项类型<select name="kind">${options({deadline:'办理窗口 / 截止',exam:'考试 / 到场安排',opening:'开放查询（未公布截止）'},t.kind)}</select></label><label>开始（北京时间）<input type="datetime-local" name="start" value="${h(t.start)}"></label><label>结束 / 截止（北京时间）<input type="datetime-local" name="end" value="${h(t.end)}"></label></div><p class="j-muted">未公布请留空；原文 24:00 请填次日 00:00。考试到场事项需同时填写起止，才能检查冲突。</p><label>日期依据链接<input name="source" type="url" value="${h(t.source)}" placeholder="对应公告原文"></label><label>日期核对<select name="proof">${options({pending:'尚未核对，不导出日历',confirmed:'我已对照原文核对日期'},t.proof==='pending'?'pending':'confirmed')}</select></label><label>考点 / 办理地点<input name="place" maxlength="300" value="${h(t.place)}"></label><label>办理记录 / 原文要点<textarea name="note" maxlength="2000" placeholder="例如：已在报名系统查看缴费成功；或记录退回原因">${h(t.note)}</textarea></label><button type="submit" class="j-btn primary">保存此项</button></form>`,v=>{
+        if(!C.validDates(v.start,v.end))throw Error('结束时间不能早于开始，且必须是有效日期');
+        if(v.source&&!C.url(v.source))throw Error('请填写有效来源链接');
+        if(v.proof==='confirmed'&&(v.start||v.end)&&!C.url(v.source))throw Error('核对日期需要保存对应公告链接');
+        if(v.kind==='exam'&&Boolean(v.start)!==Boolean(v.end))throw Error('考试安排请同时填写起止时间；尚未发布可两项都留空');
+        const unchanged=v.start===t.start&&v.end===t.end&&v.source===t.source&&v.proof==='confirmed';
+        if(v.status==='done'&&t.start&&C.ms(t.start)>Date.now()&&C.trusted(t)&&!confirm('该事项的已核对开始时间尚未到。确认已经实际办妥？'))return;
+        const builtin=t.proof==='builtin';Object.assign(t,v,{source:C.url(v.source),completedAt:v.status==='done'?(t.completedAt||new Date().toISOString()):''});if(builtin&&unchanged)t.proof='builtin';
+        if(fresh)e.tasks.push(t);save();close();render();notify('已保存个人办理记录');
+      });}
+    function simpleDialog(type,id){const e=current();if(!e)return;
+      if(type==='material'){const m=e.materials.find(x=>x.id===id)||{id:C.uid(),name:'',status:'todo',note:''};open('材料准备',`<form class="j-form"><label>材料名称<input name="name" required maxlength="180" value="${h(m.name)}"></label><label>准备状态<select name="status">${options({todo:'未准备',ready:'已备齐',submitted:'已提交',na:'不适用'},m.status)}</select></label><label>备注<textarea name="note" maxlength="2000">${h(m.note)}</textarea></label><button type="submit" class="j-btn primary">保存材料</button></form>`,v=>{Object.assign(m,v);if(!id)e.materials.push(m);save();close();render();});}
+      if(type==='source'){const s=e.sources.find(x=>x.id===id)||{id:C.uid(),title:'',url:'',checked:'',note:''};open('保存公告与依据',`<form class="j-form"><label>公告标题<input name="title" required maxlength="180" value="${h(s.title)}"></label><label>原文链接<input name="url" type="url" required value="${h(s.url)}"></label><label>本人核对日期<input name="checked" type="date" value="${h(s.checked)}"></label><label>原文要点 / 对我的影响<textarea name="note" maxlength="2000" rows="6">${h(s.note)}</textarea></label><p class="j-muted">保存公告不会自动修改流程日期。核对后到流程清单更新对应事项。</p><button class="j-btn primary" type="submit">保存公告</button></form>`,v=>{if(!C.url(v.url))throw Error('请填写有效公告链接');if(v.checked&&(!C.date(v.checked)||v.checked>C.today()))throw Error('核对日期不能是未来');Object.assign(s,v);if(!id)e.sources.push(s);save();close();render();});}
+      if(type==='score')open('成绩与复盘',`<form class="j-form"><div class="j-formgrid">${[['aptitude','行测'],['essay','申论'],['special','专业科目'],['interview','面试']].map(([k,label])=>`<label>${label}（百分制）<input name="${k}" type="number" min="0" max="100" step="0.01" value="${h(e.scores[k])}"></label>`).join('')}</div><label>官方结果（本人记录）<select name="result">${options(Object.fromEntries(['待公布','未进入面试','进入面试','待体检考察','拟录用公示','已收到录用通知','本次结束'].map(v=>[v,v])),e.scores.result)}</select></label><label>依据与复盘<textarea name="note" maxlength="2000" rows="6" placeholder="成绩来源；哪些能力进步了；失分原因；下一场如何调整">${h(e.scores.note)}</textarea></label><p class="j-muted">仅记录结果，不会自动完成其他流程。</p><button class="j-btn primary" type="submit">保存</button></form>`,v=>{Object.assign(e.scores,v);save();close();render();});
+    }
+    function studyDialog(error){const e=current();if(!e)return;open(error?'新增错题复盘卡':'记录一次学习',`<form class="j-form"><div class="j-formgrid"><label>学习日期<input name="date" type="date" required max="${C.today()}" value="${C.today()}"></label><label>科目<select name="subject">${options({'行测':'行测','申论':'申论','专业科目':'专业科目','面试':'面试'},'专业科目')}</select></label></div>${error?'<label>题目定位 / 知识点<input name="title" required maxlength="300" placeholder="题库名+题号，或简短知识点"></label>':'<div class="j-formgrid"><label>净学习分钟<input name="minutes" type="number" min="1" max="1440" required value="60"></label><label>练习题数<input name="count" type="number" min="0" max="5000" required value="0"></label><label>答对题数<input name="correct" type="number" min="0" max="5000" required value="0"></label></div>'}<label>${error?'错因与纠正方法':'本次收获与待改进'}<textarea name="note" maxlength="2000" rows="4" ${error?'required':''} placeholder="${error?'哪里想错了？下次看到什么条件应该怎么判断？':'写下实际完成内容，不用补打卡'}"></textarea></label><button type="submit" class="j-btn primary">保存记录</button></form>`,v=>{if(!C.date(v.date)||v.date>C.today())throw Error('请填写不晚于今天的有效日期');if(error)data.errors.push({...v,id:C.uid(),examId:e.id,round:0,next:C.addDays(v.date,1),mastered:false});else{const minutes=Number(v.minutes),count=Number(v.count),correct=Number(v.correct);if(!Number.isFinite(minutes)||minutes<=0||minutes>1440||!Number.isInteger(count)||!Number.isInteger(correct)||count<0||correct<0||correct>count)throw Error('请核对分钟与题数，答对数不能大于总数');data.logs.push({...v,id:C.uid(),examId:e.id,minutes,count,correct});}save();close();render();});}
+    function importPreview(raw){const next=C.clean(raw);pendingImport=next;const collisions=next.exams.filter(e=>data.exams.some(x=>x.id===e.id||e.departmentCode&&C.identity(x)===C.identity(e)));open('预览考程备份',`<div class="j-callout">将读取 ${next.exams.length} 场考试、${next.logs.length} 条学习、${next.errors.length} 张错题。与本机重复的考试：${collisions.length} 场。</div><ul>${next.exams.map(e=>'<li>'+h(e.title)+' · '+h(e.year)+'</li>').join('')}</ul><p class="j-muted">导入前先导出当前备份。追加遇到重复考试会停止；覆盖会完整替换考程，不影响原有选岗收藏。</p><div class="j-actions">${button('backup','先备份本机')}${button('import-merge','追加导入','','primary')}${button('import-replace','覆盖恢复','','danger')}</div>`);}
+    file.addEventListener('change',async()=>{try{const f=file.files?.[0];if(!f)return;if(f.size>8*1024*1024)throw Error('备份超过8MB');importPreview(JSON.parse(await f.text()));}catch(err){notify('导入失败：'+err.message);}finally{file.value='';}});
+    function action(ev){const b=ev.target.closest('[data-j-action]');if(!b)return;const v=b.dataset.value,id=b.dataset.id,act=b.dataset.jAction;
+      try{
+        if(act==='close')return close();
+        if(act==='page'){page=v;filter='all';render();}
+        if(act.startsWith('go-')){page=act.slice(3);filter='all';render();}
+        if(act==='create')createDialog();
+        if(act==='open-exam'){activeId=b.dataset.exam;page='detail';pane='tasks';stage=-1;render();}
+        if(act==='exam-filter'||act==='agenda-filter'){filter=v;render();}
+        if(act==='pane'){pane=v;render();}
+        if(act==='stage'){stage=Number(v);render();}
+        if(act==='edit-exam')createDialog({},true);
+        if(act==='edit-task')taskDialog(b.dataset.exam,b.dataset.task);
+        if(act==='new-task')taskDialog(activeId,null,Number(b.dataset.stage));
+        if(act==='archive'){const e=current();e.lifecycle=e.lifecycle==='active'?'archived':'active';save();render();notify(e.lifecycle==='archived'?'已归档，保留记录并停止该场待办提醒':'已恢复跟进');}
+        if(act==='material-new'||act==='material-edit')simpleDialog('material',id);
+        if(act==='source-new'||act==='source-edit')simpleDialog('source',id);
+        if(act==='score-edit')simpleDialog('score');
+        if(act==='log-new'||act==='error-new')studyDialog(act==='error-new');
+        if(act==='log-delete'){if(!confirm('删除这条误记的学习记录？'))return;data.logs=data.logs.filter(x=>x.id!==id);save();render();}
+        if(act==='review-ok'||act==='review-again'){const er=data.errors.find(x=>x.id===id);if(er){C.review(er,act==='review-ok');save();render();notify(er.mastered?'已完成三轮，保留复习记录':'下次复习：'+er.next);}}
+        if(act==='watch-add'){const area=b.dataset.area;createDialog({title:area==='全国'?'2027 国考':area+'公务员招录 · 等待公告',region:area,type:area==='全国'?'国考':area==='深圳'?'市级独立招录':'省考',template:area==='全国'?'national2027':'blank',source:sources.find(x=>x[0]===area)[2]});}
+        if(act==='backup')download('知国公-我的考程-'+C.today()+'.json',JSON.stringify(data,null,2));
+        if(act==='calendar'){const result=C.ics(data);if(!result.count)return notify('暂无可导出节点。先补齐准确日期、来源，并勾选已核对。');download('知国公-考程提醒.ics',result.content,'text/calendar;charset=utf-8');notify(`已导出 ${result.count} 项；请导入系统日历并检查提醒权限。`);}
+        if(act==='import')file.click();
+        if(act==='import-merge'||act==='import-replace'){
+          if(!pendingImport)return;
+          if(act==='import-merge'){
+            if(pendingImport.exams.some(e=>data.exams.some(x=>x.id===e.id||e.departmentCode&&C.identity(x)===C.identity(e))))throw Error('存在重复考试，请取消后整理备份，或选择完整覆盖恢复。');
+            const merged={schema:1,exams:[...data.exams,...pendingImport.exams],logs:[...data.logs,...pendingImport.logs],errors:[...data.errors,...pendingImport.errors]};data=C.clean(merged);
+          }else{if(!confirm('确认用此备份替换全部本机考程？建议先导出原记录。'))return;data=pendingImport;}
+          storageError='';pendingImport=null;save();close();page='overview';render();notify('考程导入完成');
+        }
+        if(act==='print')root.print();
+        if(act==='clear'){if(!confirm('清空本机全部考程、学习和错题记录？此操作不能撤销，请先导出备份。'))return;data=C.blank();storageError='';save();page='overview';render();notify('已清空考程记录');}
+      }catch(err){if(modal.open)modal.querySelector('#journeyFormError').textContent=err.message;else notify(err.message);}
+    }
+    host.addEventListener('click',action);modal.addEventListener('click',action);
+    root.addEventListener('storage',ev=>{if(ev.key===C.KEY){storageError='另一页面修改了考程。为避免覆盖，当前页已停止自动保存；请导出未保存内容后刷新。';render();}});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!modal.open)render();});
+    setInterval(()=>{if(!document.hidden&&!host.hidden&&!modal.open)render();},60000);
+    render();
+    return {
+      render,
+      snapshot:()=>JSON.parse(JSON.stringify(data)),
+      importPreview,
+      addJob(j){
+        const e=C.fromJob(j,root.ExamPolicy),old=data.exams.find(x=>C.identity(x)===C.identity(e));
+        if(old){activeId=old.id;notify('已存在这场岗位考程，打开原记录');}
+        else{const same=data.exams.find(x=>x.lifecycle==='active'&&x.type==='国考'&&x.year===e.year&&x.batch===e.batch&&x.departmentCode);if(same){notify('本轮已有岗位考程。国考同轮报名须核对改报条件，请在原档案中编辑岗位或先归档。');return false;}data.exams.push(e);activeId=e.id;save();notify('已加入考程；实际报名与审核状态请自行确认。');}
+        page='detail';pane='tasks';stage=-1;render();adapter.show?.();return true;
+      }
+    };
+  }
+  root.JourneyUI={mount};
+})(window);
+</script><script>window.JourneyApp=JourneyUI.mount(document.getElementById('journeyRoot'));</script></body></html>
