@@ -63,6 +63,8 @@ function siteTarget() {
         // public/ 会被原样拷入两个产物，故对外站(.com) 构建完成后强制剥离
         // 儿童/家庭正脸照（/images/family 目录 + scene 合影），确保 ccfudan.com 永不发布。
         if (isCom) {
+          const universeDir = path.join(outDir, 'universe');
+          if (fs.existsSync(universeDir)) fs.rmSync(universeDir, { recursive: true, force: true });
           const toolsDir = path.join(outDir, 'tools');
           if (fs.existsSync(toolsDir)) fs.rmSync(toolsDir, { recursive: true, force: true });
           const familyDir = path.join(outDir, 'images', 'family');

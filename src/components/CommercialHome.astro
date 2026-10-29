@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ConsultingProcess from './ConsultingProcess.astro';
+import { H1_COM, SUB_COM } from '../config/site';
+import { consultingAreas } from '../data/consulting';
+import { articleArchive } from '../data/articleArchive';
+const articles = await articleArchive();
+// Show a breadth of thinking, without changing or concealing the original archive.
+const featured = [...articles.filter(p => !/保险|保单|保费|理赔/.test(p.title)), ...articles.filter(p => /保险|保单|保费|理赔/.test(p.title))].slice(0, 3);
+---
+<BaseLayout title="程成 cc | 独立咨询顾问" description="把复杂的问题拆清楚，把重要的选择想明白。程成（cc）提供问题梳理、路径比较与行动协助；能协助的认真做，需要其他专业支持的，帮助建立联系。">
+  <section class="advisory-hero">
+    <div class="wrap advisory-hero-grid">
+      <div class="advisory-hero-copy">
+        <span class="eyebrow">程成 / CC · 独立咨询顾问</span>
+        <h1>{H1_COM.split('，').map((line, i) => <>{i > 0 && <br />}{line}</>)}</h1>
+        <p class="advisory-lead">{SUB_COM}</p>
+        <div class="cta-row"><a class="btn btn-primary" href="/contact#wechat">说说你遇到的问题 <span aria-hidden="true">↗</span></a><a class="btn btn-ghost" href="/services">了解如何协作 →</a></div>
+        <p class="advisory-hero-note">真实 · 适配 · 边界清晰</p>
+      </div>
+      <aside class="advisory-profile" aria-label="顾问简介">
+        <div class="advisory-portrait"><img src="/images/avatar.jpg" alt="程成（cc）" width="360" height="360" fetchpriority="high" /></div>
+        <div class="advisory-profile-body"><div class="advisory-profile-name"><strong>程成</strong><span>你也可以叫我 cc</span></div><p>复旦哲学本硕 · 法律职业资格<br />曾在华为、荣耀与电商业务中工作</p><a class="text-link" href="/about">了解我的经历与方法 ↗</a></div>
+      </aside>
+    </div>
+    <div class="wrap"><div class="advisory-principle"><span>从需求出发</span><p>不必先给问题分类。<br class="mobile-break" />我们先聊清楚，真正需要解决的是什么。</p></div></div>
+  </section>
+
+  <section class="section advisory-section" id="questions"><div class="wrap">
+    <div class="advisory-heading"><div><span class="eyebrow">从你的问题开始</span><h2>你可能正遇到这样的事</h2></div><p>领域可以不同，起点始终是你的实际处境。</p></div>
+    <div class="advisory-service-grid">{consultingAreas.map(area => <a class="advisory-service" href={`/services#${area.id}`}><span class="advisory-number">{area.number}</span><h3>{area.title}</h3><p class="advisory-question">{area.question}</p><p>{area.desc}</p><span class="text-link">看看能如何协助 <span aria-hidden="true">↗</span></span></a>)}</div>
+  </div></section>
+
+  <section class="section advisory-section advisory-tint"><div class="wrap">
+    <div class="advisory-heading"><div><span class="eyebrow">协作方式</span><h2>从想清楚，到走下一步</h2></div><p>先确认帮助是否适配，再约定具体工作。</p></div>
+    <ConsultingProcess />
+    <div class="advisory-output"><span>一次协作希望留下什么</span><p>更清晰的问题、可比较的路径、可执行的下一步，<strong>以及你自己的判断。</strong></p></div>
+  </div></section>
+
+  <section class="section advisory-section"><div class="wrap advisory-belief-grid">
+    <div><span class="eyebrow">信任的基础</span><h2>认真对待问题，<br />也尊重你的选择。</h2><p class="advisory-belief-lead">专业帮助的价值，是让你更能判断，也更有能力继续行动。</p><a class="text-link" href="/credentials">了解经历与服务边界 ↗</a></div>
+    <div class="advisory-commitments"><article><span>01 / 真实</span><h3>事实、判断和未知，分别讲清</h3><p>有依据的给依据，还不了解的就承认。不把不确定的事包装成保证。</p></article><article><span>02 / 适配</span><h3>先看是否适合，再谈方案</h3><p>先了解需求、预算与优先级。合适的帮助，也包括暂缓行动或找其他专业人士。</p></article><article><span>03 / 边界</span><h3>能做什么、如何收费，提前说清</h3><p>说明各自责任与可能的利益关系。你始终可以比较、提问和自行决定。</p></article></div>
+  </div></section>
+
+  <section class="section advisory-section advisory-reading"><div class="wrap">
+    <div class="advisory-heading"><div><span class="eyebrow">先了解，再建立信任</span><h2>从文章里，看我如何思考</h2></div><a class="text-link" href="/writing">全部文章 ↗</a></div>
+    <div class="advisory-writing-grid">{featured.map((p, i) => <a class="advisory-writing" href={p.href} target={p.external ? '_blank' : undefined} rel={p.external ? 'noopener noreferrer' : undefined}><div class="meta"><span>阅读 / 0{i + 1}</span><time>{p.date.toISOString().slice(0, 10)}</time></div><h3>{p.title}</h3><p>{p.excerpt}</p><span class="text-link">阅读全文 {p.external ? '↗' : '→'}</span></a>)}</div>
+  </div></section>
+
+  <section class="section advisory-section"><div class="wrap"><div class="advisory-invitation"><div><span class="eyebrow">从一次具体的交流开始</span><h2>先把眼前的问题，说清楚。</h2><p>简单说说现状、困惑，以及你希望得到的帮助。我们再确认是否适合一起推进。</p></div><a class="btn btn-primary" href="/contact#wechat">添加微信 · cc_fudan ↗</a></div></div></section>
+</BaseLayout>

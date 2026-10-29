@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CommercialAbout from '../components/CommercialAbout.astro';
 import Signoff from '../components/Signoff.astro';
 import { IS_COM, SHOW_FAMILY_ON_COM } from '../config/site';
 
@@ -33,6 +34,7 @@ const method = [
 ];
 ---
 
+{IS_COM ? <CommercialAbout /> : (
 <BaseLayout
   title={IS_COM ? '关于我 | cc · 程成' : '关于我 | 3C得九'}
   description={IS_COM
@@ -235,3 +237,4 @@ const method = [
     </div>
   </section>
 </BaseLayout>
+)}

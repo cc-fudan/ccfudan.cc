@@ -1,98 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ServiceCard from '../../components/ServiceCard.astro';
-
-const flow = [
-  ['售前 · 需求诊断', '不上来就推产品，先问「你怕什么」。家庭结构、预算、已有保单，全盘梳理保障缺口。'],
-  ['售中 · 方案定制', '全市场横向对比，拉表算数，同样保障帮你省 30%–50% 保费，买对不买贵。'],
-  ['投保 · 核保协助', '健康告知、智能核保、投保全流程陪同，避免踩坑埋雷。'],
-  ['售后 · 保单托管', '已有保单集中管理，定期检视，缺口随人生阶段动态调整。'],
-  ['理赔 · 全程协助', '出险第一时间指导报案、备料、跟进；截至 2026 年 9 月，团队累计处理理赔 500+ 件，为你兜底。'],
-];
-
-const boundaries = [
-  ['保险经纪', '明亚签约、持牌执业，全市场 100+ 家保司可选；产品与佣金规则对客户透明。'],
-  ['法律服务', '持有法律职业资格（A 证），目前非执业律师——我提供的是法律思维、信息梳理与独立第二意见；重大事项请以执业律师的正式意见为准。'],
-  ['香港身份与跨境规划', '香港高才通申请亲历者；跨境安排同时受两地政策与销售合规约束，我提供的是信息梳理与路径对比，一切以最新法规为准。'],
-  ['AI 咨询', '交付可运行的工作流与决策框架（本网站本身就是 AI 协作的产物），不承诺具体收益。'],
-];
+import ConsultingProcess from '../../components/ConsultingProcess.astro';
+import { consultingAreas } from '../../data/consulting';
 ---
-
-<BaseLayout title="顾问服务 | cc · 程成" description="一个顾问，四张地图：家庭风险与保障、法律与契约思维、香港身份与跨境规划、职业决策与 AI 元能力。先定义问题，再找方案。">
-  <section class="section">
-    <div class="wrap">
-      <span class="eyebrow">顾问服务</span>
-      <h1 class="section-title">一个顾问，四张地图</h1>
-      <p class="section-sub">保险、法律、身份、职业与 AI——问题域不同，方法一致：先定义问题，再找方案；全程站在你这边。</p>
-
-      <div class="grid-2">
-        <ServiceCard
-          icon="🛡"
-          title="家庭风险与保障"
-          desc="重疾 / 医疗 / 意外 / 寿险，全市场对比，先问需求再定方案。"
-          points={["保障缺口诊断", "方案横向对比，省 30%–50%", "买对不买贵"]}
-        />
-        <ServiceCard
-          icon="🌱"
-          title="储蓄与传承规划"
-          desc="增额终身寿 / 年金 / 教育金 / 养老金，锁定长期利率。"
-          points={["现金流规划", "资产隔离与传承", "平稳交棒下一代"]}
-        />
-        <ServiceCard
-          icon="⚖️"
-          title="法律与契约思维"
-          desc="婚姻财产约定、契约安排、取证边界的法律视角梳理。"
-          points={["法律职业资格（A 证）", "独立第二意见，不和稀泥", "把保障放进家庭资产全盘看"]}
-        />
-        <ServiceCard
-          icon="🌏"
-          title="香港身份与跨境规划"
-          desc="香港高才通申请实操经验，跨境身份与合规边界梳理。"
-          points={["高才通全流程亲历", "跨境身份与教育衔接", "合规边界提示"]}
-        />
-        <ServiceCard
-          icon="🤖"
-          title="职业决策与 AI 元能力"
-          desc="职业路径对比分析、AI 工作流搭建、人机协同五科目训练。"
-          points={["多方案对比式决策", "AI 协作实战工作流", "训练「定义问题」的元能力"]}
-        />
-        <ServiceCard
-          icon="🤝"
-          title="保单托管 / 理赔 / 同业"
-          desc="已有保单系统梳理；出险全程陪跑；欢迎同业与应聘交流。"
-          points={["团队累计理赔 500+ 件", "绝不无脑劝退旧单", "同业付费深度咨询"]}
-        />
-      </div>
-
-      <h2 class="section-title" style="margin-top:56px;">以保险为例：全流程长这样</h2>
-      <p class="section-sub">售前 → 售中 → 投保 → 售后 → 理赔，全程在你这边。</p>
-      <div class="grid-3">
-        {flow.map(([t, d]) => (
-          <div class="card">
-            <h3>{t}</h3>
-            <p>{d}</p>
-          </div>
-        ))}
-      </div>
-
-      <h2 class="section-title" style="margin-top:56px;">正经的边界</h2>
-      <p class="section-sub">顾问的信任来自诚实。哪些我能做、哪些我不越线，先说清楚。</p>
-      <div class="card" style="margin-bottom:16px;">
-        {boundaries.map(([k, v]) => (
-          <p style="margin:0 0 12px;"><strong>{k}</strong>　{v}</p>
-        ))}
-      </div>
-
-      <h2 class="section-title" style="margin-top:56px;">约法三章</h2>
-      <div class="rules">
-        <div class="rule"><div class="n">一</div><h4>不卖我不认可的产品</h4><p>无论大公司还是小保司。</p></div>
-        <div class="rule"><div class="n">二</div><h4>不用我不认可的方式</h4><p>无套路、不话术、不骚扰。</p></div>
-        <div class="rule"><div class="n">三</div><h4>不卖给不互信的人</h4><p>先彼此信任，再谈方案。</p></div>
-      </div>
-
-      <div style="margin-top:34px;">
-        <a class="btn btn-primary" href="/contact">预约咨询 →</a>
-      </div>
-    </div>
-  </section>
+<BaseLayout title="如何协作 | 程成 cc" description="从具体问题开始，厘清需求、比较路径、形成行动计划。咨询前明确范围、交付、时间和费用，必要时协助连接合适的专业人士。">
+  <section class="section advisory-section"><div class="wrap">
+    <div class="advisory-page-head"><span class="eyebrow">如何协作</span><h1>从问题出发，<br />找到适合你的帮助。</h1><p class="advisory-lead">可以先说说困惑，不必先决定要买哪一种服务。我们先确认问题、帮助方式与边界。</p></div>
+    <div class="advisory-details">{consultingAreas.map(area => <section class="advisory-detail" id={area.id}><div><span class="advisory-number">{area.number}</span><h2>{area.title}</h2><p class="advisory-question">{area.question}</p></div><div><p>{area.desc}</p><ul>{area.points.map(p => <li>{p}</li>)}</ul><p class="advisory-scope"><strong>服务边界</strong><br />{area.scope}</p></div></section>)}</div>
+  </div></section>
+  <section class="section advisory-section advisory-tint"><div class="wrap"><div class="advisory-heading"><div><span class="eyebrow">从初步交流到具体工作</span><h2>四步确认，一起推进</h2></div></div><ConsultingProcess /></div></section>
+  <section class="section advisory-section"><div class="wrap advisory-two-col"><div><span class="eyebrow">费用与交付</span><h2>开始之前，先约定清楚。</h2><p>是否适合协作、具体做哪些工作，需要先了解你的问题。费用依据确认后的服务范围与交付内容说明；你了解并接受后，再决定是否开始。</p></div><div class="advisory-note"><h3>可以先准备这三件事</h3><ol><li>发生了什么，你最想解决哪一个问题？</li><li>目前已经做过什么，手里有哪些信息？</li><li>有哪些时间、预算或其他限制？</li></ol><p>初步交流无需发送证件号、账户密码或无关的个人资料。</p><a class="btn btn-primary" href="/contact#wechat">带着问题来聊聊 ↗</a></div></div></section>
 </BaseLayout>

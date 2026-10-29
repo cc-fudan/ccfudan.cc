@@ -30,46 +30,14 @@ export const SITE_NAME = IS_COM ? 'cc · 程成' : '3C得九';
 
 // ── .com 首页核心文案（P4-2 / P5 决策） ────────────────────────────────────────
 /** .com 首页主标题：用「非保险」钩子降低客户防御 */
-export const H1_COM = '如果你不想聊保险，我也略懂点法律和哲学';
+export const H1_COM = '把复杂的问题拆清楚，把重要的选择想明白。';
 /** .com 首页竖杠副标：转型期家庭的一次性想清楚 */
-export const SUB_COM = '转型期家庭的一次性想清楚：保障 · 契约 · 身份';
+export const SUB_COM = '先厘清需求，再比较路径。能协助的认真做，需要其他专业支持的，帮助建立联系。';
 
 /**
  * .com 首页核心卡片（P4-3 第3卡=身份与跨境规划；P5-2-b 第4卡=案例与口碑）。
  * 前两张来自顾问服务，后两张分别落到 /services 与 /credentials。
  */
-export const HOME_CARDS_COM: {
-  title: string;
-  desc: string;
-  href: string;
-  points: string[];
-}[] = [
-  {
-    title: '家庭保障规划',
-    desc: '从收入断点、责任缺口到医疗与现金流，把「万一」先想透。',
-    href: '/services',
-    points: ['先问「你怕什么」，再定方案', '全市场横向对比，独立选品', '投保只是开始，理赔陪跑到底'],
-  },
-  {
-    title: '法律与契约',
-    desc: '法考 A 证视角下的合同、继承与家庭契约梳理。',
-    href: '/services',
-    points: ['法律职业资格（A 证）加持', '把保险放进家庭资产全盘看', '独立第二意见，不和稀泥'],
-  },
-  {
-    title: '身份与跨境规划',
-    desc: '香港身份与跨境结构的「第二步」该怎么走，先想清再办。',
-    href: '/services',
-    points: ['高才通全流程亲历经验', '跨境身份与教育衔接思路', '跨境安排的合规边界提示'],
-  },
-  {
-    title: '案例与口碑',
-    desc: '去战果化的真实服务记录，看我们怎么陪家庭想清楚。',
-    href: '/credentials',
-    points: ['真实服务过程，不堆战果', '客户视角的「被安排好」', '长期陪跑，不是一锤子买卖'],
-  },
-];
-
 // ── .cc 首页核心文案（P2 / P3 / P4-1 决策） ────────────────────────────────
 /** .cc 站点一句话主张 */
 export const CC_TAGLINE = '格物致知 · 修身齐家';
@@ -133,11 +101,11 @@ export const CC_LIB_HINT = /书|影|音|儿歌|歌|小说|读|红楼|诗/;
 export const NAV: { href: string; label: string }[] = IS_COM
   ? [
       { href: '/', label: '首页' },
-      { href: '/services', label: '服务' },
-      { href: '/credentials', label: '资质案例' },
+      { href: '/services', label: '如何协作' },
+      { href: '/credentials', label: '经历与边界' },
       { href: '/writing', label: '文章合集' },
       { href: '/about', label: '关于我' },
-      { href: '/contact', label: '联系预约' },
+      { href: '/contact', label: '联系我' },
     ]
   : [
       { href: '/', label: '首页' },

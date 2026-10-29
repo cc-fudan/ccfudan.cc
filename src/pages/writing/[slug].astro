@@ -39,7 +39,7 @@ export async function getStaticPaths() {
     const hp = path.join(HTML_DIR, post.slug + '.html');
     if (fs.existsSync(hp)) {
       richHtml = fs.readFileSync(hp, 'utf8');
-      if (!isCom) {
+      {
         const damaged = new Set(damagedArticleImages);
         richHtml = richHtml.replace(/<img\b[^>]*>/gi, (tag) => {
           const src = tag.match(/\bsrc\s*=\s*["']([^"']+)["']/i)?.[1];
@@ -77,6 +77,7 @@ const backLabel = IS_COM ? '← 返回文章列表' : '← 回书房';
         {post.data.date.toISOString().slice(0, 10)} · {post.data.tags.join(' / ')}
       </div>
       <h1 class="section-title">{post.data.title}</h1>
+      {IS_COM && <aside class="advisory-archive-note">本文保留发表时的内容。文中的身份、服务与费用可能已有变化，当前安排请以咨询前确认的信息为准。</aside>}
       {origIndex && (
         <div class="orig-badge">
           <span class="orig-badge-num">CC 原创 · 第 {origIndex} 篇</span>

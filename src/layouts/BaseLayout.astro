@@ -3,6 +3,7 @@ import '../styles/global.css';
 import '../styles/tools-entry.css';
 import '../styles/workshop.css';
 import '../styles/jade.css';
+import '../styles/commercial.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { IS_INDEXABLE, SITE_URL, IS_COM } from '../config/site';
@@ -17,7 +18,7 @@ interface Props {
 const {
   title = IS_COM ? 'cc · 程成 | 独立咨询顾问' : '3C得九 | 格物致知 · 修身齐家',
   description = IS_COM
-    ? '复旦哲学硕士 · 法律职业资格 · 前华为荣耀销售管理。转型期家庭的一次性想清楚：保障 · 契约 · 身份。'
+    ? '程成（cc），独立咨询顾问。先厘清需求，再比较路径：问题梳理、行动协助与合适的专业连接。'
     : '程成的个人空间：我的工匠坊、文章、个人介绍与家人照片。',
 } = Astro.props;
 

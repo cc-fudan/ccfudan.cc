@@ -1,0 +1,6 @@
+---
+import { consultingProcess } from '../data/consulting';
+---
+<ol class="advisory-process">
+  {consultingProcess.map((step) => <li><span class="step-number">{step.number}</span><h3>{step.title}</h3><p>{step.desc}</p></li>)}
+</ol>

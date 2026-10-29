@@ -2,42 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import WechatContact from '../../components/WechatContact.astro';
 ---
-
-<BaseLayout title="联系预约 | cc · 程成" description="保障 / 法律 / 身份 / 职业与 AI 咨询，加微信 cc_fudan（备注「咨询」）。公众号 cc的保险笔记。">
-  <section class="section">
-    <div class="wrap">
-      <span class="eyebrow">联系预约</span>
-      <h1 class="section-title">先信任，再聊方案</h1>
-      <p class="section-sub">我不主动推销。加好友前，建议先读几篇文章，看看这个顾问怎么想问题，有了基础信任，我们再细说。</p>
-
-      <div class="contact-grid">
-        <div class="contact-card">
-          <div class="row"><div class="k">微信</div><div class="v">cc_fudan <span style="color:var(--muted);font-weight:400;">（备注「咨询」）</span></div></div>
-          <div class="row"><div class="k">咨询范围</div><div class="v">保障规划 / 法律契约 / 身份与跨境规划 / 职业与 AI</div></div>
-          <div class="row"><div class="k">公众号</div><div class="v">cc的保险笔记</div></div>
-          <div class="row"><div class="k">所在地</div><div class="v">长沙 / 武汉（全国可远程）</div></div>
-          <div class="row"><div class="k">同行 / 应聘</div><div class="v">同微信，备注「应聘经纪人」或「同行付费咨询」</div></div>
-        </div>
-        <div class="contact-card" style="background:var(--primary);color:#fff;border:none;">
-          <h3 style="margin-top:0;">约法三章</h3>
-          <p style="color:rgba(255,255,255,0.85);">一、不卖我不认可的产品；<br />二、不用我不认可的方式；<br />三、不卖给和我不互相认可的人。</p>
-          <p style="color:rgba(255,255,255,0.7);font-size:14px;margin-bottom:0;">
-            保障是终身的托付。先了解你，才是负责任。
-          </p>
-        </div>
-      </div>
-
-      <section id="wechat" class="wechat-section" aria-label="添加微信">
-        <h2>添加微信</h2>
-        <WechatContact showQr />
-      </section>
-
-      <div style="margin-top:30px;">
-        <a class="btn btn-primary" href="/writing">先读读我的文章 →</a>
-      </div>
+<BaseLayout title="联系程成 | 从你的问题开始" description="微信 cc_fudan。简单说说现状、困惑和希望得到的帮助，再一起确认服务是否适配、范围与费用。">
+  <section class="section advisory-section"><div class="wrap">
+    <div class="advisory-page-head"><span class="eyebrow">联系我</span><h1>先聊聊，<br />你眼前的那个问题。</h1><p class="advisory-lead">不必先想好要什么服务。说说发生了什么、希望改变什么，我们再确认能如何协作。</p></div>
+    <div class="advisory-contact-grid">
+      <section class="advisory-note" id="wechat" aria-label="添加微信"><span class="eyebrow">直接联系</span><h2>微信 · cc_fudan</h2><p>添加时备注「咨询」，简单说明来意即可。</p><WechatContact showQr /></section>
+      <div class="advisory-contact-aside"><section><span class="eyebrow">交流前可以想一想</span><h2>把问题说具体一点</h2><ol><li><strong>你的处境</strong><p>目前发生了什么，已经尝试过哪些办法？</p></li><li><strong>想获得的帮助</strong><p>需要梳理思路、比较方案，还是连接合适的专业人士？</p></li><li><strong>现实的限制</strong><p>有哪些时间、预算或必须考虑的条件？</p></li></ol></section><section class="advisory-scope"><h3>开始前，我们会确认</h3><p>具体范围、交付、时间、费用与各自责任。你可以先了解，也可以选择更适合自己的帮助。</p></section><a class="text-link" href="/writing">还想多了解一点？先读几篇文章 →</a></div>
     </div>
-  </section>
+  </div></section>
 </BaseLayout>
-<style>
-  .wechat-section { margin-top: 34px; scroll-margin-top: 170px; }
-</style>

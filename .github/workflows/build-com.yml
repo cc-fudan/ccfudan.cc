@@ -27,10 +27,26 @@ jobs:
           assert.equal(fs.readFileSync('dist/CNAME','utf8').trim(),'ccfudan.com');
           fs.writeFileSync('dist/release-source.txt',process.env.GITHUB_SHA+'\n');
           JS
+      - name: Install commercial browser verifier
+        run: |
+          npm install --prefix "$RUNNER_TEMP/commercial-browser" --no-audit --no-fund playwright@1.62.1
+          node "$RUNNER_TEMP/commercial-browser/node_modules/playwright/cli.js" install --with-deps chromium
+      - name: Verify commercial pages on desktop and mobile
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/commercial-browser/node_modules/playwright
+        run: node scripts/verify-commercial.cjs
+      - name: Save commercial screenshots and checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: commercial-browser-verification
+          path: commercial-verification
+          if-no-files-found: ignore
       - name: Save built files to artifact branch
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          cp -R commercial-verification dist/.verification
           cd dist
           touch .nojekyll
           git init -b commercial-artifact
