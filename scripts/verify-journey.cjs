@@ -1,7 +1,10 @@
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'C:/Users/Administrator/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
 async function verifyJourney(page,base,shots){
- await page.goto(base+'/tools/zhiguogong/',{waitUntil:'networkidle'});
+ await page.setViewportSize({width:1440,height:1000});
+ const response=await page.goto(base+'/tools/zhiguogong/',{waitUntil:'networkidle'});
+ assert.ok(response?.ok(),'Journey page load failed: '+page.url());
+ await page.waitForFunction(()=>!!window.JourneyCore&&!!window.JourneyApp);
  await page.evaluate(()=>localStorage.removeItem(JourneyCore.KEY));await page.reload({waitUntil:'networkidle'});
  await page.waitForSelector('#journeyView:not([hidden])');
  assert.equal(await page.evaluate(()=>JourneyApp.snapshot().exams.length),0);
@@ -56,8 +59,18 @@ async function verifyJourney(page,base,shots){
  await page.locator('#journeyExamForm button[type="submit"]').click();
  assert.ok(await page.evaluate(()=>JourneyApp.snapshot().exams.some(e=>e.title==='离线验证')));
  await page.context().setOffline(false);
+ const offline=await page.context().browser().newContext({offline:true,viewport:{width:390,height:844}});
+ const local=await offline.newPage();
+ await local.goto('file://'+path.resolve('dist/tools/downloads/zhiguogong-journey.html'),{waitUntil:'load'});
+ await local.locator('[data-j-action="create"]').first().click();
+ await local.locator('#journeyExamForm [name="title"]').fill('文件离线打开验证');
+ await local.locator('#journeyExamForm button[type="submit"]').click();
+ assert.equal(await local.evaluate(()=>JourneyApp.snapshot().exams.length),1);
+ assert.ok(await local.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+ await local.screenshot({path:path.join(shots,'journey-offline-mobile.png'),fullPage:true});
+ await offline.close();
  await page.evaluate(()=>localStorage.removeItem(JourneyCore.KEY));
- return {desktop:true,mobile390:true,jobBridge:true,storage:true,backupDuplicateGuard:true,offlineInteraction:true};
+ return {desktop:true,mobile390:true,jobBridge:true,storage:true,backupDuplicateGuard:true,offlineInteraction:true,offlineFile:true};
 }
 module.exports={verifyJourney};
 if(require.main===module){(async()=>{

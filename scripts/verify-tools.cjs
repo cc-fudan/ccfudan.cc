@@ -154,7 +154,10 @@ async function noOverflow(page,label){
   await p.fill('[name="score0"]','60');await p.fill('[name="score1"]','70');await p.fill('[name="score2"]','80');await p.click('#examScoreForm button');
   assert.ok((await p.locator('#examScoreResult').textContent()).includes('72.50'));await noOverflow(p,'portable exam offline');
   await offline.close();
-  const journey=await require('./verify-journey.cjs').verifyJourney(page,url,shots);
+  const journeyContext=await browser.newContext({viewport:{width:1440,height:1000}});
+  const journeyPage=await journeyContext.newPage();journeyPage.on('pageerror',e=>errors.push(e.message));
+  const journey=await require('./verify-journey.cjs').verifyJourney(journeyPage,url,shots);
+  await journeyContext.close();
   assert.deepEqual(errors,[]);
   fs.writeFileSync(path.join(shots,'result.json'),JSON.stringify({passed:true,viewports:[320,375,390,430,768,1440],offline:true,policy:true,calendarEvents:9,examScore:72.5,journey,errors},null,2));
   console.log('TOOLS BROWSER PASS: source-built pages, 4 tools, cascading provinces/cities, profiles, majors, persistence, mobile layouts, standalone offline.');
